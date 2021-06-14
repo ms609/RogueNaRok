@@ -2204,13 +2204,23 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   if(NOT numberOfThreads)
     {
       printf("\n\nPlease specify the number of threads for parallel execution with -T\n\n");
-      exit(-1);
+      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
+      int *ret;
+      ret = INTEGER(Rres);
+      *ret = -1;
+      UNPROTECT(1);
+      return Rres;
     }
   if(numberOfThreads == 1)
     {
       printf("\n\nCalling parallel version of RogueNaRok with 1 thread is deprecated.\n\
 Please compile a sequential version of RogueNaRok instead.\n\n");
-      exit(-1);
+      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
+      int *ret;
+      ret = INTEGER(Rres);
+      *ret = -1;
+      UNPROTECT(1);
+      return Rres;
     }
 #endif
 
@@ -2221,26 +2231,46 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
     {
       printf("ERROR: Please specify a file containing bootstrap trees via -i.\n");
       printHelpFile();
-      exit(-1);
+      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
+      int *ret;
+      ret = INTEGER(Rres);
+      *ret = -1;
+      UNPROTECT(1);
+      return Rres;
     }
 
   if( NOT strcmp(run_id, ""))
     {
       printf("ERROR: Please specify a run-id via -n\n");
       printHelpFile();
-      exit(-1);
+      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
+      int *ret;
+      ret = INTEGER(Rres);
+      *ret = -1;
+      UNPROTECT(1);
+      return Rres;;
     }
 
   if(threshold < 50)
     {
       printf("ERROR: Only accepting threshold values between 50 (MR) and 100 (strict).\n");
-      exit(-1);
+      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
+      int *ret;
+      ret = INTEGER(Rres);
+      *ret = -1;
+      UNPROTECT(1);
+      return Rres;
     }
 
   if(threshold != 50 && strcmp(treeFile, "") )
     {
       printf("ERROR: threshold option -c not available in combination with best-known tree.\n");
-      exit(-1);
+      int *ret;
+      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
+      ret = INTEGER(Rres);
+      *ret = -1;
+      UNPROTECT(1);
+      return Rres;
     }
 
   All
@@ -2249,7 +2279,12 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
   if  (NOT setupTree(tr, bootTrees))
     {
       PR("Something went wrong during tree initialisation. Sorry.\n");
-      exit(-1);
+      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
+      int *ret;
+      ret = INTEGER(Rres);
+      *ret = -1;
+      UNPROTECT(1);
+      return Rres;
     }
 
   doomRogues(tr,
@@ -2262,6 +2297,13 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
   freeTree(tr);
   free(mask32);
   free(infoFileName);
-
-  return 0;
+  
+  SEXP Rres = PROTECT(allocVector(INTSXP, 1));
+  
+  /* Initialize return variables */
+  int *ret;
+  ret = INTEGER(Rres);
+  *ret = 0;
+  UNPROTECT(1);
+  return Rres;
 }
