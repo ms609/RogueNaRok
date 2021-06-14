@@ -53,10 +53,9 @@ double updateTime(double* time)
 
 int wrapStrToL(char *string)
 {
-  int errno = 0; 
   char *p; 
   int result = strtol(string, &p, 10);
-  if (errno != 0 || *p != 0 || p == string)
+  if (*p != 0 || p == string)
     {
       printf("Something went wrong parsing a number.");
       exit(-1);
@@ -67,10 +66,9 @@ int wrapStrToL(char *string)
 
 double wrapStrToDouble(char *string)
 {
-  int errno = 0; 
   char *p; 
   double result = strtod(string, &p);
-  if (errno != 0 || *p != 0 || p == string)
+  if (*p != 0 || p == string)
     {
       printf("Something went wrong parsing a number.");
       exit(-1);

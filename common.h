@@ -42,6 +42,7 @@
 
 #ifdef WIN32
 #include <direct.h>
+#include <sys/time.h>
 #endif
 
 #ifndef WIN32
