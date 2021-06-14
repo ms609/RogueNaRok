@@ -50,7 +50,7 @@
 #include <pthread.h> 
 #endif
 
-#define PROG_NAME "RogueNaRok-IT"
+#define PROG_NAME "RogueNaRokR"
 #define PROG_VERSION "1.0.0.9000"
 #define PROG_RELEASE_DATE "2011-10-25"
 
@@ -2108,48 +2108,10 @@ void doomRogues(All *tr, const char *bootStrapFileName,
   free(candidateBips);
 }
 
-
-void printHelpFile()
-{
-  printVersionInfo(FALSE);
-  printf("This program implements the RogueNaRok algorithm for rogue taxon identification.\n\nSYNTAX: ./%s -i <bootTrees> -n <runId> [-x <excludeFile>] [-c <threshold>] [-b] [-s <dropsetSize>] [-w <workingDir>] [-h]\n", programName);
-  printf("\n\tOBLIGATORY:\n");
-  printf("-i <bootTrees>\n\tA collection of bootstrap trees.\n");
-  printf("-n <runId>\n\tAn identifier for this run.\n");
-  printf("\n\tOPTIONAL:\n");
-  printf("-t <bestKnownTree>\n\tIf a single best-known tree (such as an ML or MP\n\t\
-tree) is provided, RogueNaRok optimizes the bootstrap support in this\n\t\
-best-known tree (still drawn from the bootstrap trees). The threshold\n\t\
-parameter is ignored.\n");
-  printf("-x <excludeFile>\n\ttaxa in this file (one taxon per line) will not be\n\t\
-considered for pruning.\n");
-  printf("-c <threshold>\n\t A threshold or mode for the consensus tree that is\n\t\
-optimized. Specify a value between 50 (majority rule consensus) and\n\t\
-100 (strict consensus) or MR (for the extended majority rule\n\t\
-consensus). Note that rogue taxa identified with respect to different\n\t\
-thresholds can vary substantially. DEFAULT: MR consensus\n");
-  printf("-b\n\tInstead of trying to maximize the support in the consensus tree,\n\t\
-the RogueNaRok will try to maximize the number of bipartition in the\n\t\
-final tree by pruning taxa. DEFAULT: off\n");
-  printf("-L <factor>\n\ta weight factor to penalize for dropset size. \n\t\
-Factor=1 is Pattengale's criterion. The higher the value, the more \n\t\
-conservative the algorithm is in pruning taxa. DEFAULT: 0.0 (=RBIC)\n");
-  printf("-s <dropsetSize>\n\tmaximum size of dropset per iteration. If\n\t\
-dropsetSize == n, then RogueNaRok will test in each iteration which\n\t\
-tuple of n taxa increases optimality criterion the most and prunes\n\t\
-taxa accordingly. This improves the result, but runtimes will\n\t\
-increase at least linearly. DEFAULT: 1\n");
-  printf("-w <workDir>\n\tA working directory where output files are created.\n");
-  printf("-T <num>\n\tExecute RogueNaRok in parallel with <num> threads. You need to compile the program for parallel execution first.\n");
-  printf("-h\n\tThis help file.\n");
-  printf("\nMINIMAL EXAMPLE:\n./%s -i <bootstrapTreeFile> -n run1\n", programName);
-}
-
-
 SEXP RogueNaRok (SEXP R_bootTrees,
-                 SEXP R_computeSupport, // Logical
                  SEXP R_run_id,
                  SEXP R_treeFile,
+                 SEXP R_computeSupport, // Logical
                  SEXP R_maxDropsetSize,
                  SEXP R_excludeFile,
                  SEXP R_workdir,
@@ -2230,7 +2192,6 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
   if( NOT strcmp(bootTrees, ""))
     {
       printf("ERROR: Please specify a file containing bootstrap trees via -i.\n");
-      printHelpFile();
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
@@ -2242,7 +2203,6 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
   if( NOT strcmp(run_id, ""))
     {
       printf("ERROR: Please specify a run-id via -n\n");
-      printHelpFile();
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
