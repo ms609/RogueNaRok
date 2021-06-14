@@ -135,7 +135,7 @@ void addword(char *s, stringHashtable *h, int nodeNumber)
 }
 
 
-int getNumberOfTaxa(All *tr, char *bootStrapFile)
+int getNumberOfTaxa(All *tr, const char *bootStrapFile)
 {
   FILE *f = myfopen(bootStrapFile, "rb");
 
@@ -214,7 +214,7 @@ int getNumberOfTaxa(All *tr, char *bootStrapFile)
 }
 
 
-boolean setupTree (All *tr, char *bootstrapFile)
+boolean setupTree (All *tr, const char *bootstrapFile)
 {
   nodeptr  p0, p, q;
   int
@@ -1400,7 +1400,7 @@ static void insertHashBootstop(unsigned int *bitVector, hashtable *h, unsigned i
 }
 
 
-FILE *getNumberOfTrees(All *tr, char *fileName)
+FILE *getNumberOfTrees(All *tr, const char *fileName)
 {
   FILE 
     *f = myfopen(fileName, "r");

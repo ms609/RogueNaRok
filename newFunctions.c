@@ -70,7 +70,7 @@ void pruneTaxon(All *tr, unsigned int k, boolean considerBranchLengths)
 }
 
 
-BitVector *neglectThoseTaxa(All *tr, char *toDrop)  
+BitVector *neglectThoseTaxa(All *tr, const char *toDrop)  
 {
   int
     i = 0; 

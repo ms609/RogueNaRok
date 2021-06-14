@@ -1823,7 +1823,9 @@ BitVector *cleanup(All *tr, HashTable *mergingHash, Dropset *bestDropset, BitVec
 }
 
 
-void doomRogues(All *tr, char *bootStrapFileName, char *dontDropFile, char *treeFile, boolean mreOptimisation, int rawThresh)
+void doomRogues(All *tr, const char *bootStrapFileName, 
+                const char *dontDropFile, 
+                const char *treeFile, boolean mreOptimisation, int rawThresh)
 {
   double startingTime = gettime();
   timeInc = gettime();
@@ -2144,18 +2146,16 @@ increase at least linearly. DEFAULT: 1\n");
 }
 
 
-
-// [[Rcpp::export]]
-int RogueNaRok (SEXP R_bootTrees,
-                SEXP R_computeSupport, // Logical
-                SEXP R_run_id,
-                SEXP R_treeFile,
-                SEXP R_maxDropsetSize,
-                SEXP R_excludeFile,
-                SEXP R_workdir,
-                SEXP R_labelPenalty,
-                SEXP R_mreOptimization,
-                SEXP R_threshold)
+SEXP RogueNaRok (SEXP R_bootTrees,
+                 SEXP R_computeSupport, // Logical
+                 SEXP R_run_id,
+                 SEXP R_treeFile,
+                 SEXP R_maxDropsetSize,
+                 SEXP R_excludeFile,
+                 SEXP R_workdir,
+                 SEXP R_labelPenalty,
+                 SEXP R_mreOptimization,
+                 SEXP R_threshold)
 {
   int threshold = 50;
 

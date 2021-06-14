@@ -39,7 +39,7 @@
 
 IndexList *parseToDrop(All *tr, FILE *toDrop);
 void pruneTaxon(All *tr, unsigned int k, boolean considerBranchLengths) ;
-BitVector *neglectThoseTaxa(All *tr, char *toDrop);
+BitVector *neglectThoseTaxa(All *tr, const char *toDrop);
 Array *getOriginalBipArray(All *tr, FILE *bestTree, FILE *treeFile) ;
 
 #endif

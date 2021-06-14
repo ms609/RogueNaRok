@@ -137,7 +137,7 @@ void freeHashTable(hashtable *h);
 ProfileElem *addProfileElem(entry *helem, int vectorLength, int treeVectorLength, int numberOfTrees) ;
 
 
-BitVector *neglectThoseTaxa(All *tr, char *toDrop);
+BitVector *neglectThoseTaxa(All *tr, const char *toDrop);
 void pruneTaxon(All *tr, unsigned int k, boolean considerBranchLengths);
 BitVector **initBitVector(All *tr, BitVector *vectorLength);
 #endif
