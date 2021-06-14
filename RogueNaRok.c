@@ -35,6 +35,9 @@
 #include <unistd.h>
 #include <limits.h>
 
+#include <R.h>
+#include <Rinternals.h>
+
 #include "Tree.h"
 #include "sharedVariables.h"
 #include "Dropset.h"
@@ -47,8 +50,8 @@
 #include <pthread.h> 
 #endif
 
-#define PROG_NAME "RogueNaRok"
-#define PROG_VERSION "1.0"
+#define PROG_NAME "RogueNaRok-IT"
+#define PROG_VERSION "1.0.0.9000"
 #define PROG_RELEASE_DATE "2011-10-25"
 
 /* #define PRINT_VERY_VERBOSE */
@@ -2142,17 +2145,25 @@ increase at least linearly. DEFAULT: 1\n");
 
 
 
-int main(int argc, char *argv[])
+// [[Rcpp::export]]
+int RogueNaRok (SEXP R_bootTrees,
+                SEXP R_computeSupport, // Logical
+                SEXP R_run_id,
+                SEXP R_treeFile,
+                SEXP R_maxDropsetSize,
+                SEXP R_excludeFile,
+                SEXP R_workdir,
+                SEXP R_labelPenalty,
+                SEXP R_mreOptimization,
+                SEXP R_threshold)
 {
-  int
-    c,
-    threshold = 50;
+  int threshold = 50;
 
-  char
-    *excludeFile = "", 
-    *bootTrees = "",
-    *treeFile = ""; 
-
+  const char 
+	  *excludeFile = CHAR(R_excludeFile),
+    *bootTrees = CHAR(R_bootTrees),
+    *treeFile = CHAR(R_treeFile);
+    
   boolean
     mreOptimisation = FALSE;
 
@@ -2166,63 +2177,25 @@ int main(int argc, char *argv[])
   programName = PROG_NAME;
   programVersion = PROG_VERSION;
   programReleaseDate  = PROG_RELEASE_DATE;
+
+  /* INTEGER etc. gives pointer to first element of an R vector */
+	computeSupport = *LOGICAL(R_computeSupport);
+	strcpy(run_id, CHAR(R_run_id));
+	maxDropsetSize = *REAL(R_maxDropsetSize);
+	strcpy(workdir, CHAR(R_workdir));
+	labelPenalty = *REAL(R_labelPenalty);
+  mreOptimisation = *LOGICAL(R_mreOptimization);
   
-  while ((c = getopt (argc, argv, "i:t:n:x:w:hc:s:bT:L:")) != -1)
-    switch (c)
-      {
-      case 'i':
-	bootTrees = optarg;
-	break;
-      case 'T':
-	{
-#ifndef PARALLEL
-	  printf("\n\nFor running RogueNaRok in parallel, please compile with \n\n"); 
-	  exit(-1);	  
-#else
-	  numberOfThreads = wrapStrToL(optarg); 
-#endif
-	  break; 
-	}
-      case 'b':
-	computeSupport = FALSE;
-	break;
-      case 'n':
-	strcpy(run_id, optarg);
-	break;
-      case 't':
-	treeFile = optarg;
-	break;
-      case 's':
-	maxDropsetSize = wrapStrToL(optarg);
-	break;
-      case 'x': 
-	excludeFile = optarg;
-	break;
-      case 'w':
-	strcpy(workdir, optarg) ; 
-	break;
-      case 'L':
-	labelPenalty = wrapStrToDouble(optarg); 
-	break; 
-      case 'c':
-	{
-	  if( NOT strcmp(optarg, "MRE"))
-	    {
-	      mreOptimisation = TRUE;
-	      threshold = 50; 
-	    }
-	  else
-	    threshold = wrapStrToL(optarg);
-	  break;
-	}
-      case 'h':
-      default:	
-	{
-	  printHelpFile();
-	  abort ();
-	}
-      }
-  
+  if (mreOptimisation)
+    {
+      threshold = 50;
+    }
+  else
+    {
+      threshold = *REAL(R_threshold);
+  	}
+      
+
   /* initialize fast bit counting */
   compute_bits_in_16bits();
   initializeMask();
@@ -2249,7 +2222,7 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
       printf("ERROR: Please specify a file containing bootstrap trees via -i.\n");
       printHelpFile();
       exit(-1);
-    }  
+    }
 
   if( NOT strcmp(run_id, ""))
     {
@@ -2264,31 +2237,31 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
       exit(-1);
     }
 
-  if(threshold != 50 &&  strcmp(treeFile, "") )    
+  if(threshold != 50 && strcmp(treeFile, "") )
     {
       printf("ERROR: threshold option -c not available in combination with best-known tree.\n");
       exit(-1);
     }
 
-  All 
-    *tr = CALLOC(1,sizeof(All));  
+  All
+    *tr = CALLOC(1,sizeof(All));
   setupInfoFile();
   if  (NOT setupTree(tr, bootTrees))
     {
       PR("Something went wrong during tree initialisation. Sorry.\n");
       exit(-1);
-    }   
+    }
 
   doomRogues(tr,
-  	     bootTrees,
-  	     excludeFile,
-  	     treeFile,
-  	     mreOptimisation,
-	     threshold);
+             bootTrees,
+             excludeFile,
+             treeFile,
+             mreOptimisation,
+             threshold);
 
   freeTree(tr);
   free(mask32);
   free(infoFileName);
 
-  return 0; 
+  return 0;
 }
