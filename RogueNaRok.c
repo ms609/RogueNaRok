@@ -2160,9 +2160,9 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   int threshold = 50;
 
   const char 
-	  *excludeFile = CHAR(R_excludeFile),
-    *bootTrees = CHAR(R_bootTrees),
-    *treeFile = CHAR(R_treeFile);
+	  *excludeFile = CHAR(STRING_ELT(R_excludeFile, 0)),
+    *bootTrees = CHAR(STRING_ELT(R_bootTrees, 0)),
+    *treeFile = CHAR(STRING_ELT(R_treeFile, 0));
     
   boolean
     mreOptimisation = FALSE;
@@ -2180,9 +2180,9 @@ SEXP RogueNaRok (SEXP R_bootTrees,
 
   /* INTEGER etc. gives pointer to first element of an R vector */
 	computeSupport = *LOGICAL(R_computeSupport);
-	strcpy(run_id, CHAR(R_run_id));
+	strcpy(run_id, CHAR(STRING_ELT(R_run_id, 0)));
 	maxDropsetSize = *REAL(R_maxDropsetSize);
-	strcpy(workdir, CHAR(R_workdir));
+	strcpy(workdir, CHAR(STRING_ELT(R_workdir, 0)));
 	labelPenalty = *REAL(R_labelPenalty);
   mreOptimisation = *LOGICAL(R_mreOptimization);
   
