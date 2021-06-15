@@ -107,26 +107,26 @@ void debug_dropsetConsistencyCheck(HashTable *mergingHash)
       Dropset *ds = getCurrentValueFromHashTableIterator(htIter);
       
       if( NOT ds)
-	break;
+        break;
       
       HashTableIterator *htIter2;
       boolean hasNext2 = TRUE;
       for(htIter2 = createHashTableIterator(mergingHash); htIter2 && hasNext2 ; hasNext2 = hashTableIteratorNext(htIter2))
-	{
-	  Dropset *ds2 = getCurrentValueFromHashTableIterator(htIter2);
-	  if(ds == ds2)
-	    continue;
+        {
+          Dropset *ds2 = getCurrentValueFromHashTableIterator(htIter2);
+          if(ds == ds2)
+            continue;
 
-	  if(indexListEqual(ds->taxaToDrop, ds2->taxaToDrop))
-	    {
-	      PR("duplicate dropset: ");
-	      printIndexList(ds->taxaToDrop);
-	      PR(" and ");
-	      printIndexList(ds2->taxaToDrop);
-	      PR("\n");
-	      exit(-1);
-	    }
-	}
+          if(indexListEqual(ds->taxaToDrop, ds2->taxaToDrop))
+            {
+              PR("duplicate dropset: ");
+              printIndexList(ds->taxaToDrop);
+              PR(" and ");
+              printIndexList(ds2->taxaToDrop);
+              PR("\n");
+              exit(-1);
+            }
+        }
       free(htIter2);
     }
   free(htIter);
@@ -175,37 +175,37 @@ void debug_mergingHashSanityCheck(HashTable *mergingHash, int totalNumberOfBips)
   FOR_HASH(htIter, mergingHash)
     {
       Dropset
-	*ds = getCurrentValueFromHashTableIterator(htIter);
+        *ds = getCurrentValueFromHashTableIterator(htIter);
 
       if(NOT ds)
-	break;
+        break;
       
       BitVector
-	*bv = CALLOC(totalNumberOfBips, sizeof(BitVector));
+        *bv = CALLOC(totalNumberOfBips, sizeof(BitVector));
       
       List
-	*meIter = ds->primeEvents;
+        *meIter = ds->primeEvents;
 
       FOR_LIST(meIter)
       {
-	MergingEvent
-	  *me = meIter->value;  
-	if(me->isComplex)
-	  {
-	    IndexList *il =  me->mergingBipartitions.many; 
-	    FOR_LIST(il)
-	    {
-	      assert(NOT NTH_BIT_IS_SET(bv, il->index));
-	      FLIP_NTH_BIT(bv, il->index);
-	    }
-	  }
-	else
-	  {
-	    assert(NOT NTH_BIT_IS_SET(bv, me->mergingBipartitions.pair[0]));
-	    assert(NOT NTH_BIT_IS_SET(bv, me->mergingBipartitions.pair[1]));
-	    FLIP_NTH_BIT(bv, me->mergingBipartitions.pair[0]);
-	    FLIP_NTH_BIT(bv, me->mergingBipartitions.pair[1]);
-	  }
+        MergingEvent
+          *me = meIter->value;  
+        if(me->isComplex)
+          {
+            IndexList *il =  me->mergingBipartitions.many; 
+            FOR_LIST(il)
+            {
+              assert(NOT NTH_BIT_IS_SET(bv, il->index));
+              FLIP_NTH_BIT(bv, il->index);
+            }
+          }
+        else
+          {
+            assert(NOT NTH_BIT_IS_SET(bv, me->mergingBipartitions.pair[0]));
+            assert(NOT NTH_BIT_IS_SET(bv, me->mergingBipartitions.pair[1]));
+            FLIP_NTH_BIT(bv, me->mergingBipartitions.pair[0]);
+            FLIP_NTH_BIT(bv, me->mergingBipartitions.pair[1]);
+          }
       }
       free(bv);
     }
@@ -297,16 +297,16 @@ boolean checkForMergerAndAddEvent(boolean complement, ProfileElem *elemA, Profil
   if(dropsetTaxa)
     {
       Dropset
-	*dropset,
-	*tmp = CALLOC(1,sizeof(Dropset));
+        *dropset,
+        *tmp = CALLOC(1,sizeof(Dropset));
       tmp->taxaToDrop = dropsetTaxa;      
       
       unsigned int hashValue = 0; 
       IndexList *iter =  dropsetTaxa; 
       FOR_LIST(iter)  
       {
-	assert(iter->index < mxtips);
-	hashValue ^= randForTaxa[ iter->index ];
+        assert(iter->index < mxtips);
+        hashValue ^= randForTaxa[ iter->index ];
       }
       
 #ifdef PARALLEL
@@ -348,19 +348,19 @@ int cleanup_applyOneMergerEvent(MergingEvent *mergingEvent, Array *bipartitionsB
 
   if(mergingEvent->isComplex)
     {
-	IndexList
-	  *iterBip = mergingEvent->mergingBipartitions.many->next; 
-	FOR_LIST(iterBip)
-	{
-	  elem = GET_PROFILE_ELEM(bipartitionsById, iterBip->index);
-	  FLIP_NTH_BIT(mergingBipartitions, elem->id);
-	  resultBip->isInMLTree |= elem->isInMLTree;
-	  FOR_0_LIMIT(j,treeVectorLength)
-	    resultBip->treeVector[j] |= elem->treeVector[j]; 
-	}
-	
-	freeIndexList(mergingEvent->mergingBipartitions.many);
-	free(mergingEvent);
+        IndexList
+          *iterBip = mergingEvent->mergingBipartitions.many->next; 
+        FOR_LIST(iterBip)
+        {
+          elem = GET_PROFILE_ELEM(bipartitionsById, iterBip->index);
+          FLIP_NTH_BIT(mergingBipartitions, elem->id);
+          resultBip->isInMLTree |= elem->isInMLTree;
+          FOR_0_LIMIT(j,treeVectorLength)
+            resultBip->treeVector[j] |= elem->treeVector[j]; 
+        }
+        
+        freeIndexList(mergingEvent->mergingBipartitions.many);
+        free(mergingEvent);
     }
   else
     {      
@@ -368,7 +368,7 @@ int cleanup_applyOneMergerEvent(MergingEvent *mergingEvent, Array *bipartitionsB
       FLIP_NTH_BIT(mergingBipartitions, elem->id);      
       resultBip->isInMLTree |= elem->isInMLTree;
       FOR_0_LIMIT(j,treeVectorLength)
-	resultBip->treeVector[j] |=  elem->treeVector[j];
+        resultBip->treeVector[j] |=  elem->treeVector[j];
     }
 
   resultBip->treeVectorSupport = genericBitCount(resultBip->treeVector, treeVectorLength);
@@ -388,9 +388,9 @@ int getSupportOfMRETreeHelper(Array *bipartitionProfile, Dropset *dropset)
   if(dropset)
     {
       IndexList
-	*iter = dropset->taxaToDrop;
-      FOR_LIST(iter)	
-	FLIP_NTH_BIT(taxaDroppedHere, iter->index);  
+        *iter = dropset->taxaToDrop;
+      FOR_LIST(iter)        
+        FLIP_NTH_BIT(taxaDroppedHere, iter->index);  
     }
 
   qsort(bipartitionProfile->arrayTable, bipartitionProfile->length, sizeof(ProfileElem**), sortBySupport);
@@ -413,22 +413,22 @@ int getSupportOfMRETreeHelper(Array *bipartitionProfile, Dropset *dropset)
   for(; i < bipartitionProfile->length && mreBips->length < mxtips-3; ++i)
     {
       ProfileElem
-	*elemA = GET_PROFILE_ELEM(bipartitionProfile, i);
+        *elemA = GET_PROFILE_ELEM(bipartitionProfile, i);
       boolean compatibleP = TRUE; 
 
       FOR_0_LIMIT(j,mreBips->length)
-	{
-	  ProfileElem
-	    *elemB  = GET_PROFILE_ELEM(mreBips,j);
+        {
+          ProfileElem
+            *elemB  = GET_PROFILE_ELEM(mreBips,j);
 
-	  compatibleP &= isCompatible(elemA, elemB, taxaDroppedHere); 
+          compatibleP &= isCompatible(elemA, elemB, taxaDroppedHere); 
 
-	  if( NOT compatibleP)
-	    break;
-	}
+          if( NOT compatibleP)
+            break;
+        }
 
       if(compatibleP)
-	addElemToArray(GET_PROFILE_ELEM(bipartitionProfile,i), mreBips);
+        addElemToArray(GET_PROFILE_ELEM(bipartitionProfile,i), mreBips);
     }
 
   if(computeSupport)
@@ -456,21 +456,21 @@ void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
   if(me->isComplex)
     {
       IndexList
-	*iI = me->mergingBipartitions.many;  
+        *iI = me->mergingBipartitions.many;  
       
       int bestPossible = 0; 
       FOR_LIST(iI)
-      {	
-	ProfileElem
-	  *elem = GET_PROFILE_ELEM(bipartitionsById, iI->index);
-	bestPossible += elem->treeVectorSupport;
-	isInMLTree |= elem->isInMLTree;
+      {        
+        ProfileElem
+          *elem = GET_PROFILE_ELEM(bipartitionsById, iI->index);
+        bestPossible += elem->treeVectorSupport;
+        isInMLTree |= elem->isInMLTree;
       }
 
       if( rogueMode == VANILLA_CONSENSUS_OPT && bestPossible < thresh)
-	return ; 
+        return ; 
       if( rogueMode == ML_TREE_OPT && NOT isInMLTree)
-	return ;
+        return ;
 
       tmp = CALLOC(treeVectorLength, sizeof(BitVector));
       
@@ -478,29 +478,29 @@ void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
       iI = me->mergingBipartitions.many;  
       FOR_LIST(iI)
       {
-	ProfileElem
-	  *elem = GET_PROFILE_ELEM(bipartitionsById, iI->index);
+        ProfileElem
+          *elem = GET_PROFILE_ELEM(bipartitionsById, iI->index);
     
-	FOR_0_LIMIT(i, treeVectorLength)
-	  tmp[i] |= elem->treeVector[i];
+        FOR_0_LIMIT(i, treeVectorLength)
+          tmp[i] |= elem->treeVector[i];
       }
     }
   else
     {
       ProfileElem
-	*elemA = GET_PROFILE_ELEM(bipartitionsById, me->mergingBipartitions.pair[0]),
-	*elemB = GET_PROFILE_ELEM(bipartitionsById, me->mergingBipartitions.pair[1]);      
+        *elemA = GET_PROFILE_ELEM(bipartitionsById, me->mergingBipartitions.pair[0]),
+        *elemB = GET_PROFILE_ELEM(bipartitionsById, me->mergingBipartitions.pair[1]);      
    
       if(rogueMode == VANILLA_CONSENSUS_OPT && elemA->treeVectorSupport + elemB->treeVectorSupport < thresh)
-      	return;
+              return;
       
       isInMLTree = elemA->isInMLTree || elemB->isInMLTree;       
       if(rogueMode == ML_TREE_OPT && NOT isInMLTree)
-	return; 
+        return; 
       
       tmp = CALLOC(treeVectorLength, sizeof(BitVector));      
       FOR_0_LIMIT(i,treeVectorLength)
-	tmp[i] = elemA->treeVector[i] | elemB->treeVector[i];
+        tmp[i] = elemA->treeVector[i] | elemB->treeVector[i];
     }
 
   int newSup = genericBitCount(tmp, treeVectorLength);
@@ -508,20 +508,20 @@ void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
     {
     case MRE_CONSENSUS_OPT:
       {
-	me->supportGained = computeSupport ? newSup : 1; 
-	break; 
+        me->supportGained = computeSupport ? newSup : 1; 
+        break; 
       }
     case VANILLA_CONSENSUS_OPT: 
       {
-	if(rogueMode == VANILLA_CONSENSUS_OPT  && newSup > thresh)
-	  me->supportGained = computeSupport ? newSup : 1 ;
-	break; 
+        if(rogueMode == VANILLA_CONSENSUS_OPT  && newSup > thresh)
+          me->supportGained = computeSupport ? newSup : 1 ;
+        break; 
       }
     case ML_TREE_OPT: 
       {
-	if(isInMLTree )
-	  me->supportGained = computeSupport ? newSup : 1 ;
-	break; 
+        if(isInMLTree )
+          me->supportGained = computeSupport ? newSup : 1 ;
+        break; 
       }
     default : 
       assert(0);
@@ -538,16 +538,16 @@ int getSupportOfMRETree(Array *bipartitionsById,  Dropset *dropset)
   if(dropset)
     {
       if(maxDropsetSize == 1)
-	mergingEvents =  dropset->ownPrimeE; 
+        mergingEvents =  dropset->ownPrimeE; 
       else
-	{
-	  List *iter = dropset->acquiredPrimeE ; 
-	  FOR_LIST(iter)
-	    APPEND(iter->value, mergingEvents);
-	  iter = dropset->complexEvents; 
-	  FOR_LIST(iter)
-	    APPEND(iter->value, mergingEvents);
-	}
+        {
+          List *iter = dropset->acquiredPrimeE ; 
+          FOR_LIST(iter)
+            APPEND(iter->value, mergingEvents);
+          iter = dropset->complexEvents; 
+          FOR_LIST(iter)
+            APPEND(iter->value, mergingEvents);
+        }
     }
   int
     i;
@@ -577,32 +577,32 @@ int getSupportOfMRETree(Array *bipartitionsById,  Dropset *dropset)
     MergingEvent *me = meIter->value; 
     if(me->isComplex)
       {
-	IndexList *iter = me->mergingBipartitions.many; 
-	FOR_LIST(iter)	  
-	  GET_PROFILE_ELEM(tmpArray, iter->index) = NULL; 
-	
-	/* create emerged bips in other array */
-	ProfileElem *elem = CALLOC(1,sizeof(ProfileElem)); 
-	getSupportGainedThreshold(me,bipartitionsById);
-	elem->treeVectorSupport = me->supportGained; 
-	elem->bitVector = GET_PROFILE_ELEM(bipartitionsById, me->mergingBipartitions.many->index)->bitVector;
-	GET_PROFILE_ELEM(emergedBips, emergedBips->length) = elem;
-	emergedBips->length++;
+        IndexList *iter = me->mergingBipartitions.many; 
+        FOR_LIST(iter)          
+          GET_PROFILE_ELEM(tmpArray, iter->index) = NULL; 
+        
+        /* create emerged bips in other array */
+        ProfileElem *elem = CALLOC(1,sizeof(ProfileElem)); 
+        getSupportGainedThreshold(me,bipartitionsById);
+        elem->treeVectorSupport = me->supportGained; 
+        elem->bitVector = GET_PROFILE_ELEM(bipartitionsById, me->mergingBipartitions.many->index)->bitVector;
+        GET_PROFILE_ELEM(emergedBips, emergedBips->length) = elem;
+        emergedBips->length++;
       }
     else
       {
-	int a = me->mergingBipartitions.pair[0],
-	  b = me->mergingBipartitions.pair[1];
-	GET_PROFILE_ELEM(tmpArray, a) = NULL; 
-	GET_PROFILE_ELEM(tmpArray, b) = NULL; 
+        int a = me->mergingBipartitions.pair[0],
+          b = me->mergingBipartitions.pair[1];
+        GET_PROFILE_ELEM(tmpArray, a) = NULL; 
+        GET_PROFILE_ELEM(tmpArray, b) = NULL; 
 
-	/* create emerged bips in other array */
-	ProfileElem *elem = CALLOC(1,sizeof(ProfileElem)); 
-	getSupportGainedThreshold(me,bipartitionsById);
-	elem->treeVectorSupport = me->supportGained; 
-	elem->bitVector = GET_PROFILE_ELEM(bipartitionsById, a)->bitVector;
-	GET_PROFILE_ELEM(emergedBips, emergedBips->length) = elem;
-	emergedBips->length++;
+        /* create emerged bips in other array */
+        ProfileElem *elem = CALLOC(1,sizeof(ProfileElem)); 
+        getSupportGainedThreshold(me,bipartitionsById);
+        elem->treeVectorSupport = me->supportGained; 
+        elem->bitVector = GET_PROFILE_ELEM(bipartitionsById, a)->bitVector;
+        GET_PROFILE_ELEM(emergedBips, emergedBips->length) = elem;
+        emergedBips->length++;
       }
   }
 
@@ -610,16 +610,16 @@ int getSupportOfMRETree(Array *bipartitionsById,  Dropset *dropset)
   FOR_0_LIMIT(i, tmpArray->length)
     {
       if( GET_PROFILE_ELEM(tmpArray,i) ) 
-	{
-	  ProfileElem *elem = GET_PROFILE_ELEM(tmpArray,i);
-	  int remainingBits = elem->numberOfBitsSet; 
-	  IndexList *iter = dropset->taxaToDrop; 
-	  FOR_LIST(iter)
-	    if(NTH_BIT_IS_SET(elem->bitVector,  iter->index))
-	      remainingBits--;	  
-	  if(remainingBits > 1) 
-	    addElemToArray(elem, finalArray); 
-	}
+        {
+          ProfileElem *elem = GET_PROFILE_ELEM(tmpArray,i);
+          int remainingBits = elem->numberOfBitsSet; 
+          IndexList *iter = dropset->taxaToDrop; 
+          FOR_LIST(iter)
+            if(NTH_BIT_IS_SET(elem->bitVector,  iter->index))
+              remainingBits--;          
+          if(remainingBits > 1) 
+            addElemToArray(elem, finalArray); 
+        }
     }
 
   FOR_0_LIMIT(i, emergedBips->length)
@@ -661,20 +661,20 @@ void removeMergedBipartitions(Array *bipartitionsById, Array *bipartitionProfile
   FOR_0_LIMIT(i,bipartitionProfile->length)
     {
       ProfileElem
-	*elem = GET_PROFILE_ELEM(bipartitionProfile,i);
+        *elem = GET_PROFILE_ELEM(bipartitionProfile,i);
 
       if( NOT elem )
-	continue;
+        continue;
 
       if(NTH_BIT_IS_SET(mergingBipartitions,elem->id)) 
-	{
-	  GET_PROFILE_ELEM(bipartitionProfile, i) = NULL;
-	  GET_PROFILE_ELEM(bipartitionsById, elem->id) = NULL;
-	  freeProfileElem(elem);
+        {
+          GET_PROFILE_ELEM(bipartitionProfile, i) = NULL;
+          GET_PROFILE_ELEM(bipartitionsById, elem->id) = NULL;
+          freeProfileElem(elem);
 #ifdef PRINT_VERY_VERBOSE
-	  PR("CLEAN UP: removing %d from bip profile because of merger\n", elem->id);
+          PR("CLEAN UP: removing %d from bip profile because of merger\n", elem->id);
 #endif
-	}
+        }
     }
 }
 
@@ -705,11 +705,11 @@ boolean checkValidityOfEvent(BitVector *obsoleteBips, List *elem)
   if(me->isComplex)
     {      
       IndexList
-	*iter  = me->mergingBipartitions.many;      
+        *iter  = me->mergingBipartitions.many;      
       FOR_LIST(iter)
-	killP |= NTH_BIT_IS_SET(obsoleteBips, iter->index);       
+        killP |= NTH_BIT_IS_SET(obsoleteBips, iter->index);       
       if(killP)
-      	freeIndexList(me->mergingBipartitions.many);
+              freeIndexList(me->mergingBipartitions.many);
     }
   else
     killP = NTH_BIT_IS_SET(obsoleteBips, me->mergingBipartitions.pair[0]) || NTH_BIT_IS_SET(obsoleteBips, me->mergingBipartitions.pair[1]) ;   
@@ -749,23 +749,23 @@ void printDropset(Dropset *dropset)
       lIter = dropset->combinedEvents;
       FOR_LIST(lIter)
       {
-	if(((MergingEvent*)lIter->value)->isComplex)
-	  {	
-	    isFirst = TRUE;	
-	    PR("{ ");
-	    iter = ((MergingEvent*)lIter->value)->mergingBipartitions.many;	
-	    FOR_LIST(iter)
-	    {
-	      PR(isFirst ? "%d" : ",%d" ,iter->index);
-	      isFirst = FALSE;
-	    }
-	    PR(" },");
-	  }
-	else
-	  {
-	    MergingBipartitions mb = ((MergingEvent*)lIter->value)->mergingBipartitions ; 
-	    PR("[ %d,%d ],", mb.pair[0], mb.pair[1]); 
-	  }
+        if(((MergingEvent*)lIter->value)->isComplex)
+          {        
+            isFirst = TRUE;        
+            PR("{ ");
+            iter = ((MergingEvent*)lIter->value)->mergingBipartitions.many;        
+            FOR_LIST(iter)
+            {
+              PR(isFirst ? "%d" : ",%d" ,iter->index);
+              isFirst = FALSE;
+            }
+            PR(" },");
+          }
+        else
+          {
+            MergingBipartitions mb = ((MergingEvent*)lIter->value)->mergingBipartitions ; 
+            PR("[ %d,%d ],", mb.pair[0], mb.pair[1]); 
+          }
       }
       PR("\n");
     }
@@ -786,7 +786,7 @@ void printMergingHash(HashTable *mergingHash)
   FOR_HASH(htIter, mergingHash)
     {
       Dropset
-	*dropset = getCurrentValueFromHashTableIterator(htIter); 
+        *dropset = getCurrentValueFromHashTableIterator(htIter); 
       printDropset(dropset);
     }
 }
@@ -803,38 +803,38 @@ void debug_assureCleanStructure(HashTable *hashtable, BitVector *mergingBipartit
       Dropset *ds = (Dropset*)getCurrentValueFromHashTableIterator(htIter); 
 
       if( NOT ds)
-	break;
+        break;
 
       List *meIter = ds->primeEvents;
       FOR_LIST(meIter)
       {
-	MergingEvent *me = meIter->value; 
-	if(me->isComplex)
-	  {	    
-	    IndexList *iter = me->mergingBipartitions.many;
-	    FOR_LIST(iter)
-	      if(NTH_BIT_IS_SET(mergingBipartitions, iter->index))
-		{
-		  PR("%d from merging bipartitions still present. \n", iter->index);
-		  printMergingHash(hashtable);
-		  exit(-1);
-		}
-	  }
-	else
-	  {
-	    if(NTH_BIT_IS_SET(mergingBipartitions, me->mergingBipartitions.pair[0]) )
-	      {
-		PR("%d from merging bipartitions still present. \n", me->mergingBipartitions.pair[0]);
-		printMergingHash(hashtable);
-		exit(-1);
-	      }
-	    if(NTH_BIT_IS_SET(mergingBipartitions, me->mergingBipartitions.pair[1]))
-	      {
-		PR("%d from merging bipartitions still present. \n", me->mergingBipartitions.pair[1]);
-		printMergingHash(hashtable);
-		exit(-1);
-	      }
-	  }
+        MergingEvent *me = meIter->value; 
+        if(me->isComplex)
+          {            
+            IndexList *iter = me->mergingBipartitions.many;
+            FOR_LIST(iter)
+              if(NTH_BIT_IS_SET(mergingBipartitions, iter->index))
+                {
+                  PR("%d from merging bipartitions still present. \n", iter->index);
+                  printMergingHash(hashtable);
+                  exit(-1);
+                }
+          }
+        else
+          {
+            if(NTH_BIT_IS_SET(mergingBipartitions, me->mergingBipartitions.pair[0]) )
+              {
+                PR("%d from merging bipartitions still present. \n", me->mergingBipartitions.pair[0]);
+                printMergingHash(hashtable);
+                exit(-1);
+              }
+            if(NTH_BIT_IS_SET(mergingBipartitions, me->mergingBipartitions.pair[1]))
+              {
+                PR("%d from merging bipartitions still present. \n", me->mergingBipartitions.pair[1]);
+                printMergingHash(hashtable);
+                exit(-1);
+              }
+          }
       }
     }
   free(htIter);
@@ -858,19 +858,19 @@ void cleanup_mergingEvents(HashTable *mergingHash, BitVector *mergingBipartition
   FOR_HASH(htIter, mergingHash)
     {
       Dropset
-	*dropset = getCurrentValueFromHashTableIterator(htIter);
+        *dropset = getCurrentValueFromHashTableIterator(htIter);
     
       /* always remove combined events */
       List *iter = dropset->complexEvents;
       FOR_LIST(iter)
       {
-	MergingEvent *me = iter->value; 
-	assert(me);
-	if(me && me->isComplex)
-	  {
-	    freeIndexList(me->mergingBipartitions.many);
-	    free(me);
-	  }	
+        MergingEvent *me = iter->value; 
+        assert(me);
+        if(me && me->isComplex)
+          {
+            freeIndexList(me->mergingBipartitions.many);
+            free(me);
+          }        
       }
       freeListFlat(dropset->complexEvents);
       
@@ -883,22 +883,22 @@ void cleanup_mergingEvents(HashTable *mergingHash, BitVector *mergingBipartition
   FOR_HASH_2(htIter, mergingHash)
     {
       Dropset
-	*dropset = getCurrentValueFromHashTableIterator(htIter);
+        *dropset = getCurrentValueFromHashTableIterator(htIter);
 
       assert(dropset);
 
       /* prime events */
       List 
-	*iter = dropset->ownPrimeE, 
-	*start = NULL; 
+        *iter = dropset->ownPrimeE, 
+        *start = NULL; 
       while(iter)
-	{
-	  List *next = iter->next;
-	  if( checkValidityOfEvent(mergingBipartitions, iter) ) 
-	    APPEND(iter->value, start); 
-	  free(iter);
-	  iter = next; 
-	}
+        {
+          List *next = iter->next;
+          if( checkValidityOfEvent(mergingBipartitions, iter) ) 
+            APPEND(iter->value, start); 
+          free(iter);
+          iter = next; 
+        }
       dropset->ownPrimeE = start; 
     }
   free(htIter);  
@@ -933,19 +933,19 @@ void unifyBipartitionRepresentation(Array *bipartitionArray,  BitVector *dropped
   FOR_0_LIMIT(i,bipartitionArray->length)
     {
       ProfileElem
-	*elem = GET_PROFILE_ELEM(bipartitionArray,i);
+        *elem = GET_PROFILE_ELEM(bipartitionArray,i);
 
       if( elem
-	  && elem->numberOfBitsSet > remainingTaxa / 2)	
-	{
+          && elem->numberOfBitsSet > remainingTaxa / 2)        
+        {
 
 #ifdef PRINT_VERY_VERBOSE
-	  PR("%d (%d bits set), ", elem->id, elem->numberOfBitsSet);
+          PR("%d (%d bits set), ", elem->id, elem->numberOfBitsSet);
 #endif
-	  FOR_0_LIMIT(j,bvLen)
-	    elem->bitVector[j] = ~(elem->bitVector[j] | paddingBits[j] |  droppedTaxa[j]);
-	  elem->numberOfBitsSet = remainingTaxa - elem->numberOfBitsSet;
-	}
+          FOR_0_LIMIT(j,bvLen)
+            elem->bitVector[j] = ~(elem->bitVector[j] | paddingBits[j] |  droppedTaxa[j]);
+          elem->numberOfBitsSet = remainingTaxa - elem->numberOfBitsSet;
+        }
     }
 #ifdef PRINT_VERY_VERBOSE
   PR("\n");
@@ -960,12 +960,12 @@ void printBipartitionProfile(Array *bipartitionProfile)
     {
       ProfileElem *elem = GET_PROFILE_ELEM(bipartitionProfile, i);      
       if(elem)
-	{
-	  PR("%d (%d):\t\t", elem->id, elem->numberOfBitsSet);
-	  printBitVector(elem->bitVector, GET_BITVECTOR_LENGTH(mxtips));
-	}
+        {
+          PR("%d (%d):\t\t", elem->id, elem->numberOfBitsSet);
+          printBitVector(elem->bitVector, GET_BITVECTOR_LENGTH(mxtips));
+        }
       else
-	break;
+        break;
       PR("\n");
     }
 }
@@ -979,7 +979,7 @@ int getNumberOfBipsPresent(Array *bipartitionArray)
   FOR_0_LIMIT(i, bipartitionArray->length)
     {
       if(GET_PROFILE_ELEM(bipartitionArray,i))
-	result++;
+        result++;
     }
 
   return result; 
@@ -997,24 +997,24 @@ int getInitScore(Array *bipartitionProfile)
   FOR_0_LIMIT(i,bipartitionProfile->length)
     {
       ProfileElem
-	*elem = GET_PROFILE_ELEM(bipartitionProfile,i);
+        *elem = GET_PROFILE_ELEM(bipartitionProfile,i);
 
       switch(rogueMode)
-	{
-	case VANILLA_CONSENSUS_OPT:
-	  if(elem->treeVectorSupport > thresh)
-	    score += computeSupport ? elem->treeVectorSupport : 1 ; 
-	  break;
+        {
+        case VANILLA_CONSENSUS_OPT:
+          if(elem->treeVectorSupport > thresh)
+            score += computeSupport ? elem->treeVectorSupport : 1 ; 
+          break;
 
-	case ML_TREE_OPT:
-	  if(elem->isInMLTree)
-	    score += computeSupport ? elem->treeVectorSupport : 1;
-	  break;
+        case ML_TREE_OPT:
+          if(elem->isInMLTree)
+            score += computeSupport ? elem->treeVectorSupport : 1;
+          break;
 
-	case MRE_CONSENSUS_OPT:
-	default:
-	  assert(0);
-	}
+        case MRE_CONSENSUS_OPT:
+        default:
+          assert(0);
+        }
     }
 
   return score; 
@@ -1061,8 +1061,8 @@ void fprintRogueNames(All *tr, FILE *file, IndexList *list)
   {
     if(isFirst)
       {
-	fprintf(file, "%s", tr->nameList[list->index+1]);
-	isFirst = FALSE;
+        fprintf(file, "%s", tr->nameList[list->index+1]);
+        isFirst = FALSE;
       }
     else
       fprintf(file, ",%s", tr->nameList[list->index+1]); 
@@ -1083,8 +1083,8 @@ void printRogueInformationToFile( All *tr, FILE *rogueOutput, int bestCumEver, i
       fprintf(rogueOutput, "\t");
       fprintRogueNames(tr, rogueOutput, dropsetInRound[i]->taxaToDrop);
       fprintf(rogueOutput, "\t%f\t%f\n", 
-	      (double)(cumScores[i]  - cumScores[i-1] )/ (double)(computeSupport ? tr->numberOfTrees : 1.0),
-	      (double)cumScores[i] / (double)((computeSupport ? numberOfTrees : 1 ) * (mxtips-3)) ); 
+              (double)(cumScores[i]  - cumScores[i-1] )/ (double)(computeSupport ? tr->numberOfTrees : 1.0),
+              (double)cumScores[i] / (double)((computeSupport ? numberOfTrees : 1 ) * (mxtips-3)) ); 
       reached = bestCumEver == cumScores[i];
       ++i;
     }
@@ -1092,8 +1092,8 @@ void printRogueInformationToFile( All *tr, FILE *rogueOutput, int bestCumEver, i
   FOR_0_LIMIT(j,mxtips)
     if(NOT NTH_BIT_IS_SET(neglectThose,j))
       {
-	fprintf(rogueOutput, "%d\t%d\t%s\t%s\t%s\n", i, j, tr->nameList[j+1], "NA", "NA");
-	i++;
+        fprintf(rogueOutput, "%d\t%d\t%s\t%s\t%s\n", i, j, tr->nameList[j+1], "NA", "NA");
+        i++;
       }
 }
 
@@ -1110,34 +1110,34 @@ void findCandidatesForBip(HashTable *mergingHash, ProfileElem *elemA, boolean fi
   if(firstMerge)
     {
       if(NOT compMerge && maxDropsetSize == 1)
-	indexInBitSortedArray = indexByNumberBits[elemA->numberOfBitsSet +1]; 
-      else	
-	indexInBitSortedArray = indexByNumberBits[elemA->numberOfBitsSet];
+        indexInBitSortedArray = indexByNumberBits[elemA->numberOfBitsSet +1]; 
+      else        
+        indexInBitSortedArray = indexByNumberBits[elemA->numberOfBitsSet];
     }
   else
     indexInBitSortedArray = 
       elemA->numberOfBitsSet - maxDropsetSize < 0 ?
       indexByNumberBits[0]
       : indexByNumberBits[elemA->numberOfBitsSet-maxDropsetSize];
-	
+        
   for( ;
        indexInBitSortedArray < bipartitionProfile->length
-	 && (elemB = GET_PROFILE_ELEM(bipartitionProfile,indexInBitSortedArray))
-	 && elemB->numberOfBitsSet - elemA->numberOfBitsSet <= maxDropsetSize ;
+         && (elemB = GET_PROFILE_ELEM(bipartitionProfile,indexInBitSortedArray))
+         && elemB->numberOfBitsSet - elemA->numberOfBitsSet <= maxDropsetSize ;
        indexInBitSortedArray++)
     { 
       if(
-	 maxDropsetSize == 1 && 
-	 NOT compMerge && 
-	 elemA->numberOfBitsSet == elemB->numberOfBitsSet)
-	continue;
+         maxDropsetSize == 1 && 
+         NOT compMerge && 
+         elemA->numberOfBitsSet == elemB->numberOfBitsSet)
+        continue;
 
       boolean foundOne = FALSE;
       if(compMerge)
-	foundOne = checkForMergerAndAddEvent(TRUE,elemA, elemB, mergingHash); 
+        foundOne = checkForMergerAndAddEvent(TRUE,elemA, elemB, mergingHash); 
       
       if(NOT foundOne || bothDropsetsRelevant(elemA->numberOfBitsSet))
-	checkForMergerAndAddEvent(FALSE, elemA, elemB, mergingHash);	    
+        checkForMergerAndAddEvent(FALSE, elemA, elemB, mergingHash);            
     }
 }
 
@@ -1175,15 +1175,15 @@ void combineEventsForOneDropset(Array *allDropsets, Dropset *refDropset, Array *
     {      
       Dropset *currentDropset = GET_DROPSET_ELEM(allDropsets, i);
       if( isSubsetOf(currentDropset->taxaToDrop, refDropset->taxaToDrop) )
-	{
-	  List
-	    *iter = currentDropset->ownPrimeE; 
-	  FOR_LIST(iter)
-	  {
-	    APPEND(iter->value, allEventsUncombined);
-	    eventCntr++;
-	  }
-	}
+        {
+          List
+            *iter = currentDropset->ownPrimeE; 
+          FOR_LIST(iter)
+          {
+            APPEND(iter->value, allEventsUncombined);
+            eventCntr++;
+          }
+        }
     }
 
   /* transform the edges into nodes */
@@ -1201,20 +1201,20 @@ void combineEventsForOneDropset(Array *allDropsets, Dropset *refDropset, Array *
       APPEND_INT(b,found->edges); 
     else
       {
-	Node *node = CALLOC(1,sizeof(Node));
-	node->id = a; 
-	APPEND_INT(b,node->edges);
-	insertIntoHashTable(allNodes, node, a);
+        Node *node = CALLOC(1,sizeof(Node));
+        node->id = a; 
+        APPEND_INT(b,node->edges);
+        insertIntoHashTable(allNodes, node, a);
       }
 
     if( ( found = searchHashTableWithInt(allNodes, b) ) )
       APPEND_INT(a,found->edges); 
     else
       {
-	Node *node = CALLOC(1,sizeof(Node));
-	node->id = b; 
-	APPEND_INT(a,node->edges);
-	insertIntoHashTable(allNodes, node, b);
+        Node *node = CALLOC(1,sizeof(Node));
+        node->id = b; 
+        APPEND_INT(a,node->edges);
+        insertIntoHashTable(allNodes, node, b);
       }
   }
 
@@ -1231,21 +1231,21 @@ void combineEventsForOneDropset(Array *allDropsets, Dropset *refDropset, Array *
     if(NOT foundA->edges->next
        && NOT foundB->edges->next) 
       {
-	assert(foundA->edges->index == foundB->id ); 
-	assert(foundB->edges->index == foundA->id ); 
-	APPEND(me, refDropset->acquiredPrimeE); 
+        assert(foundA->edges->index == foundB->id ); 
+        assert(foundB->edges->index == foundA->id ); 
+        APPEND(me, refDropset->acquiredPrimeE); 
       }
     else
-      {	
-	IndexList
-	  *component = findAnIndependentComponent(allNodes,foundA);
-	if( component)
-	  {
-	    MergingEvent *complexMe  = CALLOC(1,sizeof(MergingEvent));
-	    complexMe->mergingBipartitions.many = component; 
-	    complexMe->isComplex = TRUE;
-	    APPEND(complexMe,refDropset->complexEvents);
-	  }
+      {        
+        IndexList
+          *component = findAnIndependentComponent(allNodes,foundA);
+        if( component)
+          {
+            MergingEvent *complexMe  = CALLOC(1,sizeof(MergingEvent));
+            complexMe->mergingBipartitions.many = component; 
+            complexMe->isComplex = TRUE;
+            APPEND(complexMe,refDropset->complexEvents);
+          }
       }
   }
   
@@ -1300,24 +1300,24 @@ void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
       
       FOR_LIST(iI)
       {
-	elemA = GET_PROFILE_ELEM(bipartitionsById, iI->index);
-	switch (rogueMode)
-	{
-	case VANILLA_CONSENSUS_OPT : 
-	  {
-	    if(elemA->treeVectorSupport > thresh)
-	      me->supportLost += computeSupport ? elemA->treeVectorSupport : 1; 
-	    break ;
-	  }
-	case ML_TREE_OPT: 
-	  {
-	    if(elemA->isInMLTree)
-	      me->supportLost += computeSupport ? elemA->treeVectorSupport : 1  ; 
-	    break; 
-	  }
-	default : 
-	  assert(0);
-	}
+        elemA = GET_PROFILE_ELEM(bipartitionsById, iI->index);
+        switch (rogueMode)
+        {
+        case VANILLA_CONSENSUS_OPT : 
+          {
+            if(elemA->treeVectorSupport > thresh)
+              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1; 
+            break ;
+          }
+        case ML_TREE_OPT: 
+          {
+            if(elemA->isInMLTree)
+              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1  ; 
+            break; 
+          }
+        default : 
+          assert(0);
+        }
       }
     }
   else
@@ -1326,24 +1326,24 @@ void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
       elemB = GET_PROFILE_ELEM(bipartitionsById, me->mergingBipartitions.pair[1]);
       
       switch(rogueMode)
-	{
-	case MRE_CONSENSUS_OPT: 
-	case VANILLA_CONSENSUS_OPT: 
-	  {
-	    if(elemA->treeVectorSupport > thresh)
-	      me->supportLost += computeSupport ? elemA->treeVectorSupport : 1 ;
-	    if(elemB->treeVectorSupport > thresh)
-	      me->supportLost += computeSupport ? elemB->treeVectorSupport : 1;
-	    break; 
-	  }
-	case ML_TREE_OPT:
-	  {
-	    if(elemA->isInMLTree)
-	      me->supportLost += computeSupport ? elemA->treeVectorSupport : 1 ; 
-	    if(elemB->isInMLTree)
-	      me->supportLost += computeSupport ? elemB->treeVectorSupport : 1 ; 
-	  }
-	}
+        {
+        case MRE_CONSENSUS_OPT: 
+        case VANILLA_CONSENSUS_OPT: 
+          {
+            if(elemA->treeVectorSupport > thresh)
+              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1 ;
+            if(elemB->treeVectorSupport > thresh)
+              me->supportLost += computeSupport ? elemB->treeVectorSupport : 1;
+            break; 
+          }
+        case ML_TREE_OPT:
+          {
+            if(elemA->isInMLTree)
+              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1 ; 
+            if(elemB->isInMLTree)
+              me->supportLost += computeSupport ? elemB->treeVectorSupport : 1 ; 
+          }
+        }
     }
 }
 
@@ -1361,10 +1361,10 @@ void evaluateDropset(HashTable *mergingHash, Dropset *dropset,Array *bipartition
     {
       List *otherIter = dropset->acquiredPrimeE; 
       FOR_LIST(otherIter)
-	APPEND(otherIter->value, elemsToCheck);
+        APPEND(otherIter->value, elemsToCheck);
       otherIter = dropset->complexEvents;
       FOR_LIST(otherIter)
-	APPEND(otherIter->value, elemsToCheck);
+        APPEND(otherIter->value, elemsToCheck);
       allElems = elemsToCheck; 
     }
 
@@ -1377,40 +1377,40 @@ void evaluateDropset(HashTable *mergingHash, Dropset *dropset,Array *bipartition
     
     if(NOT me->computed)
       {
-	getLostSupportThreshold(me, bipartitionsById);
-	getSupportGainedThreshold(me, bipartitionsById);
-	me->computed = TRUE; 
+        getLostSupportThreshold(me, bipartitionsById);
+        getSupportGainedThreshold(me, bipartitionsById);
+        me->computed = TRUE; 
       }
     
     result -= me->supportLost;
     if(  me->supportGained
-	 &&  NOT mergedBipVanishes(me, bipartitionsById, dropset->taxaToDrop) )
+         &&  NOT mergedBipVanishes(me, bipartitionsById, dropset->taxaToDrop) )
       result += me->supportGained;   
     
     if(me->isComplex)
       {
-	IndexList *iI =  me->mergingBipartitions.many ;	
-	FOR_LIST(iI)
-	{
-	  assert(NOT NTH_BIT_IS_SET(bipsSeen, iI->index));
-	  if(NTH_BIT_IS_SET(bipsSeen, iI->index))
-	    {
-	      PR("problem:");
-	      printIndexList(me->mergingBipartitions.many);
-	      PR("at ");
-	      printIndexList(dropset->taxaToDrop);		
-	      PR("\n");
-	      exit(0);
-	    }
-	  FLIP_NTH_BIT(bipsSeen, iI->index);	
-	}
+        IndexList *iI =  me->mergingBipartitions.many ;        
+        FOR_LIST(iI)
+        {
+          assert(NOT NTH_BIT_IS_SET(bipsSeen, iI->index));
+          if(NTH_BIT_IS_SET(bipsSeen, iI->index))
+            {
+              PR("problem:");
+              printIndexList(me->mergingBipartitions.many);
+              PR("at ");
+              printIndexList(dropset->taxaToDrop);                
+              PR("\n");
+              exit(0);
+            }
+          FLIP_NTH_BIT(bipsSeen, iI->index);        
+        }
       }
     else
       {
-	assert( NOT NTH_BIT_IS_SET(bipsSeen, me->mergingBipartitions.pair[0]));
-	assert( NOT NTH_BIT_IS_SET(bipsSeen, me->mergingBipartitions.pair[1]));
-	FLIP_NTH_BIT(bipsSeen,me->mergingBipartitions.pair[0]);
-	FLIP_NTH_BIT(bipsSeen,me->mergingBipartitions.pair[1]);
+        assert( NOT NTH_BIT_IS_SET(bipsSeen, me->mergingBipartitions.pair[0]));
+        assert( NOT NTH_BIT_IS_SET(bipsSeen, me->mergingBipartitions.pair[1]));
+        FLIP_NTH_BIT(bipsSeen,me->mergingBipartitions.pair[0]);
+        FLIP_NTH_BIT(bipsSeen,me->mergingBipartitions.pair[1]);
       }
   }
   freeListFlat(allElems);
@@ -1425,23 +1425,23 @@ void evaluateDropset(HashTable *mergingHash, Dropset *dropset,Array *bipartition
     switch(rogueMode)
       {
       case VANILLA_CONSENSUS_OPT :
-	{
-	  if(elem->treeVectorSupport > thresh
-	     && NOT NTH_BIT_IS_SET(bipsSeen, elem->id)
-	     && bipartitionVanishesP(elem,dropset))
-	    result -= computeSupport ? elem->treeVectorSupport : 1;
-	  break; 	
-	}
+        {
+          if(elem->treeVectorSupport > thresh
+             && NOT NTH_BIT_IS_SET(bipsSeen, elem->id)
+             && bipartitionVanishesP(elem,dropset))
+            result -= computeSupport ? elem->treeVectorSupport : 1;
+          break;         
+        }
       case ML_TREE_OPT: 
-	{
-	  if(elem->isInMLTree 
-	     && NOT NTH_BIT_IS_SET(bipsSeen, elem->id)
-	     && bipartitionVanishesP(elem,dropset))
-	    result -= computeSupport ? elem->treeVectorSupport : 1; 
-	  break; 
-	}
+        {
+          if(elem->isInMLTree 
+             && NOT NTH_BIT_IS_SET(bipsSeen, elem->id)
+             && bipartitionVanishesP(elem,dropset))
+            result -= computeSupport ? elem->treeVectorSupport : 1; 
+          break; 
+        }
       default: 
-	assert(0);
+        assert(0);
       }
   }  
 
@@ -1460,34 +1460,34 @@ List *getConsensusBipsCanVanish(Array *bipartitionProfile)
     {
       int i; 
       FOR_0_LIMIT(i,bipartitionProfile->length)
-	{
-	  ProfileElem
-	    *elem = GET_PROFILE_ELEM(bipartitionProfile, i);
+        {
+          ProfileElem
+            *elem = GET_PROFILE_ELEM(bipartitionProfile, i);
 
-	  if(NOT elem)
-	    break;
+          if(NOT elem)
+            break;
 
-	  if(elem->numberOfBitsSet - maxDropsetSize > 1 )
-	    break;
+          if(elem->numberOfBitsSet - maxDropsetSize > 1 )
+            break;
       
-	  if(elem->treeVectorSupport > thresh)
-	    APPEND(elem,consensusBipsCanVanish);
-	}
+          if(elem->treeVectorSupport > thresh)
+            APPEND(elem,consensusBipsCanVanish);
+        }
     }
   else if(ML_TREE_OPT)
     {
       int i; 
       FOR_0_LIMIT(i,bipartitionProfile->length)
-	{
-	  ProfileElem
-	    *elem = GET_PROFILE_ELEM(bipartitionProfile, i);
+        {
+          ProfileElem
+            *elem = GET_PROFILE_ELEM(bipartitionProfile, i);
 
-	  if(NOT elem)
-	    break;
+          if(NOT elem)
+            break;
       
-	  if(elem->isInMLTree)
-	    APPEND(elem,consensusBipsCanVanish);
-	}
+          if(elem->isInMLTree)
+            APPEND(elem,consensusBipsCanVanish);
+        }
     }
 
   return consensusBipsCanVanish;
@@ -1533,11 +1533,11 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
       masterBarrier(THREAD_MRE, globalPArgs); 
 #else
       
-      FOR_0_LIMIT(i,allDropsets->length)	  
-	{
-	  Dropset *dropset =  GET_DROPSET_ELEM(allDropsets, i);
-	  dropset->improvement =  getSupportOfMRETree(bipartitionsById, dropset) - cumScore;
-	}
+      FOR_0_LIMIT(i,allDropsets->length)          
+        {
+          Dropset *dropset = GET_DROPSET_ELEM(allDropsets, i);
+          dropset->improvement = getSupportOfMRETree(bipartitionsById, dropset) - cumScore;
+        }
 #endif     
     }
   
@@ -1554,35 +1554,35 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
       masterBarrier(THREAD_EVALUATE_EVENTS, globalPArgs); 
 #else
       FOR_0_LIMIT(i, allDropsets->length)
-	{
-	  Dropset *dropset =  GET_DROPSET_ELEM(allDropsets, i);   
-	  evaluateDropset(mergingHash, dropset, bipartitionsById, consensusBipsCanVanish); 
-	}
+        {
+          Dropset *dropset =  GET_DROPSET_ELEM(allDropsets, i);   
+          evaluateDropset(mergingHash, dropset, bipartitionsById, consensusBipsCanVanish); 
+        }
 #endif
     }
   
   FOR_0_LIMIT(i,allDropsets->length)
     {      
       Dropset
-	*dropset =  GET_DROPSET_ELEM(allDropsets, i);
+        *dropset =  GET_DROPSET_ELEM(allDropsets, i);
 
       if(NOT result)
-	result = dropset;
+        result = dropset;
       else
-	{
-	  int drSize =  lengthIndexList(dropset->taxaToDrop),
-	    resSize = lengthIndexList(result->taxaToDrop);
-	  
-	  double oldQuality =  labelPenalty == 0.0  
-	    ? result->improvement * drSize 
-	    :  (double)(result->improvement / (double)(computeSupport ?  numberOfTrees : 1.0)) - labelPenalty * (double)resSize;
-	  double newQuality = labelPenalty == 0.0 
-	    ? dropset->improvement * resSize
-	    : (double)(dropset->improvement / (double)(computeSupport ? numberOfTrees : 1.0)) - labelPenalty * (double)drSize; 
-	  
-	  if( (newQuality  >  oldQuality) )
-	    result = dropset;	  
-	}
+        {
+          int drSize =  lengthIndexList(dropset->taxaToDrop),
+            resSize = lengthIndexList(result->taxaToDrop);
+          
+          double oldQuality =  labelPenalty == 0.0  
+            ? result->improvement * drSize 
+            :  (double)(result->improvement / (double)(computeSupport ?  numberOfTrees : 1.0)) - labelPenalty * (double)resSize;
+          double newQuality = labelPenalty == 0.0 
+            ? dropset->improvement * resSize
+            : (double)(dropset->improvement / (double)(computeSupport ? numberOfTrees : 1.0)) - labelPenalty * (double)drSize; 
+          
+          if( (newQuality  >  oldQuality) )
+            result = dropset;          
+        }
     }
   freeListFlat(consensusBipsCanVanish);
 
@@ -1609,48 +1609,48 @@ void cleanup_updateNumBitsAndCleanArrays(Array *bipartitionProfile, Array *bipar
   FOR_0_LIMIT(profileIndex,bipartitionProfile->length)
     {
       ProfileElem
-	*elem = GET_PROFILE_ELEM(bipartitionProfile,profileIndex);
-	      
+        *elem = GET_PROFILE_ELEM(bipartitionProfile,profileIndex);
+              
       if( NOT elem )
-	continue;
+        continue;
       
       /* check if number of bits has changed  */
       if(NOT NTH_BIT_IS_SET(mergingBipartitions,elem->id)) 
-	{	  
-	  if( mxtips - taxaDropped - 2 * elem->numberOfBitsSet <= 2 * maxDropsetSize )	  
-	    FLIP_NTH_BIT(newCandidates, elem->id);
-	  IndexList *iter = dropset->taxaToDrop;
-	  boolean taxonDroppedP = FALSE;      
-	  FOR_LIST(iter)
-	  {
-	    if(NTH_BIT_IS_SET(elem->bitVector, iter->index)) 
-	      {
-		taxonDroppedP = TRUE;
-		UNFLIP_NTH_BIT(elem->bitVector, iter->index);
-		elem->numberOfBitsSet--;
-	      }
-	  }
+        {          
+          if( mxtips - taxaDropped - 2 * elem->numberOfBitsSet <= 2 * maxDropsetSize )          
+            FLIP_NTH_BIT(newCandidates, elem->id);
+          IndexList *iter = dropset->taxaToDrop;
+          boolean taxonDroppedP = FALSE;      
+          FOR_LIST(iter)
+          {
+            if(NTH_BIT_IS_SET(elem->bitVector, iter->index)) 
+              {
+                taxonDroppedP = TRUE;
+                UNFLIP_NTH_BIT(elem->bitVector, iter->index);
+                elem->numberOfBitsSet--;
+              }
+          }
 
-	  if(taxonDroppedP)
-	    {
-	      if(elem->numberOfBitsSet < 2)
-		{ 
-		  UNFLIP_NTH_BIT(newCandidates, elem->id);
-		  FLIP_NTH_BIT(mergingBipartitions, elem->id);
-		}	  
-	      else
-		FLIP_NTH_BIT(newCandidates, elem->id);
-	    }
-	}
+          if(taxonDroppedP)
+            {
+              if(elem->numberOfBitsSet < 2)
+                { 
+                  UNFLIP_NTH_BIT(newCandidates, elem->id);
+                  FLIP_NTH_BIT(mergingBipartitions, elem->id);
+                }          
+              else
+                FLIP_NTH_BIT(newCandidates, elem->id);
+            }
+        }
       
       /* bip has been merged or vanished  */
       if(NTH_BIT_IS_SET(mergingBipartitions,elem->id)) 
-	{
-	  assert(NOT NTH_BIT_IS_SET(newCandidates, elem->id));
-	  GET_PROFILE_ELEM(bipartitionProfile, profileIndex) = NULL;
-	  GET_PROFILE_ELEM(bipartitionsById, elem->id) = NULL;
-	  freeProfileElem(elem);
-	}
+        {
+          assert(NOT NTH_BIT_IS_SET(newCandidates, elem->id));
+          GET_PROFILE_ELEM(bipartitionProfile, profileIndex) = NULL;
+          GET_PROFILE_ELEM(bipartitionsById, elem->id) = NULL;
+          freeProfileElem(elem);
+        }
     }  
 }
 
@@ -1668,24 +1668,24 @@ BitVector *cleanup_applyAllMergerEvents(Array *bipartitionsById, Dropset *bestDr
       
       List *iter = NULL ; 
       if(maxDropsetSize == 1)
-	iter = bestDropset->ownPrimeE;
+        iter = bestDropset->ownPrimeE;
       else 
-	iter = bestDropset->acquiredPrimeE; 
+        iter = bestDropset->acquiredPrimeE; 
       FOR_LIST(iter)
       {
-	int newBipId = cleanup_applyOneMergerEvent((MergingEvent*)iter->value, bipartitionsById, mergingBipartitions);
-	FLIP_NTH_BIT(candidateBips, newBipId);
+        int newBipId = cleanup_applyOneMergerEvent((MergingEvent*)iter->value, bipartitionsById, mergingBipartitions);
+        FLIP_NTH_BIT(candidateBips, newBipId);
       }
 
       if(maxDropsetSize > 1 )
-	{
-	  iter = bestDropset->complexEvents;
-	  FOR_LIST(iter)
-	  {
-	    int newBipId = cleanup_applyOneMergerEvent((MergingEvent*)iter->value, bipartitionsById, mergingBipartitions);
-	    FLIP_NTH_BIT(candidateBips, newBipId);
-	  }
-	}
+        {
+          iter = bestDropset->complexEvents;
+          FOR_LIST(iter)
+          {
+            int newBipId = cleanup_applyOneMergerEvent((MergingEvent*)iter->value, bipartitionsById, mergingBipartitions);
+            FLIP_NTH_BIT(candidateBips, newBipId);
+          }
+        }
     } 
   
   return candidateBips;
@@ -1705,7 +1705,7 @@ void cleanup_rehashDropsets(HashTable *mergingHash, Dropset *bestDropset)
   FOR_HASH(htIter, mergingHash)
     {
       Dropset
-	*dropset = getCurrentValueFromHashTableIterator(htIter);
+        *dropset = getCurrentValueFromHashTableIterator(htIter);
       allDropsets = appendToList(dropset, allDropsets);
     }
   free(htIter);
@@ -1721,40 +1721,40 @@ void cleanup_rehashDropsets(HashTable *mergingHash, Dropset *bestDropset)
 
     if(NOT dropset->ownPrimeE || isSubsetOf(dropset->taxaToDrop, taxaToDrop) )
       {
-	removeElementFromHash(mergingHash, dropset);
-	freeDropsetDeep(dropset, FALSE);
+        removeElementFromHash(mergingHash, dropset);
+        freeDropsetDeep(dropset, FALSE);
       }
     else if(haveIntersection(dropset->taxaToDrop, taxaToDrop)) /* needs reinsert */
       {
-	removeElementFromHash(mergingHash, dropset);
+        removeElementFromHash(mergingHash, dropset);
 
 #ifdef MYDEBUG 
-	int length = lengthIndexList(dropset->taxaToDrop);
+        int length = lengthIndexList(dropset->taxaToDrop);
 #endif    
 
-	dropset->taxaToDrop = setMinusOf(dropset->taxaToDrop, taxaToDrop);
+        dropset->taxaToDrop = setMinusOf(dropset->taxaToDrop, taxaToDrop);
 
 #ifdef MYDEBUG
-	assert(length > lengthIndexList(dropset->taxaToDrop));
+        assert(length > lengthIndexList(dropset->taxaToDrop));
 #endif
-	unsigned int hv = mergingHash->hashFunction(mergingHash, dropset);
-	Dropset *found = searchHashTable(mergingHash, dropset, hv);
-	if( NOT found)
-	  insertIntoHashTable(mergingHash,dropset,hv);
-	else			/* reuse the merging events */
-	  {
-	    List
-	      *iter, *next; 
-	    for(iter = dropset->ownPrimeE; iter; iter = next)
-	      {
-		/* TODO potential error: double check, if this stuff did not already occur would be great */
-		next = iter->next; 
-		iter->next = found->ownPrimeE;
-		found->ownPrimeE = iter;
-	      }
-	    freeIndexList(dropset->taxaToDrop);
-	    free(dropset);
-	  } 	
+        unsigned int hv = mergingHash->hashFunction(mergingHash, dropset);
+        Dropset *found = searchHashTable(mergingHash, dropset, hv);
+        if( NOT found)
+          insertIntoHashTable(mergingHash,dropset,hv);
+        else                        /* reuse the merging events */
+          {
+            List
+              *iter, *next; 
+            for(iter = dropset->ownPrimeE; iter; iter = next)
+              {
+                /* TODO potential error: double check, if this stuff did not already occur would be great */
+                next = iter->next; 
+                iter->next = found->ownPrimeE;
+                found->ownPrimeE = iter;
+              }
+            freeIndexList(dropset->taxaToDrop);
+            free(dropset);
+          }         
       }
   }
   freeListFlat(allDropsets);
@@ -1776,7 +1776,7 @@ BitVector *cleanup(All *tr, HashTable *mergingHash, Dropset *bestDropset, BitVec
       free(bipsToVanish);
       return candidateBips;
     }
-	  
+          
   /* add to list of dropped taxa */
   ilIter = bestDropset->taxaToDrop;
   FOR_LIST(ilIter)
@@ -1798,7 +1798,7 @@ BitVector *cleanup(All *tr, HashTable *mergingHash, Dropset *bestDropset, BitVec
   PR("\n");
 #endif
 
-#ifdef MYDEBUG	  
+#ifdef MYDEBUG          
   debug_dropsetConsistencyCheck(mergingHash);
 #endif
 
@@ -1850,11 +1850,13 @@ void doomRogues(All *tr, const char *bootStrapFileName,
     {
       rogueMode = ML_TREE_OPT;
       if(mreOptimisation)
-	{
-	  PR("ERROR: Please choose either support in the MRE consensus tree OR the bipartitions in the ML tree for optimization.\n");
-	  exit(-1);
-	}
-      PR("mode: optimization of support of ML tree bipartitions in the bootstrap tree set.\n");
+        {
+          PR("ERROR: Please choose either support in the MRE consensus tree OR the\
+        bipartitions in the ML tree for optimization.\n");
+          exit(-1);
+        }
+      PR("mode: optimization of support of ML tree bipartitions in the\
+           bootstrap tree set.\n");
     }
   else if(mreOptimisation)
     {
@@ -1867,8 +1869,9 @@ void doomRogues(All *tr, const char *bootStrapFileName,
       rogueMode = VANILLA_CONSENSUS_OPT;
       thresh = tr->numberOfTrees * rawThresh / 100; 
       if(thresh == tr->numberOfTrees)
-	thresh--; 
-      PR("mode: optimization on consensus tree. Bipartition is part of consensus, if it occurs in more than %d trees\n", thresh); 
+        thresh--; 
+      PR("mode: optimization on consensus tree. Bipartition is part of consensus,\
+         if it occurs in more than %d trees\n", thresh); 
     }
 
   FILE
@@ -1929,22 +1932,23 @@ void doomRogues(All *tr, const char *bootStrapFileName,
   bestLastTime = cumScore;
   fprintf(rogueOutput, "num\ttaxNum\ttaxon\trawImprovement\tRBIC\n");
   fprintf(rogueOutput, "%d\tNA\tNA\t%d\t%f\n", 0, 0, (double)cumScore /( (computeSupport ? numberOfTrees : 1 )  * (mxtips-3)) ); 
-  PR("[%f] initialisation done (initScore = %f, numBip=%d)\n", updateTime(&timeInc), (double)cumScore / (double)((tr->mxtips-3) * (computeSupport ? tr->numberOfTrees : 1 ) ), bipartitionsById->length);
+  PR("[%f] initialisation done (initScore = %f, numBip=%d)\n", 
+     updateTime(&timeInc), (double)cumScore / (double)((tr->mxtips-3) * (computeSupport ? tr->numberOfTrees : 1 ) ), bipartitionsById->length);
 
-  boolean firstMerge= TRUE;
-  candidateBips = CALLOC(GET_BITVECTOR_LENGTH(bipartitionProfile->length),sizeof(BitVector));
+  boolean firstMerge = TRUE;
+  candidateBips = CALLOC(GET_BITVECTOR_LENGTH(bipartitionProfile->length), sizeof(BitVector));
   FOR_0_LIMIT(i,bipartitionProfile->length)
     FLIP_NTH_BIT(candidateBips,i);
 
   mergingHash = createHashTable(tr->mxtips * maxDropsetSize * HASH_TABLE_SIZE_CONST,
-				NULL,
-				dropsetHashValue, 
-				dropsetEqual); 
+                                NULL,
+                                dropsetHashValue, 
+                                dropsetEqual); 
 
    
 
 #ifdef PARALLEL
-  globalPArgs = CALLOC(1,sizeof(parallelArguments));   
+  globalPArgs = CALLOC(1, sizeof(parallelArguments));   
   startThreads();
 #endif
 
@@ -2006,7 +2010,7 @@ void doomRogues(All *tr, const char *bootStrapFileName,
       /* combine events */
       /******************/
       if(maxDropsetSize > 1)
-	mergingHash = combineMergerEvents(mergingHash, bipartitionsById);
+        mergingHash = combineMergerEvents(mergingHash, bipartitionsById);
 
 #ifdef PRINT_TIME
       PR("[%f] combined events\n", updateTime(&timeInc));
@@ -2014,7 +2018,7 @@ void doomRogues(All *tr, const char *bootStrapFileName,
 
 #ifdef PRINT_VERY_VERBOSE
       if(mergingHash->entryCount > 0)
-      	printMergingHash(mergingHash);
+              printMergingHash(mergingHash);
 #endif
 
       /**********************/
@@ -2035,33 +2039,32 @@ void doomRogues(All *tr, const char *bootStrapFileName,
 #ifdef MYDEBUG
       int l,m;
       FOR_0_LIMIT(l,bipartitionProfile->length)
-	{
-	  ProfileElem
-	    *elemA = GET_PROFILE_ELEM(bipartitionProfile,l);
+        {
+          ProfileElem
+            *elemA = GET_PROFILE_ELEM(bipartitionProfile,l);
 
-	  if(NOT elemA )
-	    continue;
+          if(NOT elemA )
+            continue;
 
-	  for(m = l+1; m < bipartitionProfile->length; ++m)
-	    {
-	      ProfileElem
-		*elemB = GET_PROFILE_ELEM(bipartitionProfile,m);
+          for(m = l+1; m < bipartitionProfile->length; ++m)
+            {
+              ProfileElem
+                *elemB = GET_PROFILE_ELEM(bipartitionProfile,m);
 
-	      if( NOT elemB)
-		continue;
+              if( NOT elemB)
+                continue;
 
-	      if(elemA->numberOfBitsSet == elemB->numberOfBitsSet && myBitVectorEqual(elemA,elemB))
-		{
-		  PR("%d and %d are equal!\n", elemA->id, elemB->id);
-		  printBitVector(elemA->bitVector, bitVectorLength);
-		  PR("\n");
-		  printBitVector(elemB->bitVector, bitVectorLength);
-		  PR("\n");
-		  /* assert(0); */
-		  exit(-1);
-		}
-	    }
-	}
+              if(elemA->numberOfBitsSet == elemB->numberOfBitsSet && myBitVectorEqual(elemA,elemB))
+                {
+                  PR("%d and %d are equal!\n", elemA->id, elemB->id);
+                  printBitVector(elemA->bitVector, bitVectorLength);
+                  PR("\n");
+                  printBitVector(elemB->bitVector, bitVectorLength);
+                  PR("\n");
+                  exit(-1);
+                }
+            }
+        }
 #endif
 
 #ifdef PRINT_VERY_VERBOSE
@@ -2070,7 +2073,7 @@ void doomRogues(All *tr, const char *bootStrapFileName,
       PR("\n");
 #endif
       if(bestDropset)
-	taxaDropped += lengthIndexList(bestDropset->taxaToDrop);      
+        taxaDropped += lengthIndexList(bestDropset->taxaToDrop);      
 
       dropRound++;      
     } while(bestDropset);
@@ -2085,7 +2088,7 @@ void doomRogues(All *tr, const char *bootStrapFileName,
     {
       ProfileElem *elem = GET_PROFILE_ELEM(bipartitionProfile,i);
       if(elem)
-  	freeProfileElem(elem);
+          freeProfileElem(elem);
     }
   free(((ProfileElemAttr*)bipartitionProfile->commonAttributes));
   freeArray(bipartitionProfile);
@@ -2093,11 +2096,11 @@ void doomRogues(All *tr, const char *bootStrapFileName,
   destroyHashTable(mergingHash, freeDropsetDeepInHash);
 
   fclose(rogueOutput);
-  for(i= 0 ; i < dropRound + 1; ++i)
+  for(i = 0; i < dropRound + 1; ++i)
     {
       Dropset *theDropset = dropsetPerRound[i];
       if(theDropset)
-	freeDropsetDeepInEnd(theDropset);
+        freeDropsetDeepInEnd(theDropset);
     }
   free(dropsetPerRound);
   free(neglectThose);
@@ -2122,7 +2125,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   int threshold = 50;
 
   const char 
-	  *excludeFile = CHAR(STRING_ELT(R_excludeFile, 0)),
+          *excludeFile = CHAR(STRING_ELT(R_excludeFile, 0)),
     *bootTrees = CHAR(STRING_ELT(R_bootTrees, 0)),
     *treeFile = CHAR(STRING_ELT(R_treeFile, 0));
     
@@ -2141,11 +2144,11 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   programReleaseDate  = PROG_RELEASE_DATE;
 
   /* INTEGER etc. gives pointer to first element of an R vector */
-	computeSupport = *LOGICAL(R_computeSupport);
-	strcpy(run_id, CHAR(STRING_ELT(R_run_id, 0)));
-	maxDropsetSize = *REAL(R_maxDropsetSize);
-	strcpy(workdir, CHAR(STRING_ELT(R_workdir, 0)));
-	labelPenalty = *REAL(R_labelPenalty);
+        computeSupport = *LOGICAL(R_computeSupport);
+        strcpy(run_id, CHAR(STRING_ELT(R_run_id, 0)));
+        maxDropsetSize = *REAL(R_maxDropsetSize);
+        strcpy(workdir, CHAR(STRING_ELT(R_workdir, 0)));
+        labelPenalty = *REAL(R_labelPenalty);
   mreOptimisation = *LOGICAL(R_mreOptimization);
   
   if (mreOptimisation)
@@ -2155,7 +2158,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   else
     {
       threshold = *REAL(R_threshold);
-  	}
+          }
       
 
   /* initialize fast bit counting */
