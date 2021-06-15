@@ -723,76 +723,6 @@ boolean checkValidityOfEvent(BitVector *obsoleteBips, List *elem)
     return TRUE; 
 }
 
-
-#ifdef LATER
-void printDropset(Dropset *dropset)
-{
-  IndexList *iter; 
-  iter = dropset->taxaToDrop;
-  boolean isFirst = TRUE;
-  FOR_LIST(iter)
-  {
-    PR(isFirst ? "%d" : ",%d", iter->index);
-    isFirst = FALSE;
-  }
-  PR(" [%d] : ", dropset->improvement);
-  List *lIter = dropset->primeEvents;
-  FOR_LIST(lIter)
-  {
-    MergingEvent *me = lIter->value;    
-    PR("{ %d,%d },", me->mergingBipartitions.pair[0], me->mergingBipartitions.pair[1]);
-  }
-  PR("\n");  
-  if(dropset->combinedEvents)
-    {
-      PR("\t`->");
-      lIter = dropset->combinedEvents;
-      FOR_LIST(lIter)
-      {
-        if(((MergingEvent*)lIter->value)->isComplex)
-          {        
-            isFirst = TRUE;        
-            PR("{ ");
-            iter = ((MergingEvent*)lIter->value)->mergingBipartitions.many;        
-            FOR_LIST(iter)
-            {
-              PR(isFirst ? "%d" : ",%d" ,iter->index);
-              isFirst = FALSE;
-            }
-            PR(" },");
-          }
-        else
-          {
-            MergingBipartitions mb = ((MergingEvent*)lIter->value)->mergingBipartitions ; 
-            PR("[ %d,%d ],", mb.pair[0], mb.pair[1]); 
-          }
-      }
-      PR("\n");
-    }
-}
-#endif
-
-
-#ifdef LATER
-void printMergingHash(HashTable *mergingHash)
-{
-  if(mergingHash->entryCount < 1)
-    {
-      PR("Nothing in mergingHash.\n");
-      return;
-    }
-
-  HashTableIterator *htIter;  
-  FOR_HASH(htIter, mergingHash)
-    {
-      Dropset
-        *dropset = getCurrentValueFromHashTableIterator(htIter); 
-      printDropset(dropset);
-    }
-}
-#endif
-
-
 #ifdef MYDEBUG
 void debug_assureCleanStructure(HashTable *hashtable, BitVector *mergingBipartitions)
 {
@@ -816,7 +746,6 @@ void debug_assureCleanStructure(HashTable *hashtable, BitVector *mergingBipartit
               if(NTH_BIT_IS_SET(mergingBipartitions, iter->index))
                 {
                   PR("%d from merging bipartitions still present. \n", iter->index);
-                  printMergingHash(hashtable);
                   exit(-1);
                 }
           }
@@ -825,13 +754,11 @@ void debug_assureCleanStructure(HashTable *hashtable, BitVector *mergingBipartit
             if(NTH_BIT_IS_SET(mergingBipartitions, me->mergingBipartitions.pair[0]) )
               {
                 PR("%d from merging bipartitions still present. \n", me->mergingBipartitions.pair[0]);
-                printMergingHash(hashtable);
                 exit(-1);
               }
             if(NTH_BIT_IS_SET(mergingBipartitions, me->mergingBipartitions.pair[1]))
               {
                 PR("%d from merging bipartitions still present. \n", me->mergingBipartitions.pair[1]);
-                printMergingHash(hashtable);
                 exit(-1);
               }
           }
@@ -1570,7 +1497,7 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
         result = dropset;
       else
         {
-          int drSize =  lengthIndexList(dropset->taxaToDrop),
+          int drSize = lengthIndexList(dropset->taxaToDrop),
             resSize = lengthIndexList(result->taxaToDrop);
           
           double oldQuality =  labelPenalty == 0.0  
@@ -1662,9 +1589,6 @@ BitVector *cleanup_applyAllMergerEvents(Array *bipartitionsById, Dropset *bestDr
 
   if( bestDropset) 
     {
-#ifdef PRINT_VERY_VERBOSE
-      printDropset(bestDropset);
-#endif
       
       List *iter = NULL ; 
       if(maxDropsetSize == 1)
@@ -2014,11 +1938,6 @@ void doomRogues(All *tr, const char *bootStrapFileName,
 
 #ifdef PRINT_TIME
       PR("[%f] combined events\n", updateTime(&timeInc));
-#endif
-
-#ifdef PRINT_VERY_VERBOSE
-      if(mergingHash->entryCount > 0)
-              printMergingHash(mergingHash);
 #endif
 
       /**********************/
