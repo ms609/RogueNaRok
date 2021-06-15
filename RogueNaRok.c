@@ -35,7 +35,6 @@
 #include <unistd.h>
 #include <limits.h>
 
-#include <R.h>
 #include <Rinternals.h>
 
 #include "Tree.h"
