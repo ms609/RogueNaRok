@@ -7,7 +7,7 @@
 #include <stdlib.h> /* for NULL */
 #include <R_ext/Rdynload.h>
 
-extern SEXP RogueNaRok(SEXP, SEXP, SEXP, SEXP, SEXP
+extern SEXP RogueNaRok(SEXP, SEXP, SEXP, SEXP, SEXP,
                        SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef callMethods[] = {
