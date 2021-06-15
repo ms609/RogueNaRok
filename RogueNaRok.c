@@ -1322,12 +1322,14 @@ void evaluateDropset(HashTable *mergingHash, Dropset *dropset,Array *bipartition
           assert(NOT NTH_BIT_IS_SET(bipsSeen, iI->index));
           if(NTH_BIT_IS_SET(bipsSeen, iI->index))
             {
-              PR("problem:");
-              printIndexList(me->mergingBipartitions.many);
-              PR("at ");
-              printIndexList(dropset->taxaToDrop);                
-              PR("\n");
-              exit(0);
+              // MS: This is a fatal error.  We can't exit, so return.
+              return;
+              // PR("problem:");
+              // printIndexList(me->mergingBipartitions.many);
+              // PR("at ");
+              // printIndexList(dropset->taxaToDrop);                
+              // PR("\n");
+              // exit(0);
             }
           FLIP_NTH_BIT(bipsSeen, iI->index);        
         }
@@ -1775,9 +1777,10 @@ void doomRogues(All *tr, const char *bootStrapFileName,
       rogueMode = ML_TREE_OPT;
       if(mreOptimisation)
         {
-          PR("ERROR: Please choose either support in the MRE consensus tree OR the\
-        bipartitions in the ML tree for optimization.\n");
-          exit(-1);
+          return;
+        //   PR("ERROR: Please choose either support in the MRE consensus tree OR the\
+        // bipartitions in the ML tree for optimization.\n");
+        //   exit(-1);
         }
       PR("mode: optimization of support of ML tree bipartitions in the\
            bootstrap tree set.\n");
@@ -2063,11 +2066,11 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   programReleaseDate  = PROG_RELEASE_DATE;
 
   /* INTEGER etc. gives pointer to first element of an R vector */
-        computeSupport = *LOGICAL(R_computeSupport);
-        strcpy(run_id, CHAR(STRING_ELT(R_run_id, 0)));
-        maxDropsetSize = *REAL(R_maxDropsetSize);
-        strcpy(workdir, CHAR(STRING_ELT(R_workdir, 0)));
-        labelPenalty = *REAL(R_labelPenalty);
+  computeSupport = *LOGICAL(R_computeSupport);
+  strcpy(run_id, CHAR(STRING_ELT(R_run_id, 0)));
+  maxDropsetSize = *REAL(R_maxDropsetSize);
+  strcpy(workdir, CHAR(STRING_ELT(R_workdir, 0)));
+  labelPenalty = *REAL(R_labelPenalty);
   mreOptimisation = *LOGICAL(R_mreOptimization);
   
   if (mreOptimisation)
@@ -2077,7 +2080,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   else
     {
       threshold = *REAL(R_threshold);
-          }
+    }
       
 
   /* initialize fast bit counting */
@@ -2087,7 +2090,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
 #ifdef PARALLEL
   if(NOT numberOfThreads)
     {
-      printf("\n\nPlease specify the number of threads for parallel execution with -T\n\n");
+      // printf("\n\nPlease specify the number of threads for parallel execution with -T\n\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
@@ -2097,8 +2100,8 @@ SEXP RogueNaRok (SEXP R_bootTrees,
     }
   if(numberOfThreads == 1)
     {
-      printf("\n\nCalling parallel version of RogueNaRok with 1 thread is deprecated.\n\
-Please compile a sequential version of RogueNaRok instead.\n\n");
+      // printf("\n\nCalling parallel version of RogueNaRok with 1 thread is deprecated.\n\
+// Please compile a sequential version of RogueNaRok instead.\n\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
@@ -2113,7 +2116,7 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
 
   if( NOT strcmp(bootTrees, ""))
     {
-      printf("ERROR: Please specify a file containing bootstrap trees via -i.\n");
+      // printf("ERROR: Please specify a file containing bootstrap trees via -i.\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
@@ -2124,7 +2127,7 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
 
   if( NOT strcmp(run_id, ""))
     {
-      printf("ERROR: Please specify a run-id via -n\n");
+      // printf("ERROR: Please specify a run-id via -n\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
@@ -2135,7 +2138,7 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
 
   if(threshold < 50)
     {
-      printf("ERROR: Only accepting threshold values between 50 (MR) and 100 (strict).\n");
+      // printf("ERROR: Only accepting threshold values between 50 (MR) and 100 (strict).\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
@@ -2146,7 +2149,7 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
 
   if(threshold != 50 && strcmp(treeFile, "") )
     {
-      printf("ERROR: threshold option -c not available in combination with best-known tree.\n");
+      // printf("ERROR: threshold option -c not available in combination with best-known tree.\n");
       int *ret;
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       ret = INTEGER(Rres);
@@ -2160,7 +2163,7 @@ Please compile a sequential version of RogueNaRok instead.\n\n");
   setupInfoFile();
   if  (NOT setupTree(tr, bootTrees))
     {
-      PR("Something went wrong during tree initialisation. Sorry.\n");
+      // PR("Something went wrong during tree initialisation. Sorry.\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
