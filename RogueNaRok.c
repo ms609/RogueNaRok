@@ -1848,7 +1848,7 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
   for(i = mxtips; i < GET_BITVECTOR_LENGTH(mxtips) * MASK_LENGTH; ++i)
     FLIP_NTH_BIT(paddingBits,i);
 
-  FOR_0_LIMIT(i,bipartitionProfile->length)
+  FOR_0_LIMIT(i, bipartitionProfile->length)
     {
       ProfileElem *elem = ((ProfileElem**)bipartitionProfile->arrayTable)[i];
       elem->numberOfBitsSet = genericBitCount(elem->bitVector, bitVectorLength);
@@ -1864,9 +1864,10 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
 
   numBips = bipartitionProfile->length;
 
+  Rprintf("MS: 1877: %i\n", numBips);
   cumScore = getInitScore(bipartitionProfile);
-  cumScores = CALLOC(mxtips-3, sizeof(int));  
-  cumScores[0]  = cumScore;
+  cumScores = CALLOC(mxtips-3, sizeof(int));
+  cumScores[0] = cumScore;
   bestCumEver = cumScore;
 
   bestLastTime = cumScore;
@@ -2014,8 +2015,8 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
     } while(bestDropset);
   
   /* print out result */  
-  printRogueInformationToFile(tr, rogueOutput, bestCumEver,cumScores, dropsetPerRound);
 
+  printRogueInformationToFile(tr, rogueOutput, bestCumEver, cumScores, dropsetPerRound);
   PR("total time elapsed: %f\n", updateTime(&startingTime));
 
   /* free everything */   
