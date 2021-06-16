@@ -289,7 +289,8 @@ Dropset *insertOrFindDropset(HashTable *hashtable, Dropset *dropset, uint32_t ha
     }
 }
 
-boolean checkForMergerAndAddEvent(boolean complement, ProfileElem *elemA, ProfileElem *elemB, HashTable *mergingHash)
+boolean checkForMergerAndAddEvent(boolean complement, ProfileElem *elemA,
+                                  ProfileElem *elemB, HashTable *mergingHash)
 {
   IndexList
     *dropsetTaxa = getDropset(elemA,elemB,complement, neglectThose);
@@ -333,7 +334,9 @@ boolean bothDropsetsRelevant(int numBits)
 }
 
 
-int cleanup_applyOneMergerEvent(MergingEvent *mergingEvent, Array *bipartitionsById, BitVector *mergingBipartitions)
+int cleanup_applyOneMergerEvent(MergingEvent *mergingEvent,
+                                Array *bipartitionsById,
+                                BitVector *mergingBipartitions)
 {
   int 
     j;
