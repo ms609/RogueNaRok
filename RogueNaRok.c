@@ -54,8 +54,8 @@
 #define PROG_VERSION "1.0.0.9000"
 #define PROG_RELEASE_DATE "2011-10-25"
 
-/* #define PRINT_VERY_VERBOSE */
-/* #define MYDEBUG */
+#define PRINT_VERY_VERBOSE
+#define MYDEBUG
 
 #define PRINT_DROPSETS
 #define PRINT_TIME
@@ -167,7 +167,7 @@ boolean isCompatible(ProfileElem* elemA, ProfileElem* elemB, BitVector *droppedT
 }
 
 
-#ifdef MYDEBUG
+#ifdef MYDEBUG_NOTWORKING
 /* ensures, no merging event occurs twice per dropset */
 void debug_mergingHashSanityCheck(HashTable *mergingHash, int totalNumberOfBips)
 {
@@ -723,7 +723,7 @@ boolean checkValidityOfEvent(BitVector *obsoleteBips, List *elem)
     return TRUE; 
 }
 
-#ifdef MYDEBUG
+#ifdef MYDEBUG_NOTWORKING
 void debug_assureCleanStructure(HashTable *hashtable, BitVector *mergingBipartitions)
 {
   HashTableIterator *htIter;
@@ -830,7 +830,7 @@ void cleanup_mergingEvents(HashTable *mergingHash, BitVector *mergingBipartition
     }
   free(htIter);  
   
-#ifdef MYDEBUG
+#ifdef MYDEBUG_NOTWORKING
   debug_assureCleanStructure(mergingHash, mergingBipartitions);
 #endif
 
@@ -1654,7 +1654,7 @@ void cleanup_rehashDropsets(HashTable *mergingHash, Dropset *bestDropset)
       {
         removeElementFromHash(mergingHash, dropset);
 
-#ifdef MYDEBUG 
+#ifdef MYDEBUG_NOTWORKING
         int length = lengthIndexList(dropset->taxaToDrop);
 #endif    
 
@@ -1921,7 +1921,7 @@ void doomRogues(All *tr, const char *bootStrapFileName,
 #endif
       firstMerge = FALSE;      
 
-#ifdef MYDEBUG
+#ifdef MYDEBUG_NOT_WORKING
       debug_dropsetConsistencyCheck(mergingHash);
       debug_mergingHashSanityCheck(mergingHash, bipartitionProfile->length);
 #endif
