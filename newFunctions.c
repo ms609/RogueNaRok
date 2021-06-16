@@ -127,10 +127,8 @@ Array *getOriginalBipArray(All *tr, FILE *bestTree, FILE *treeFile)
   unsigned int 
     *randForTaxa = CALLOC(tr->mxtips, sizeof(unsigned int));
   
-  GetRNGstate();
   for(i = 0; i < tr->mxtips; ++i)  
     randForTaxa[i] = unif_rand();
-  PutRNGstate();
 
   rewind(treeFile);
   
