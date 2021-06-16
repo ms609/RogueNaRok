@@ -166,6 +166,11 @@ void setupInfoFile()
   printVersionInfo(TRUE);
 }
 
+void destroyInfoFile()
+{
+  Rprintf("Destroying infoFileName\n"); // MS TODO DELETE;
+  free(infoFileName);
+}
 
 char *lowerTheString(char *string)
 {

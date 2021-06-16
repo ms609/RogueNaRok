@@ -82,6 +82,7 @@ char *lowerTheString(char *string);
 FILE *getOutputFileFromString(char *fileName);
 double gettime(void);
 void setupInfoFile();
+void destroyInfoFile();
 double updateTime(double* time);
 FILE *myfopen(const char *path, const char *mode);
 
