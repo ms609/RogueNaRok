@@ -2044,9 +2044,18 @@ SEXP RogueNaRok (SEXP R_bootTrees,
                  SEXP R_threshold)
 {
   int threshold = 50;
+  typedef enum {ERR_NONE = 0,
+                ERR_INT_SIZE,
+                ERR_PARALLEL,
+                ERR_NO_TREE,
+                ERR_NO_RUN_ID,
+                ERR_LOW_THRESHOLD,
+                ERR_NO_BEST_TREE,
+                ERR_TREE_INIT} errcode;
+  errcode error = ERR_NONE;
 
   const char 
-          *excludeFile = CHAR(STRING_ELT(R_excludeFile, 0)),
+    *excludeFile = CHAR(STRING_ELT(R_excludeFile, 0)),
     *bootTrees = CHAR(STRING_ELT(R_bootTrees, 0)),
     *treeFile = CHAR(STRING_ELT(R_treeFile, 0));
     
@@ -2083,71 +2092,46 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   if(NOT numberOfThreads)
     {
       REprintf("\n\nPlease specify the number of threads for parallel execution with -T\n\n");
-      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
-      int *ret;
-      ret = INTEGER(Rres);
-      *ret = -1;
-      UNPROTECT(1);
-      return Rres;
+      error = ERR_PARALLEL;
     }
   if(numberOfThreads == 1)
     {
       REprintf("\n\nCalling parallel version of RogueNaRok with 1 thread is deprecated.\n\
        Please compile a sequential version of RogueNaRok instead.\n\n");
-      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
-      int *ret;
-      ret = INTEGER(Rres);
-      *ret = -1;
-      UNPROTECT(1);
-      return Rres;
+      error = ERR_PARALLEL;
     }
 #endif
 
   if( NOT strcmp(treeFile, ""))
-    rogueMode = ML_TREE_OPT;
+    {
+      Rprintf("..MS: Rogue mode = ML_TREE_OPT\n");
+      rogueMode = ML_TREE_OPT;
+    } else {
+      Rprintf("..MS: Rogue mode != ML_TREE_OPT\n");
+    }
 
   if( NOT strcmp(bootTrees, ""))
     {
       REprintf("ERROR: Please specify a file containing bootstrap trees via -i.\n");
-      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
-      int *ret;
-      ret = INTEGER(Rres);
-      *ret = -1;
-      UNPROTECT(1);
-      return Rres;
+      error = ERR_NO_TREE;
     }
 
   if( NOT strcmp(run_id, ""))
     {
       REprintf("ERROR: Please specify a run-id via -n\n");
-      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
-      int *ret;
-      ret = INTEGER(Rres);
-      *ret = -1;
-      UNPROTECT(1);
-      return Rres;;
+      error = ERR_NO_RUN_ID;
     }
 
   if(threshold < 50)
     {
       REprintf("ERROR: Only accepting threshold values between 50 (MR) and 100 (strict).\n");
-      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
-      int *ret;
-      ret = INTEGER(Rres);
-      *ret = -1;
-      UNPROTECT(1);
-      return Rres;
+      error = ERR_LOW_THRESHOLD;
     }
 
   if(threshold != 50 && strcmp(treeFile, "") )
     {
       REprintf("ERROR: threshold option -c not available in combination with best-known tree.\n");
-      int *ret;
-      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
-      ret = INTEGER(Rres);
-      *ret = -1;
-      UNPROTECT(1);
-      return Rres;
+      error = ERR_NO_BEST_TREE;
     }
 
   All
@@ -2156,24 +2140,18 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   if  (NOT setupTree(tr, bootTrees))
     {
       PR("Something went wrong during tree initialisation. Sorry.\n");
-      SEXP Rres = PROTECT(allocVector(INTSXP, 1));
-      int *ret;
-      ret = INTEGER(Rres);
-      *ret = -1;
-      UNPROTECT(1);
-      return Rres;
+      error = ERR_TREE_INIT;
     }
 
-  doomRogues(tr,
-             bootTrees,
-             excludeFile,
-             treeFile,
-             mreOptimisation,
-             threshold);
+  if (error == ERR_NONE) {
+    doomRogues(tr,
+               bootTrees,
+               excludeFile,
+               treeFile,
+               mreOptimisation,
+               threshold);
+  }
 
-  freeTree(tr);
-  free(mask32);
-  free(infoFileName);
   
   SEXP Rres = PROTECT(allocVector(INTSXP, 1));
   
@@ -2182,5 +2160,9 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   ret = INTEGER(Rres);
   *ret = 0;
   UNPROTECT(1);
+  
+  freeTree(tr);
+  destroyMask(); // free(mask32);
+  destroyInfoFile(); // free(infoFileName);
   return Rres;
 }
