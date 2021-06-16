@@ -2045,7 +2045,6 @@ SEXP RogueNaRok (SEXP R_bootTrees,
 {
   int threshold = 50;
   typedef enum {ERR_NONE = 0,
-                ERR_INT_SIZE,
                 ERR_PARALLEL,
                 ERR_NO_TREE,
                 ERR_NO_RUN_ID,
@@ -2153,16 +2152,16 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   }
 
   
-  SEXP Rres = PROTECT(allocVector(INTSXP, 1));
-  
-  /* Initialize return variables */
-  int *ret;
-  ret = INTEGER(Rres);
-  *ret = 0;
-  UNPROTECT(1);
-  
   freeTree(tr);
   destroyMask(); // free(mask32);
   destroyInfoFile(); // free(infoFileName);
+  
+  /* Initialize return variables */
+  SEXP Rres = PROTECT(allocVector(INTSXP, 1));
+  int *ret;
+  ret = INTEGER(Rres);
+  *ret = error;
+  UNPROTECT(1);
+  
   return Rres;
 }
