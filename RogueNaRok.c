@@ -1765,7 +1765,7 @@ typedef enum {ERR_NONE = 0,
 
 errcode doomRogues(All *tr, const char *bootStrapFileName, 
                    const char *dontDropFile, 
-                   const char *treeFile, boolean mreOptimisation, int rawThresh)
+                   const char *treeFile, boolean mreOptimisation, double rawThresh)
 {
   GetRNGstate();
   double startingTime = gettime();
@@ -1807,7 +1807,7 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
   else 
     {
       rogueMode = VANILLA_CONSENSUS_OPT;
-      thresh = tr->numberOfTrees * rawThresh / 100; 
+      thresh = (int) tr->numberOfTrees * rawThresh / 100;
       if(thresh == tr->numberOfTrees)
         thresh--; 
       PR("mode: optimization on consensus tree. Bipartition is part of consensus,\
