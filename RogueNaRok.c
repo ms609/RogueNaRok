@@ -1763,6 +1763,7 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
                    const char *dontDropFile, 
                    const char *treeFile, boolean mreOptimisation, int rawThresh)
 {
+  GetRNGstate();
   double startingTime = gettime();
   timeInc = gettime();
 
@@ -2164,6 +2165,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   ret = INTEGER(Rres);
   *ret = error;
   UNPROTECT(1);
+  PutRNGstate();
   
   return Rres;
 }

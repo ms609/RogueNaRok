@@ -43,11 +43,9 @@ extern BitVector *droppedTaxa,
 void initializeRandForTaxa(int mxtips)
 {
   int i;
-  GetRNGstate();
   randForTaxa = CALLOC(mxtips,sizeof(unsigned int));
   FOR_0_LIMIT(i,mxtips)
     randForTaxa[i] = unif_rand();
-  PutRNGstate();
 }
 
 
