@@ -295,11 +295,11 @@ void printIndexListToFile(FILE *file, IndexList *list)
   FOR_LIST(list)
     if(isFirst)
       {
-	fprintf(file, "%d", list->index);
+	fprintf(file, "%i", list->index);
 	isFirst = FALSE;
       }
     else
-      fprintf(file, ",%d", list->index);
+      fprintf(file, ",%i", list->index);
 }
 
 
