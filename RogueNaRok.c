@@ -997,10 +997,11 @@ void fprintRogueNames(All *tr, FILE *file, IndexList *list)
 }
 
 
-void printRogueInformationToFile( All *tr, FILE *rogueOutput, int bestCumEver, int *cumScores, Dropset **dropsetInRound)
+void printRogueInformationToFile( All *tr, FILE *rogueOutput, int bestCumEver,
+                                  int *cumScores, Dropset **dropsetInRound)
 {
   int
-    i=1,j; 
+    i=1,j;
 
   boolean reached = bestCumEver == cumScores[0];
   while ( NOT reached)
