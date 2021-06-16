@@ -31,7 +31,7 @@
 
 #include "Dropset.h"
 
-unsigned int *randForTaxa = NULL;
+uint32_t *randForTaxa = NULL;
 extern int mxtips,
   maxDropsetSize,
   bitVectorLength; 
@@ -43,7 +43,7 @@ extern BitVector *droppedTaxa,
 void initializeRandForTaxa(int mxtips)
 {
   int i;
-  randForTaxa = CALLOC(mxtips,sizeof(unsigned int));
+  randForTaxa = CALLOC(mxtips,sizeof(uint32_t));
   FOR_0_LIMIT(i,mxtips)
     randForTaxa[i] = unif_rand();
 }
@@ -275,9 +275,9 @@ void printMergingEventStruct(MergingEvent **mergingEvents, int mxtips)
 }
 #endif
 
-unsigned int dropsetHashValue(HashTable *hashTable, void *value)
+uint32_t dropsetHashValue(HashTable *hashTable, void *value)
 {
-  unsigned int
+  uint32_t
     result = 0;
 
   Dropset *dropset = (Dropset*)value;

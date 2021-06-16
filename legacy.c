@@ -33,7 +33,7 @@
 
 void freeHashTable(hashtable *h)
 {
-  unsigned int
+  uint32_t
     i,
     entryCount = 0;   
 
@@ -71,18 +71,18 @@ void freeHashTable(hashtable *h)
   free(h->table);
 }
 
-hashtable *initHashTable(unsigned int n)
+hashtable *initHashTable(uint32_t n)
 {
-  static const  unsigned int initTable[] = {64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 2147483648U};
+  static const  uint32_t initTable[] = {64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 2147483648U};
   
   hashtable *h = (hashtable*)CALLOC(1,sizeof(hashtable));
   
-  unsigned int
+  uint32_t
     tableSize,
     i,
 
 #ifndef NDEBUG
-    maxSize = (unsigned int)-1,
+    maxSize = (uint32_t)-1,
 #endif
     primeTableLength = sizeof(initTable)/sizeof(initTable[0]);
 
@@ -132,14 +132,17 @@ BitVector **initBitVector(All *tr, BitVector *vectorLength)
 }
 
 
-ProfileElem *addProfileElem(entry *helem, int vectorLength, int treeVectorLength, int numberOfTrees) 
+ProfileElem *addProfileElem(entry *helem, int vectorLength,
+                            int treeVectorLength, int numberOfTrees) 
 {
   ProfileElem *result = CALLOC(1,sizeof(ProfileElem));
   result->isInMLTree = FALSE; 
   result->bitVector = CALLOC(vectorLength, sizeof(BitVector));
   result->treeVector = CALLOC(treeVectorLength, sizeof(BitVector));
-  result->bitVector = memcpy(result->bitVector, helem->bitVector, vectorLength * sizeof(BitVector));
-  result->treeVector = memcpy(result->treeVector, helem->treeVector, treeVectorLength * sizeof(BitVector));
+  result->bitVector = memcpy(result->bitVector, helem->bitVector,
+                             vectorLength * sizeof(BitVector));
+  result->treeVector = memcpy(result->treeVector, helem->treeVector,
+                              treeVectorLength * sizeof(BitVector));
 
   if(NTH_BIT_IS_SET(result->treeVector, numberOfTrees))
     {

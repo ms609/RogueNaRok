@@ -49,9 +49,9 @@ IndexList *parseToDrop(All *tr, FILE *toDrop)
   return result;
 }
 
-void pruneTaxon(All *tr, unsigned int k, boolean considerBranchLengths) 
+void pruneTaxon(All *tr, uint32_t k, boolean considerBranchLengths) 
 {
-  assert(k > 0 && k <= ((unsigned int)(tr->mxtips)));
+  assert(k > 0 && k <= ((uint32_t)(tr->mxtips)));
 
   nodeptr 
     p = tr->nodep[k],    
@@ -110,7 +110,7 @@ Array *getOriginalBipArray(All *tr, FILE *bestTree, FILE *treeFile)
   int 
     i,j,bCount = 0,
     treeVectorLength = GET_BITVECTOR_LENGTH((tr->numberOfTrees+1));
-  unsigned int 
+  uint32_t 
     vectorLength = 0,
     **setBitVectors = initBitVector(tr, &vectorLength);
   hashtable
@@ -124,8 +124,8 @@ Array *getOriginalBipArray(All *tr, FILE *bestTree, FILE *treeFile)
   for(i = tr->mxtips; i < MASK_LENGTH * vectorLength; ++i)
     lastByte |= mask32[i % MASK_LENGTH];
 
-  unsigned int 
-    *randForTaxa = CALLOC(tr->mxtips, sizeof(unsigned int));
+  uint32_t 
+    *randForTaxa = CALLOC(tr->mxtips, sizeof(uint32_t));
   
   for(i = 0; i < tr->mxtips; ++i)  
     randForTaxa[i] = unif_rand();

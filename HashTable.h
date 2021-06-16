@@ -40,17 +40,17 @@
 
 typedef struct hash_el
 {
-  unsigned int fullKey;
+  uint32_t fullKey;
   void *value;
   struct hash_el *next;
 } HashElem;
 
 typedef struct hash_table
 {
-  unsigned int tableSize;
-  unsigned int entryCount;
+  uint32_t tableSize;
+  uint32_t entryCount;
   void *commonAttributes;
-  unsigned int (*hashFunction)(struct hash_table *h, void *value);
+  uint32_t (*hashFunction)(struct hash_table *h, void *value);
   boolean (*equalFunction)(struct hash_table *hashtable, void *entrA, void *entryB);
   HashElem **table;
 #ifdef PARALLEL
@@ -63,19 +63,19 @@ typedef struct
 {
   HashTable *hashTable;
   HashElem *hashElem;
-  unsigned int index;
+  uint32_t index;
 } HashTableIterator;
 
 #define FOR_HASH(htIter, hashtable)  boolean hasNext = TRUE; for(htIter = createHashTableIterator(hashtable); htIter && hasNext ; hasNext = hashTableIteratorNext(htIter))
 #define FOR_HASH_2(htIter, hashtable)  hasNext = TRUE; for(htIter = createHashTableIterator(hashtable); hasNext ; hasNext = hashTableIteratorNext(htIter))
 
-HashTable *createHashTable(unsigned int size, void *commonAttr, unsigned int (*hashFunction)(HashTable *hash_table, void *value), boolean (*equalFunction)(HashTable *hash_table, void *entryA, void *entryB));
+HashTable *createHashTable(uint32_t size, void *commonAttr, uint32_t (*hashFunction)(HashTable *hash_table, void *value), boolean (*equalFunction)(HashTable *hash_table, void *entryA, void *entryB));
 HashTableIterator *createHashTableIterator(HashTable *hashTable); 
 void *getCurrentValueFromHashTableIterator(HashTableIterator *hashTableIterator);
 boolean hashTableIteratorNext(HashTableIterator *hashTableIterator);
-void *searchHashTableWithInt(HashTable *hashtable, unsigned int hashValue);
-void *searchHashTable(HashTable *hashtable, void *value, unsigned int hashValue);
-void insertIntoHashTable(HashTable *hashTable, void *value, unsigned int index);
+void *searchHashTableWithInt(HashTable *hashtable, uint32_t hashValue);
+void *searchHashTable(HashTable *hashtable, void *value, uint32_t hashValue);
+void insertIntoHashTable(HashTable *hashTable, void *value, uint32_t index);
 boolean removeElementFromHash(HashTable *hashtable, void *value);
 void destroyHashTable(HashTable *hashTable, void (*freeValue)(void *value));
 

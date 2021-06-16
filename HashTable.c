@@ -33,12 +33,12 @@
 #include <pthread.h>
 #endif
 
-HashTable *createHashTable(unsigned int size, 
+HashTable *createHashTable(uint32_t size, 
 			   void *commonAttr, 
-			   unsigned int (*hashFunction)(HashTable *hash_table, void *value),
+			   uint32_t (*hashFunction)(HashTable *hash_table, void *value),
 			   boolean (*equalFunction)(HashTable *hash_table, void *entryA, void *entryB))
 {  
-  static const unsigned int 
+  static const uint32_t 
     initTable[] = {64, 128, 256, 512, 1024, 2048, 4096, 
 		   8192, 16384, 32768, 65536, 131072, 
 		   262144, 524288, 1048576, 2097152,
@@ -49,11 +49,11 @@ HashTable *createHashTable(unsigned int size,
   HashTable 
     *hashTable = CALLOC(1, sizeof(HashTable));
   
-  unsigned int
+  uint32_t
     tableSize,
     i,
 #ifdef DEBUG
-    maxSize = (unsigned int)-1,    
+    maxSize = (uint32_t)-1,    
 #endif
     primeTableLength = sizeof(initTable)/sizeof(initTable[0]);
 
@@ -92,7 +92,7 @@ HashTable *createHashTable(unsigned int size,
 /* remove without destroying value of hashelem */
 boolean removeElementFromHash(HashTable *hashtable, void *value)
 {
-  unsigned int
+  uint32_t
     hashValue = hashtable->hashFunction(hashtable, value),
     position = hashValue % hashtable->tableSize;
   
@@ -132,9 +132,9 @@ boolean removeElementFromHash(HashTable *hashtable, void *value)
 }
 
 
-void *searchHashTableWithInt(HashTable *hashtable, unsigned int hashValue)
+void *searchHashTableWithInt(HashTable *hashtable, uint32_t hashValue)
 {
-  unsigned int 
+  uint32_t 
     position = hashValue % hashtable->tableSize;
   
   HashElem 
@@ -150,9 +150,9 @@ void *searchHashTableWithInt(HashTable *hashtable, unsigned int hashValue)
 }
 
 
-void *searchHashTable(HashTable *hashtable, void *value, unsigned int hashValue)
+void *searchHashTable(HashTable *hashtable, void *value, uint32_t hashValue)
 {
-  unsigned int 
+  uint32_t 
     position = hashValue % hashtable->tableSize;
   
   HashElem 
@@ -169,7 +169,7 @@ void *searchHashTable(HashTable *hashtable, void *value, unsigned int hashValue)
 }
 
 
-void insertIntoHashTable(HashTable *hashTable, void *value, unsigned int index)
+void insertIntoHashTable(HashTable *hashTable, void *value, uint32_t index)
 {  
   /* just copied this */
   HashElem 
@@ -235,7 +235,7 @@ void destroyHashTable(HashTable *hashTable, void (*freeValue)(void *value))
 
 void updateEntryCount(HashTable *hashTable)
 {
-  unsigned int 
+  uint32_t 
     i, 
     result = 0;
 
@@ -285,7 +285,7 @@ HashTableIterator *createHashTableIterator(HashTable *hashTable)
 
 boolean hashTableIteratorNext(HashTableIterator *hashTableIterator)
 {
-  unsigned int 
+  uint32_t 
     i, 
     tableSize = hashTableIterator->hashTable->tableSize;
   

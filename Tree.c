@@ -32,26 +32,26 @@
 #include "Tree.h"
 
 static int treeGetCh (FILE *fp) ;
-static void insertHashBootstop(unsigned int *bitVector, hashtable *h, unsigned int vectorLength, int treeNumber, int treeVectorLength, unsigned int position);
+static void insertHashBootstop(uint32_t *bitVector, hashtable *h, uint32_t vectorLength, int treeNumber, int treeVectorLength, uint32_t position);
 static void  treeEchoContext (FILE *fp1, int n);
 static double getBranchLength(All *tr, int perGene, nodeptr p);
 boolean isTip(int number, int maxTips);
 void getxnode (nodeptr p);
-static void insertHashAll(unsigned int *bitVector, hashtable *h, unsigned int vectorLength, int treeNumber,  unsigned int position);
-static void insertHash(unsigned int *bitVector, hashtable *h, unsigned int vectorLength, int bipNumber, unsigned int position);
-static int countHash(unsigned int *bitVector, hashtable *h, unsigned int vectorLength, unsigned int position);
+static void insertHashAll(uint32_t *bitVector, hashtable *h, uint32_t vectorLength, int treeNumber,  uint32_t position);
+static void insertHash(uint32_t *bitVector, hashtable *h, uint32_t vectorLength, int bipNumber, uint32_t position);
+static int countHash(uint32_t *bitVector, hashtable *h, uint32_t vectorLength, uint32_t position);
 
 
-static unsigned int KISS32(void)
+static uint32_t KISS32(void)
 {
-  static unsigned int 
+  static uint32_t 
     x = 123456789, 
     y = 362436069,
     z = 21288629,
     w = 14921776,
     c = 0;
 
-  unsigned int t;
+  uint32_t t;
 
   x += 545925293;
   y ^= (y<<13); 
@@ -66,15 +66,15 @@ static unsigned int KISS32(void)
 }
 
 
-stringHashtable *initStringHashTable(unsigned int n)
+stringHashtable *initStringHashTable(uint32_t n)
 {
-  static const unsigned int initTable[] = {53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317,
+  static const uint32_t initTable[] = {53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317,
 					     196613, 393241, 786433, 1572869, 3145739, 6291469, 12582917, 25165843,
 					     50331653, 100663319, 201326611, 402653189, 805306457, 1610612741};
   
   stringHashtable *h = (stringHashtable*)malloc(sizeof(stringHashtable));
   
-  unsigned int
+  uint32_t
     tableSize,
     i,
     primeTableLength = sizeof(initTable)/sizeof(initTable[0]);
@@ -97,9 +97,9 @@ stringHashtable *initStringHashTable(unsigned int n)
 }
 
 
-static unsigned int  hashString(char *p, unsigned int tableSize)
+static uint32_t  hashString(char *p, uint32_t tableSize)
 {
-  unsigned int h = 0;
+  uint32_t h = 0;
   
   for(; *p; p++)
     h = 31 * h + *p;
@@ -110,7 +110,7 @@ static unsigned int  hashString(char *p, unsigned int tableSize)
 
 void addword(char *s, stringHashtable *h, int nodeNumber)
 {
-  unsigned int position = hashString(s, h->tableSize);
+  uint32_t position = hashString(s, h->tableSize);
   stringEntry *p = h->table[position];
   
   for(; p!= NULL; p = p->next)
@@ -353,7 +353,7 @@ void hookup (nodeptr p, nodeptr q, double *z, int numBranches)
 }
 
 
-static void newviewBipartitions(BitVector **bitVectors, nodeptr p, int numsp, unsigned int vectorLength)
+static void newviewBipartitions(BitVector **bitVectors, nodeptr p, int numsp, uint32_t vectorLength)
 {
   if(isTip(p->number, numsp))
     return;
@@ -361,7 +361,7 @@ static void newviewBipartitions(BitVector **bitVectors, nodeptr p, int numsp, un
     nodeptr 
       q = p->next->back, 
       r = p->next->next->back;
-    unsigned int       
+    uint32_t       
       *vector = bitVectors[p->number],
       *left  = bitVectors[q->number],
       *right = bitVectors[r->number];
@@ -421,7 +421,7 @@ static void newviewBipartitions(BitVector **bitVectors, nodeptr p, int numsp, un
 
 
 
-void bitVectorInitravSpecial(unsigned int **bitVectors, nodeptr p, int numsp, unsigned int vectorLength, hashtable *h, int treeNumber, int function, branchInfo *bInf, int *countBranches, int treeVectorLength, boolean traverseOnly, boolean computeWRF)
+void bitVectorInitravSpecial(uint32_t **bitVectors, nodeptr p, int numsp, uint32_t vectorLength, hashtable *h, int treeNumber, int function, branchInfo *bInf, int *countBranches, int treeVectorLength, boolean traverseOnly, boolean computeWRF)
 {
   if(isTip(p->number, numsp))
     return;
@@ -449,8 +449,8 @@ void bitVectorInitravSpecial(unsigned int **bitVectors, nodeptr p, int numsp, un
 
       if(NOT(isTip(p->back->number, numsp)))
 	{
-	  unsigned int *toInsert  = bitVectors[p->number];
-	  unsigned int position = p->hash % h->tableSize;
+	  uint32_t *toInsert  = bitVectors[p->number];
+	  uint32_t position = p->hash % h->tableSize;
 
 	  switch(function)
 	    {
@@ -581,7 +581,7 @@ static boolean  treeFlushLabel (FILE *fp)
 
 int lookupWord(char *s, stringHashtable *h)
 {
-  unsigned int position = hashString(s, h->tableSize);
+  uint32_t position = hashString(s, h->tableSize);
   stringEntry *p = h->table[position];
   
   for(; p!= NULL; p = p->next)
@@ -1209,8 +1209,8 @@ entry *initEntry(void)
 {
   entry *e = (entry*)CALLOC(1,sizeof(entry));
 
-  e->bitVector     = (unsigned int*)NULL;
-  e->treeVector    = (unsigned int*)NULL;
+  e->bitVector     = (uint32_t*)NULL;
+  e->treeVector    = (uint32_t*)NULL;
   e->supportVector = (int*)NULL;
   e->bipNumber  = 0;
   e->bipNumber2 = 0;
@@ -1222,7 +1222,7 @@ entry *initEntry(void)
 }
 
 
-static void insertHashAll(unsigned int *bitVector, hashtable *h, unsigned int vectorLength, int treeNumber,  unsigned int position)
+static void insertHashAll(uint32_t *bitVector, hashtable *h, uint32_t vectorLength, int treeNumber,  uint32_t position)
 {    
   if(h->table[position] != NULL)
     {
@@ -1230,7 +1230,7 @@ static void insertHashAll(unsigned int *bitVector, hashtable *h, unsigned int ve
 
       do
 	{	 
-	  unsigned int i;
+	  uint32_t i;
 	  
 	  for(i = 0; i < vectorLength; i++)
 	    if(bitVector[i] != e->bitVector[i])
@@ -1251,12 +1251,12 @@ static void insertHashAll(unsigned int *bitVector, hashtable *h, unsigned int ve
 
       e = initEntry(); 
   
-      e->bitVector  = (unsigned int*)CALLOC(vectorLength, sizeof(unsigned int));
-      /* e->bitVector = (unsigned int*)malloc_aligned(vectorLength * sizeof(unsigned int)); */
-      memset(e->bitVector, 0, vectorLength * sizeof(unsigned int));
+      e->bitVector  = (uint32_t*)CALLOC(vectorLength, sizeof(uint32_t));
+      /* e->bitVector = (uint32_t*)malloc_aligned(vectorLength * sizeof(uint32_t)); */
+      memset(e->bitVector, 0, vectorLength * sizeof(uint32_t));
 
 
-      memcpy(e->bitVector, bitVector, sizeof(unsigned int) * vectorLength);
+      memcpy(e->bitVector, bitVector, sizeof(uint32_t) * vectorLength);
 
       if(treeNumber == 0)	
 	e->bipNumber  = 1;       	
@@ -1270,11 +1270,11 @@ static void insertHashAll(unsigned int *bitVector, hashtable *h, unsigned int ve
     {
       entry *e = initEntry(); 
   
-      e->bitVector  = (unsigned int*)CALLOC(vectorLength, sizeof(unsigned int));
-      /* e->bitVector = (unsigned int*)malloc_aligned(vectorLength * sizeof(unsigned int)); */
-      memset(e->bitVector, 0, vectorLength * sizeof(unsigned int));
+      e->bitVector  = (uint32_t*)CALLOC(vectorLength, sizeof(uint32_t));
+      /* e->bitVector = (uint32_t*)malloc_aligned(vectorLength * sizeof(uint32_t)); */
+      memset(e->bitVector, 0, vectorLength * sizeof(uint32_t));
 
-      memcpy(e->bitVector, bitVector, sizeof(unsigned int) * vectorLength);
+      memcpy(e->bitVector, bitVector, sizeof(uint32_t) * vectorLength);
 
       if(treeNumber == 0)	
 	e->bipNumber  = 1;	  	
@@ -1288,17 +1288,17 @@ static void insertHashAll(unsigned int *bitVector, hashtable *h, unsigned int ve
 }
 
 
-static void insertHash(unsigned int *bitVector, hashtable *h, unsigned int vectorLength, int bipNumber, unsigned int position)
+static void insertHash(uint32_t *bitVector, hashtable *h, uint32_t vectorLength, int bipNumber, uint32_t position)
 {
   entry *e = initEntry();
 
   e->bipNumber = bipNumber; 
-  /*e->bitVector = (unsigned int*)CALLOC(vectorLength, sizeof(unsigned int)); */
+  /*e->bitVector = (uint32_t*)CALLOC(vectorLength, sizeof(uint32_t)); */
 
-  e->bitVector = (unsigned int*)CALLOC(vectorLength , sizeof(unsigned int));
-  memset(e->bitVector, 0, vectorLength * sizeof(unsigned int));
+  e->bitVector = (uint32_t*)CALLOC(vectorLength , sizeof(uint32_t));
+  memset(e->bitVector, 0, vectorLength * sizeof(uint32_t));
  
-  memcpy(e->bitVector, bitVector, sizeof(unsigned int) * vectorLength);
+  memcpy(e->bitVector, bitVector, sizeof(uint32_t) * vectorLength);
   
   if(h->table[position] != NULL)
     {
@@ -1312,7 +1312,7 @@ static void insertHash(unsigned int *bitVector, hashtable *h, unsigned int vecto
 }
 
 
-static int countHash(unsigned int *bitVector, hashtable *h, unsigned int vectorLength, unsigned int position)
+static int countHash(uint32_t *bitVector, hashtable *h, uint32_t vectorLength, uint32_t position)
 { 
   if(h->table[position] == NULL)         
     return -1;
@@ -1321,7 +1321,7 @@ static int countHash(unsigned int *bitVector, hashtable *h, unsigned int vectorL
 
     do
       {	 
-	unsigned int i;
+	uint32_t i;
 
 	for(i = 0; i < vectorLength; i++)
 	  if(bitVector[i] != e->bitVector[i])
@@ -1338,7 +1338,7 @@ static int countHash(unsigned int *bitVector, hashtable *h, unsigned int vectorL
 }
 
 
-static void insertHashBootstop(unsigned int *bitVector, hashtable *h, unsigned int vectorLength, int treeNumber, int treeVectorLength, unsigned int position)
+static void insertHashBootstop(uint32_t *bitVector, hashtable *h, uint32_t vectorLength, int treeNumber, int treeVectorLength, uint32_t position)
 {    
   if(h->table[position] != NULL)
     {
@@ -1346,7 +1346,7 @@ static void insertHashBootstop(unsigned int *bitVector, hashtable *h, unsigned i
 
       do
 	{	 
-	  unsigned int i;
+	  uint32_t i;
 	  
 	  for(i = 0; i < vectorLength; i++)
 	    if(bitVector[i] != e->bitVector[i])
@@ -1366,15 +1366,15 @@ static void insertHashBootstop(unsigned int *bitVector, hashtable *h, unsigned i
 
       e->bipNumber = h->entryCount;
        
-      /*e->bitVector  = (unsigned int*)CALLOC(vectorLength, sizeof(unsigned int));*/
-      e->bitVector = (unsigned int*)CALLOC(vectorLength, sizeof(unsigned int));
-      memset(e->bitVector, 0, vectorLength * sizeof(unsigned int));
+      /*e->bitVector  = (uint32_t*)CALLOC(vectorLength, sizeof(uint32_t));*/
+      e->bitVector = (uint32_t*)CALLOC(vectorLength, sizeof(uint32_t));
+      memset(e->bitVector, 0, vectorLength * sizeof(uint32_t));
 
 
-      e->treeVector = (unsigned int*)CALLOC(treeVectorLength, sizeof(unsigned int));
+      e->treeVector = (uint32_t*)CALLOC(treeVectorLength, sizeof(uint32_t));
       
       e->treeVector[treeNumber / MASK_LENGTH] |= mask32[treeNumber % MASK_LENGTH];
-      memcpy(e->bitVector, bitVector, sizeof(unsigned int) * vectorLength);
+      memcpy(e->bitVector, bitVector, sizeof(uint32_t) * vectorLength);
      
       e->next = h->table[position];
       h->table[position] = e;          
@@ -1385,13 +1385,13 @@ static void insertHashBootstop(unsigned int *bitVector, hashtable *h, unsigned i
 
       e->bipNumber = h->entryCount;
 
-      e->bitVector = (unsigned int*)CALLOC(vectorLength , sizeof(unsigned int));
-      memset(e->bitVector, 0, vectorLength * sizeof(unsigned int));
+      e->bitVector = (uint32_t*)CALLOC(vectorLength , sizeof(uint32_t));
+      memset(e->bitVector, 0, vectorLength * sizeof(uint32_t));
 
-      e->treeVector = (unsigned int*)CALLOC(treeVectorLength, sizeof(unsigned int));
+      e->treeVector = (uint32_t*)CALLOC(treeVectorLength, sizeof(uint32_t));
 
       e->treeVector[treeNumber / MASK_LENGTH] |= mask32[treeNumber % MASK_LENGTH];
-      memcpy(e->bitVector, bitVector, sizeof(unsigned int) * vectorLength);     
+      memcpy(e->bitVector, bitVector, sizeof(uint32_t) * vectorLength);     
 
       h->table[position] = e;
     }

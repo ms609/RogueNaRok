@@ -56,7 +56,7 @@ Array* profileToArray(HashTable *profile, boolean updateFrequencyCount, boolean 
   Array 
     *result = CALLOC(1, sizeof(Array));
   
-  unsigned int 
+  uint32_t 
     count = 0;
 
   /* remember to always copy s.t. free() runs w/o problems */
@@ -132,7 +132,7 @@ int sortById(const void *a, const void *b)
 
 int sortBySupport(const void *a, const void *b)
 {
-  unsigned int
+  uint32_t
     as = (*(ProfileElem**)a)->treeVectorSupport,
     bs = (*(ProfileElem**)b)->treeVectorSupport;
 

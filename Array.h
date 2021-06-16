@@ -32,12 +32,13 @@
 #define ARRAY_H
 
 #include <stdlib.h>
+#include <stdint.h>
 
 typedef struct 
 {
   void *arrayTable;
   void *commonAttributes; 
-  unsigned int length;
+  uint32_t length;
 } Array;
 
 

@@ -41,7 +41,7 @@
 #include "common.h"
 #include "legacy.h"
 
-extern unsigned int *mask32;
+extern uint32_t *mask32;
 
 boolean isTip(int number, int maxTips);
 char *writeTreeToString(All *tr, boolean printBranchLengths);

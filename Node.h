@@ -43,7 +43,7 @@ typedef struct _node
 } Node; 
 
 boolean nodeEqual(HashTable *hashTable, void *entryA, void *entryB);
-unsigned int nodeHashValue(HashTable *hashTable, void *value);
+uint32_t nodeHashValue(HashTable *hashTable, void *value);
 void freeNode(void *value);
 IndexList *findAnIndependentComponent(HashTable *allNodes, Node *thisNode);
 

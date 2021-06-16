@@ -67,7 +67,7 @@ typedef struct dropset
 
 
 boolean dropsetEqual(HashTable *hashtable, void *entryA, void *entryB);
-unsigned int dropsetHashValue(HashTable *hashTable, void *value);
+uint32_t dropsetHashValue(HashTable *hashTable, void *value);
 void removeMergingEvent(Dropset *dropset, List *toBeRemoved);  
 List *freeMergingEventReturnNext(List *elem); 
 void removeDropsetAndRelated(HashTable *mergingHash, Dropset *dropset);

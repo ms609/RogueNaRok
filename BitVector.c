@@ -57,7 +57,7 @@ void printBitVector(BitVector *bv, int length)
 }
 
 
-void freeBitVectors(unsigned int **v, int n)
+void freeBitVectors(uint32_t **v, int n)
 {
   int i;
 

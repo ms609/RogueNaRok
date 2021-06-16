@@ -41,19 +41,19 @@
 
 typedef struct ent
 {
-  unsigned int *bitVector;
-  unsigned int *treeVector;
-  unsigned int amountTips;
+  uint32_t *bitVector;
+  uint32_t *treeVector;
+  uint32_t amountTips;
   int *supportVector;
-  unsigned int bipNumber;
-  unsigned int bipNumber2;
-  unsigned int supportFromTreeset[2]; 
+  uint32_t bipNumber;
+  uint32_t bipNumber2;
+  uint32_t supportFromTreeset[2]; 
   struct ent *next;
 } entry;
 
 typedef struct
 {
-  unsigned int *vector; 
+  uint32_t *vector; 
   int support;   
   struct noderec *oP;
   struct noderec *oQ;
@@ -61,14 +61,14 @@ typedef struct
 
 typedef  struct noderec
 {
-  unsigned int    isPresent[NUM_BRANCHES / MASK_LENGTH];
+  uint32_t    isPresent[NUM_BRANCHES / MASK_LENGTH];
   struct noderec  *backs[NUM_BRANCHES];
   char            xs[NUM_BRANCHES];
   branchInfo      *bInf;
   double           z[NUM_BRANCHES];
   struct noderec  *next;
   struct noderec  *back;
-  unsigned int   hash;
+  uint32_t   hash;
   int              support;
   int              number;
   char             x;
@@ -84,7 +84,7 @@ typedef struct stringEnt
 
 typedef struct
 {
-  unsigned int tableSize;
+  uint32_t tableSize;
   stringEntry **table;
 }  stringHashtable;
 
@@ -112,9 +112,9 @@ typedef struct _All
 
 typedef struct
 {
-  unsigned int tableSize;
+  uint32_t tableSize;
   entry **table;
-  unsigned int entryCount;
+  uint32_t entryCount;
 }  hashtable;
 
 
@@ -131,13 +131,13 @@ typedef struct
 #define nmlngth        1024         /* number of characters in species name */
 #define VECTOR_LENGTH (NUM_BRANCHES / MASK_LENGTH)
 
-void bitVectorInitravSpecial(unsigned int **bitVectors, nodeptr p, int numsp, unsigned int vectorLength, hashtable *h, int treeNumber, int function, branchInfo *bInf, int *countBranches, int treeVectorLength, boolean traverseOnly, boolean computeWRF);
-hashtable *initHashTable(unsigned int n);
+void bitVectorInitravSpecial(uint32_t **bitVectors, nodeptr p, int numsp, uint32_t vectorLength, hashtable *h, int treeNumber, int function, branchInfo *bInf, int *countBranches, int treeVectorLength, boolean traverseOnly, boolean computeWRF);
+hashtable *initHashTable(uint32_t n);
 void freeHashTable(hashtable *h);
 ProfileElem *addProfileElem(entry *helem, int vectorLength, int treeVectorLength, int numberOfTrees) ;
 
 
 BitVector *neglectThoseTaxa(All *tr, const char *toDrop);
-void pruneTaxon(All *tr, unsigned int k, boolean considerBranchLengths);
+void pruneTaxon(All *tr, uint32_t k, boolean considerBranchLengths);
 BitVector **initBitVector(All *tr, BitVector *vectorLength);
 #endif

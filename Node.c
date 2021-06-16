@@ -71,7 +71,7 @@ boolean nodeEqual(HashTable *hashTable, void *entryA, void *entryB)
 }
 
 
-unsigned int nodeHashValue(HashTable *hashTable, void *value)
+uint32_t nodeHashValue(HashTable *hashTable, void *value)
 {
   return ((Node*)value)->id; 
 }

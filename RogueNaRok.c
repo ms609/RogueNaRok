@@ -69,7 +69,7 @@
 
 #define HASH_TABLE_SIZE_CONST 100
 
-extern unsigned int *randForTaxa;
+extern uint32_t *randForTaxa;
 
 int bitVectorLength,
   treeVectorLength,
@@ -136,9 +136,9 @@ void debug_dropsetConsistencyCheck(HashTable *mergingHash)
 
 boolean isCompatible(ProfileElem* elemA, ProfileElem* elemB, BitVector *droppedTaxa)
 {
-  unsigned int i;
+  uint32_t i;
   
-  unsigned int 
+  uint32_t 
     *A = elemA->bitVector,
     *C = elemB->bitVector;
   
@@ -272,7 +272,7 @@ boolean mergedBipVanishes(MergingEvent *me, Array *bipartitionsById, IndexList *
 
 /* insert dropset. If it is a multi-taxa dropset, gather all merging
    events of sub-dropsets */
-Dropset *insertOrFindDropset(HashTable *hashtable, Dropset *dropset, unsigned int hashValue) 
+Dropset *insertOrFindDropset(HashTable *hashtable, Dropset *dropset, uint32_t hashValue) 
 {
   void
     *result = searchHashTable(hashtable, dropset, hashValue);
@@ -301,7 +301,7 @@ boolean checkForMergerAndAddEvent(boolean complement, ProfileElem *elemA, Profil
         *tmp = CALLOC(1,sizeof(Dropset));
       tmp->taxaToDrop = dropsetTaxa;      
       
-      unsigned int hashValue = 0; 
+      uint32_t hashValue = 0; 
       IndexList *iter =  dropsetTaxa; 
       FOR_LIST(iter)  
       {
@@ -1664,7 +1664,7 @@ void cleanup_rehashDropsets(HashTable *mergingHash, Dropset *bestDropset)
 #ifdef MYDEBUG_NOTWORKING
         assert(length > lengthIndexList(dropset->taxaToDrop));
 #endif
-        unsigned int hv = mergingHash->hashFunction(mergingHash, dropset);
+        uint32_t hv = mergingHash->hashFunction(mergingHash, dropset);
         Dropset *found = searchHashTable(mergingHash, dropset, hv);
         if( NOT found)
           insertIntoHashTable(mergingHash,dropset,hv);
