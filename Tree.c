@@ -222,7 +222,7 @@ boolean setupTree (All *tr, const char *bootstrapFile)
     j,
     k,
     tips,
-    inter; 
+    inter;
 
   tips = getNumberOfTaxa(tr, bootstrapFile);
   tr->mxtips = tips;
@@ -244,6 +244,7 @@ boolean setupTree (All *tr, const char *bootstrapFile)
       return  FALSE;
     }
 
+  tr->p0 = p0;
   tr->nodep[0] = (node *) NULL;    /* Use as 1-based array */
 
   for (i = 1; i <= tips; i++)
@@ -279,7 +280,7 @@ boolean setupTree (All *tr, const char *bootstrapFile)
 	  if(j == 1)
 	    p->x = 1;
 	  else
-	    p->x =  0;
+	    p->x = 0;
 	  p->number = i;
 	  p->next   = q;
 	  p->bInf   = (branchInfo *)NULL;
@@ -317,7 +318,6 @@ boolean setupTree (All *tr, const char *bootstrapFile)
   for(i = 0; i < tr->numBranches; i++)
     tr->partitionSmoothed[i] = FALSE;
   
-  free(p0);
   return TRUE;
 }
 
@@ -1471,6 +1471,7 @@ void freeTree(All *tr)
   /* FOR_0_LIMIT(i,((tr->mxtips-1) )) */
   /*   free(tr->nodep[i]); */
   free(tr->nodep);
+  free(tr->p0);
 
   free(tr);
 }
