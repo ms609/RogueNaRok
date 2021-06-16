@@ -2076,14 +2076,14 @@ SEXP RogueNaRok (SEXP R_bootTrees, // Character
   /* INTEGER etc. gives pointer to first element of an R vector */
   computeSupport = *LOGICAL(R_computeSupport);
   strcpy(run_id, CHAR(STRING_ELT(R_run_id, 0)));
-  maxDropsetSize = *REAL(R_maxDropsetSize);
+  maxDropsetSize = *INTEGER(R_maxDropsetSize);
   strcpy(workdir, CHAR(STRING_ELT(R_workdir, 0)));
   labelPenalty = *REAL(R_labelPenalty);
   mreOptimisation = *LOGICAL(R_mreOptimization);
   
   if (mreOptimisation)
     {
-      threshold = 50;
+      threshold = 50L;
     }
   else
     {
@@ -2131,7 +2131,7 @@ SEXP RogueNaRok (SEXP R_bootTrees, // Character
 
   if(threshold < 50)
     {
-      REprintf("ERROR: Only accepting threshold values between 50 (MR) and 100 (strict).\n");
+      REprintf("ERROR: Only accepting integer threshold values between 50 (MR) and 100 (strict).\n");
       error = ERR_LOW_THRESHOLD;
     }
 
