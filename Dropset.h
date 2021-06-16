@@ -32,6 +32,8 @@
 #ifndef DROPSET_H
 #define DROPSET_H
 
+#include <R.h> // for unif_rand()
+
 #include "common.h"
 #include "List.h"
 #include "ProfileElem.h"
