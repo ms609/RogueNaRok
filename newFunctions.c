@@ -141,7 +141,7 @@ Array *getOriginalBipArray(All *tr, FILE *bestTree, FILE *treeFile)
       readBootstrapTree(tr, treeFile);     
       
       if( NOT commonStart)
-	commonStart = tr->start;
+        commonStart = tr->start;
       bCount = 0; 
       bitVectorInitravSpecial(setBitVectors, commonStart->back, tr->mxtips, vectorLength, setHtable, (i - 1), BIPARTITIONS_BOOTSTOP, (branchInfo *)NULL, &bCount, treeVectorLength, FALSE, FALSE);
     }

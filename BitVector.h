@@ -42,7 +42,7 @@
 
 typedef uint32_t BitVector; 
 
-#define BIT_COUNT(x)  precomputed16_bitcount(x)
+#define BIT_COUNT(x) precomputed16_bitcount(x)
 #define NUMBER_BITS_IN_COMPLEMENT(bipartition) (mxtips - dropRound - bipartition->numberOfBitsSet)
 #define GET_BITVECTOR_LENGTH(x) (((x) % MASK_LENGTH) ? ((x) / MASK_LENGTH + 1) : ((x) / MASK_LENGTH))
 #define FLIP_NTH_BIT(bitVector,n) (bitVector[(n) / MASK_LENGTH] |= mask32[ (n) % MASK_LENGTH ])
