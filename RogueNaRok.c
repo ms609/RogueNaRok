@@ -1660,7 +1660,7 @@ void cleanup_rehashDropsets(HashTable *mergingHash, Dropset *bestDropset)
 
         dropset->taxaToDrop = setMinusOf(dropset->taxaToDrop, taxaToDrop);
 
-#ifdef MYDEBUG
+#ifdef MYDEBUG_NOTWORKING
         assert(length > lengthIndexList(dropset->taxaToDrop));
 #endif
         unsigned int hv = mergingHash->hashFunction(mergingHash, dropset);
