@@ -216,7 +216,7 @@ int getNumberOfTaxa(All *tr, const char *bootStrapFile)
 
 boolean setupTree (All *tr, const char *bootstrapFile)
 {
-  nodeptr  p0, p, q;
+  nodeptr p0, p, q;
   int
     i,
     j,
@@ -234,12 +234,13 @@ boolean setupTree (All *tr, const char *bootstrapFile)
   if (NOT(p0 = (nodeptr) malloc((tips + 3*inter) * sizeof(node))))
     {
       REprintf("ERROR: Unable to obtain sufficient tree memory\n");
-      return  FALSE;
+      return FALSE;
     }
 
   if (NOT(tr->nodep = (nodeptr *) malloc((2*tr->mxtips) * sizeof(nodeptr))))
     {
       REprintf("ERROR: Unable to obtain sufficient tree memory, too\n");
+      free(p0);
       return  FALSE;
     }
 
@@ -315,7 +316,8 @@ boolean setupTree (All *tr, const char *bootstrapFile)
 
   for(i = 0; i < tr->numBranches; i++)
     tr->partitionSmoothed[i] = FALSE;
-
+  
+  free(p0);
   return TRUE;
 }
 
