@@ -2047,21 +2047,21 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
   return ERR_NONE;
 }
 
-SEXP RogueNaRok (SEXP R_bootTrees,
-                 SEXP R_run_id,
-                 SEXP R_treeFile,
+SEXP RogueNaRok (SEXP R_bootTrees, // Character
+                 SEXP R_run_id, // Character
+                 SEXP R_treeFile, // Character
                  SEXP R_computeSupport, // Logical
-                 SEXP R_maxDropsetSize,
-                 SEXP R_excludeFile,
-                 SEXP R_workdir,
-                 SEXP R_labelPenalty,
-                 SEXP R_mreOptimization,
-                 SEXP R_threshold)
+                 SEXP R_maxDropsetSize, // Integer
+                 SEXP R_excludeFile, // Character
+                 SEXP R_workdir, // Character
+                 SEXP R_labelPenalty, // Double
+                 SEXP R_mreOptimization, // Logical
+                 SEXP R_threshold) // Double
 {
   int threshold = 50;
   errcode error = ERR_NONE;
 
-  const char 
+  const char
     *excludeFile = CHAR(STRING_ELT(R_excludeFile, 0)),
     *bootTrees = CHAR(STRING_ELT(R_bootTrees, 0)),
     *treeFile = CHAR(STRING_ELT(R_treeFile, 0));
