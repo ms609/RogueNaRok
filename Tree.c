@@ -942,7 +942,7 @@ static int treeGetCh (FILE *fp)
 
 static boolean treeNeedCh (FILE *fp, int c1, char *where)
 {
-  int  c2;
+  int c2;
   
   if ((c2 = treeGetCh(fp)) == c1)  return TRUE;
   
@@ -956,7 +956,7 @@ static boolean treeNeedCh (FILE *fp, int c1, char *where)
       ungetc(c2, fp);
       treeEchoContext(fp, stdout, 40);
     }
-  putchar('\n');
+  REprintf("\n");
 
   if(c1 == ':')    
     REprintf("RogueNaRok may be expecting to read a tree that contains branch lengths\n");
