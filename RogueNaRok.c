@@ -2089,7 +2089,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
 #ifdef PARALLEL
   if(NOT numberOfThreads)
     {
-      Rprintf("\n\nPlease specify the number of threads for parallel execution with -T\n\n");
+      REprintf("\n\nPlease specify the number of threads for parallel execution with -T\n\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
@@ -2099,7 +2099,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
     }
   if(numberOfThreads == 1)
     {
-      Rprintf("\n\nCalling parallel version of RogueNaRok with 1 thread is deprecated.\n\
+      REprintf("\n\nCalling parallel version of RogueNaRok with 1 thread is deprecated.\n\
        Please compile a sequential version of RogueNaRok instead.\n\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
@@ -2115,7 +2115,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
 
   if( NOT strcmp(bootTrees, ""))
     {
-      Rprintf("ERROR: Please specify a file containing bootstrap trees via -i.\n");
+      REprintf("ERROR: Please specify a file containing bootstrap trees via -i.\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
@@ -2126,7 +2126,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
 
   if( NOT strcmp(run_id, ""))
     {
-      Rprintf("ERROR: Please specify a run-id via -n\n");
+      REprintf("ERROR: Please specify a run-id via -n\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
@@ -2137,7 +2137,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
 
   if(threshold < 50)
     {
-      Rprintf("ERROR: Only accepting threshold values between 50 (MR) and 100 (strict).\n");
+      REprintf("ERROR: Only accepting threshold values between 50 (MR) and 100 (strict).\n");
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       int *ret;
       ret = INTEGER(Rres);
@@ -2148,7 +2148,7 @@ SEXP RogueNaRok (SEXP R_bootTrees,
 
   if(threshold != 50 && strcmp(treeFile, "") )
     {
-      Rprintf("ERROR: threshold option -c not available in combination with best-known tree.\n");
+      REprintf("ERROR: threshold option -c not available in combination with best-known tree.\n");
       int *ret;
       SEXP Rres = PROTECT(allocVector(INTSXP, 1));
       ret = INTEGER(Rres);
