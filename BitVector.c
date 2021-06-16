@@ -47,7 +47,7 @@ void printBitVector(BitVector *bv, int length)
 {
   int i ;  
   for(i = 0; i < length * 32; ++i)
-    printf("%d", NTH_BIT_IS_SET(bv, i) ? 1 : 0);
+    Rprintf("%d", NTH_BIT_IS_SET(bv, i) ? 1 : 0);
 }
 
 
