@@ -85,7 +85,7 @@ int bitVectorLength,
   bestCumEver = 0, 
 
   numBips,
-  mxtips; 
+  mxtips;
 
 Dropset **dropsetPerRound; 
 
@@ -2073,6 +2073,14 @@ SEXP RogueNaRok (SEXP R_bootTrees, // Character
   programVersion = PROG_VERSION;
   programReleaseDate  = PROG_RELEASE_DATE;
 
+  // Reset global variables
+  rogueMode = 0;
+  dropRound = 0;
+  taxaDropped = 0;
+  cumScore = 0;
+  bestCumEver = 0;
+    
+  
   /* INTEGER etc. gives pointer to first element of an R vector */
   computeSupport = *LOGICAL(R_computeSupport);
   strcpy(run_id, CHAR(STRING_ELT(R_run_id, 0)));
