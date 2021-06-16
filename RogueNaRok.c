@@ -54,7 +54,7 @@
 #define PROG_VERSION "1.0.0.9000"
 #define PROG_RELEASE_DATE "2011-10-25"
 
-#define PRINT_VERY_VERBOSE
+// #define PRINT_VERY_VERBOSE
 #define MYDEBUG
 
 #define PRINT_DROPSETS
@@ -63,7 +63,7 @@
 /* try to produce minimal dropsets */
 /* #define MIN_DROPSETS */
 
-#define VANILLA_CONSENSUS_OPT  0
+#define VANILLA_CONSENSUS_OPT 0
 #define ML_TREE_OPT 1
 #define MRE_CONSENSUS_OPT 2
 
@@ -1749,9 +1749,19 @@ BitVector *cleanup(All *tr, HashTable *mergingHash, Dropset *bestDropset, BitVec
 }
 
 
-void doomRogues(All *tr, const char *bootStrapFileName, 
-                const char *dontDropFile, 
-                const char *treeFile, boolean mreOptimisation, int rawThresh)
+typedef enum {ERR_NONE = 0,
+              ERR_PARALLEL,
+              ERR_NO_TREE,
+              ERR_NO_RUN_ID,
+              ERR_LOW_THRESHOLD,
+              ERR_NO_BEST_TREE,
+              ERR_TREE_INIT,
+              ERR_BIG_DROPSET,
+              ERR_ROGUE_MODE} errcode;
+
+errcode doomRogues(All *tr, const char *bootStrapFileName, 
+                   const char *dontDropFile, 
+                   const char *treeFile, boolean mreOptimisation, int rawThresh)
 {
   double startingTime = gettime();
   timeInc = gettime();
@@ -1778,8 +1788,7 @@ void doomRogues(All *tr, const char *bootStrapFileName,
       if(mreOptimisation)
         {
           PR("ERROR: Please choose either support in the MRE consensus tree OR the bipartitions in the ML tree for optimization.\n");
-          return;
-        //   exit(-1);
+          return ERR_ROGUE_MODE;
         }
       PR("mode: optimization of support of ML tree bipartitions in the\
            bootstrap tree set.\n");
@@ -1815,7 +1824,7 @@ void doomRogues(All *tr, const char *bootStrapFileName,
  will be no bipartitions left and thus such a pruned tree set can never \n\
  have a higher information content (in terms of RBIC) than the original \n\
  tree.\n", maxDropsetSize, mxtips-3);
-      exit(-1);
+      return ERR_BIG_DROPSET;
     }
 
   dropsetPerRound = CALLOC(mxtips, sizeof(Dropset*)); 
@@ -2030,6 +2039,7 @@ void doomRogues(All *tr, const char *bootStrapFileName,
   free(randForTaxa);
   free(droppedTaxa);
   free(candidateBips);
+  return ERR_NONE;
 }
 
 SEXP RogueNaRok (SEXP R_bootTrees,
@@ -2044,13 +2054,6 @@ SEXP RogueNaRok (SEXP R_bootTrees,
                  SEXP R_threshold)
 {
   int threshold = 50;
-  typedef enum {ERR_NONE = 0,
-                ERR_PARALLEL,
-                ERR_NO_TREE,
-                ERR_NO_RUN_ID,
-                ERR_LOW_THRESHOLD,
-                ERR_NO_BEST_TREE,
-                ERR_TREE_INIT} errcode;
   errcode error = ERR_NONE;
 
   const char 
@@ -2143,15 +2146,14 @@ SEXP RogueNaRok (SEXP R_bootTrees,
     }
 
   if (error == ERR_NONE) {
-    doomRogues(tr,
-               bootTrees,
-               excludeFile,
-               treeFile,
-               mreOptimisation,
-               threshold);
+    error = doomRogues(tr,
+                       bootTrees,
+                       excludeFile,
+                       treeFile,
+                       mreOptimisation,
+                       threshold);
   }
 
-  
   freeTree(tr);
   destroyMask(); // free(mask32);
   destroyInfoFile(); // free(infoFileName);
