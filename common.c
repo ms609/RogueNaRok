@@ -168,7 +168,6 @@ void setupInfoFile()
 
 void destroyInfoFile()
 {
-  Rprintf("Destroying infoFileName\n"); // MS TODO DELETE;
   free(infoFileName);
 }
 

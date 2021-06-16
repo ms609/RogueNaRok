@@ -44,7 +44,6 @@ void initializeMask()
 
 void destroyMask()
 {
-  Rprintf("Destroying mask32"); // MS TODO DELETE.
   free(mask32);
 }
 
