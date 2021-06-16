@@ -42,6 +42,12 @@ void initializeMask()
     mask32[i] = mask32[i-1] << 1; 
 }
 
+void destroyMask()
+{
+  Rprintf("Destroying mask32"); // MS TODO DELETE.
+  free(mask32);
+}
+
 
 void printBitVector(BitVector *bv, int length)
 {

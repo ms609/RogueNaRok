@@ -55,6 +55,7 @@ char bits_in_16bits [0x1u << 16];
 extern BitVector *mask32;
 
 void initializeMask();
+void destroyMask();
 BitVector genericBitCount(BitVector* bitVector, int bitVectorLength);
 BitVector precomputed16_bitcount (BitVector n);
 void compute_bits_in_16bits(void);
