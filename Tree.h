@@ -36,6 +36,7 @@
 #include <math.h>
 #include <string.h>
 #include <assert.h>
+#include <R.h>
 
 #include "common.h"
 #include "legacy.h"

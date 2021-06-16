@@ -174,7 +174,7 @@ int getNumberOfTaxa(All *tr, const char *bootStrapFile)
 		{
 		  if(strcmp(buffer, nameList[i]) == 0)
 		    {
-		      printf("A taxon labelled by %s appears twice in the first tree of tree collection %s, exiting ...\n", buffer, bootStrapFile);
+		      REprintf("A taxon labelled by %s appears twice in the first tree of tree collection %s, exiting ...\n", buffer, bootStrapFile);
 		      exit(-1);
 		    }
 		}	     
@@ -195,8 +195,8 @@ int getNumberOfTaxa(All *tr, const char *bootStrapFile)
 	}   
     }
   
-  printf("Found a total of %d taxa in first tree of tree collection %s\n", taxaCount, bootStrapFile);
-  printf("Expecting all remaining trees in collection to have the same taxon set\n\n");
+  Rprintf("Found a total of %d taxa in first tree of tree collection %s\n", taxaCount, bootStrapFile);
+  Rprintf("Expecting all remaining trees in collection to have the same taxon set\n\n");
 
   tr->nameList = (char **)malloc(sizeof(char *) * (taxaCount + 1));  
   for(i = 1; i <= taxaCount; i++)
@@ -233,13 +233,13 @@ boolean setupTree (All *tr, const char *bootstrapFile)
 
   if (NOT(p0 = (nodeptr) malloc((tips + 3*inter) * sizeof(node))))
     {
-      printf("ERROR: Unable to obtain sufficient tree memory\n");
+      REprintf("ERROR: Unable to obtain sufficient tree memory\n");
       return  FALSE;
     }
 
   if (NOT(tr->nodep = (nodeptr *) malloc((2*tr->mxtips) * sizeof(nodeptr))))
     {
-      printf("ERROR: Unable to obtain sufficient tree memory, too\n");
+      REprintf("ERROR: Unable to obtain sufficient tree memory, too\n");
       return  FALSE;
     }
 
@@ -605,7 +605,7 @@ int treeFindTipByLabelString(char  *str, All *tr)
     }
   else
     { 
-      printf("ERROR: Cannot find tree species: %s\n", str);
+      REprintf("ERROR: Cannot find tree species: %s\n", str);
       return  0;
     }
 }
@@ -634,9 +634,9 @@ static boolean treeProcessLength (FILE *fp, double *dptr)
   (void) ungetc(ch, fp);
   
   if (fscanf(fp, "%lf", dptr) != 1) {
-    printf("ERROR: treeProcessLength: Problem reading branch length\n");
+    REprintf("ERROR: treeProcessLength: Problem reading branch length\n");
     treeEchoContext(fp, stdout, 40);
-    printf("\n");
+    REprintf("\n");
     return  FALSE;
   }
   
@@ -787,8 +787,8 @@ static nodeptr uprootTree (All *tr, nodeptr p, boolean readBranchLengths, boolea
   
   if(isTip(p->number, tr->mxtips) || p->back) 
     {
-      printf("ERROR: Unable to uproot tree.\n");
-      printf("       Inappropriate node marked for removal.\n");
+      REprintf("ERROR: Unable to uproot tree.\n");
+      REprintf("       Inappropriate node marked for removal.\n");
       assert(0);
     }
   
@@ -804,8 +804,8 @@ static nodeptr uprootTree (All *tr, nodeptr p, boolean readBranchLengths, boolea
 
   if (n != tr->mxtips + tr->ntips - 1) 
     {
-      printf("ERROR: Unable to uproot tree.  Inconsistent\n");
-      printf("       number of tips and nodes for rooted tree.\n");
+      REprintf("ERROR: Unable to uproot tree.  Inconsistent\n");
+      REprintf("       number of tips and nodes for rooted tree.\n");
       assert(0);
     }
 
@@ -828,7 +828,7 @@ static nodeptr uprootTree (All *tr, nodeptr p, boolean readBranchLengths, boolea
     {    
       if(tr->constraintVector[p->number] != 0)
 	{
-	  printf("Root node to remove should have top-level grouping of 0\n");
+	  REprintf("Root node to remove should have top-level grouping of 0\n");
 	  assert(0);
 	}
     }  
@@ -946,10 +946,10 @@ static boolean treeNeedCh (FILE *fp, int c1, char *where)
   
   if ((c2 = treeGetCh(fp)) == c1)  return TRUE;
   
-  printf("ERROR: Expecting '%c' %s tree; found:", c1, where);
+  REprintf("ERROR: Expecting '%c' %s tree; found:", c1, where);
   if (c2 == EOF) 
     {
-      printf("End-of-File");
+      REprintf("End-of-File");
     }
   else 
     {      	
@@ -959,7 +959,7 @@ static boolean treeNeedCh (FILE *fp, int c1, char *where)
   putchar('\n');
 
   if(c1 == ':')    
-    printf("RogueNaRok may be expecting to read a tree that contains branch lengths\n");
+    REprintf("RogueNaRok may be expecting to read a tree that contains branch lengths\n");
 
   return FALSE;
 }
@@ -977,8 +977,8 @@ static boolean addElementLen (FILE *fp, All *tr, nodeptr p, boolean readBranchLe
 	{
 	  if (tr->rooted || n > 2*(tr->mxtips) - 1) 
 	    {
-	      printf("ERROR: Too many internal nodes.  Is tree rooted?\n");
-	      printf("       Deepest splitting should be a trifurcation.\n");
+	      REprintf("ERROR: Too many internal nodes.  Is tree rooted?\n");
+	      REprintf("       Deepest splitting should be a trifurcation.\n");
 	      return FALSE;
 	    }
 	  else 
@@ -1165,7 +1165,7 @@ int treeReadLen (FILE *fp, All *tr,
       tr->start = uprootTree(tr, p->next->next, FALSE, FALSE);      
       if (NOT tr->start)                              
 	{
-	  printf("FATAL ERROR UPROOTING TREE\n");
+	  REprintf("FATAL ERROR UPROOTING TREE\n");
 	  assert(0);
 	}    
     }
