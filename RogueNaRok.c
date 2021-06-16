@@ -2053,13 +2053,6 @@ SEXP RogueNaRok (SEXP R_bootTrees,
   boolean
     mreOptimisation = FALSE;
 
-  if(sizeof(int) != 4)
-    {
-      printf("I am sorry, RogueNaRok currently does not support your computer architecture. The code assumes that an integer (type int) consists of 4 bytes.\n");
-      assert(sizeof(int) == 4);
-    }
-
-
   programName = PROG_NAME;
   programVersion = PROG_VERSION;
   programReleaseDate  = PROG_RELEASE_DATE;

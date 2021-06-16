@@ -36,10 +36,11 @@
 #include <assert.h>
 #include <string.h>
 #include <R.h>
+#include <stdint.h>
 
 #include "common.h"
 
-typedef unsigned int BitVector; 
+typedef uint32_t BitVector; 
 
 #define BIT_COUNT(x)  precomputed16_bitcount(x)
 #define NUMBER_BITS_IN_COMPLEMENT(bipartition) (mxtips - dropRound - bipartition->numberOfBitsSet)
