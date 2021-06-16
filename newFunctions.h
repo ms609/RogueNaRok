@@ -31,6 +31,8 @@
 #ifndef NEW_FUNCTIONS_H
 #define NEW_FUNCTIONS_H
 
+#include <R.h> // for unif_rand()
+
 #include "List.h"
 #include "common.h"
 #include "legacy.h"

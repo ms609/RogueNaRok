@@ -56,7 +56,7 @@ int wrapStrToL(char *string)
   int result = strtol(string, &p, 10);
   if (*p != 0 || p == string)
     {
-      printf("Something went wrong parsing a number.");
+      REprintf("Something went wrong parsing a number.");
       exit(-1);
     }
   return result; 
@@ -69,7 +69,7 @@ double wrapStrToDouble(char *string)
   double result = strtod(string, &p);
   if (*p != 0 || p == string)
     {
-      printf("Something went wrong parsing a number.");
+      REprintf("Something went wrong parsing a number.");
       exit(-1);
     }
   return result; 
@@ -96,9 +96,11 @@ int filexists(char *filename)
 void  printVersionInfo(boolean toInfoFile)
 {
   if(toInfoFile)
-    PR("\nThis is %s version %s released by Andre J. Aberer in %s.\n\n", programName, programVersion, programReleaseDate);
+    PR("\nThis is %s version %s by Andre J. Aberer, modified by Martin R. Smith on %s.\n\n",
+       programName, programVersion, programReleaseDate);
   else
-    printf("\nThis is %s version %s released by Andre J. Aberer in %s.\n\n", programName, programVersion, programReleaseDate);
+    Rprintf("\nThis is %s version %s by Andre J. Aberer, modified by Martin R. Smith on %s.\n\n",
+            programName, programVersion, programReleaseDate);
 }
 
 
@@ -113,7 +115,7 @@ FILE *myfopen(const char *path, const char *mode)
       else
 	{
 	  if(processID == 0)
-	    printf("The file %s you want to open for reading does not exist, exiting ...\n", path);
+	    REprintf("The file %s you want to open for reading does not exist, exiting ...\n", path);
 	  assert(0);
 	  exit(-1);
 	  return (FILE *)NULL;
@@ -126,7 +128,7 @@ FILE *myfopen(const char *path, const char *mode)
       else
 	{
 	  if(processID == 0)
-	    printf("The file %s RogueNaRok wants to open for writing or appending can not be opened [mode: %s], exiting ...\n",
+	    REprintf("The file %s RogueNaRok wants to open for writing or appending can not be opened [mode: %s], exiting ...\n",
 		   path, mode);
 	  exit(-1);
 	  return (FILE *)NULL;
@@ -153,7 +155,7 @@ void setupInfoFile()
   
   if( NOT ALLOW_OVERWRITE_INFO_FILE && filexists(result))
     {
-      printf("The run-id >%s< you specified already exists in folder >%s<. Aborting in order to protect the output of this previous run.\n", run_id, workdir);
+      REprintf("The run-id >%s< you specified already exists in folder >%s<. Aborting in order to protect the output of this previous run.\n", run_id, workdir);
       exit(-1);
     }
 

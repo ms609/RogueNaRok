@@ -33,7 +33,7 @@
 
 static int treeGetCh (FILE *fp) ;
 static void insertHashBootstop(unsigned int *bitVector, hashtable *h, unsigned int vectorLength, int treeNumber, int treeVectorLength, unsigned int position);
-static void  treeEchoContext (FILE *fp1, FILE *fp2, int n);
+static void  treeEchoContext (FILE *fp1, int n);
 static double getBranchLength(All *tr, int perGene, nodeptr p);
 boolean isTip(int number, int maxTips);
 void getxnode (nodeptr p);
@@ -635,7 +635,7 @@ static boolean treeProcessLength (FILE *fp, double *dptr)
   
   if (fscanf(fp, "%lf", dptr) != 1) {
     REprintf("ERROR: treeProcessLength: Problem reading branch length\n");
-    treeEchoContext(fp, stdout, 40);
+    treeEchoContext(fp, 40);
     REprintf("\n");
     return  FALSE;
   }
@@ -886,7 +886,7 @@ boolean whitechar (int ch)
 }
 
 
-static void  treeEchoContext (FILE *fp1, FILE *fp2, int n)
+static void  treeEchoContext (FILE *fp1, int n)
 { /* treeEchoContext */
   int      ch;
   boolean  waswhite;
@@ -902,7 +902,7 @@ static void  treeEchoContext (FILE *fp1, FILE *fp2, int n)
       waswhite = FALSE;
     }
     
-    if (ch > '\0') {putc(ch, fp2); n--;}
+    if (ch > '\0') {REprintf((const char*) &ch); n--;} // TODO improve R compatability
   }
 }
 
@@ -954,7 +954,7 @@ static boolean treeNeedCh (FILE *fp, int c1, char *where)
   else 
     {      	
       ungetc(c2, fp);
-      treeEchoContext(fp, stdout, 40);
+      treeEchoContext(fp, 40);
     }
   REprintf("\n");
 
