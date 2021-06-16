@@ -28,7 +28,6 @@
  * 
  */
 
-
 #include "common.h"
 
 #define ALLOW_OVERWRITE_INFO_FILE FALSE
@@ -229,7 +228,7 @@ void printBothOpen(const char* format, ... )
   va_end(args);
 
   va_start(args, format);
-  vprintf(format, args );
+  Rvprintf(format, args );
   va_end(args);
 
   fclose(f);

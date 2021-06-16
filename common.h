@@ -39,6 +39,7 @@
 #include <assert.h>
 #include <math.h>
 #include <ctype.h>
+#include <R.h>
 
 #ifdef WIN32
 #include <direct.h>
