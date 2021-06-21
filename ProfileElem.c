@@ -1,13 +1,13 @@
-/*  RogueNaRok is an algorithm for the identification of rogue taxa in a set of phylogenetic trees. 
+/*  RogueNaRok is an algorithm for the identification of rogue taxa in a set of phylogenetic trees.
  *
- *  Moreover, the program collection comes with efficient implementations of 
+ *  Moreover, the program collection comes with efficient implementations of
  *   * the unrooted leaf stability by Thorley and Wilkinson
  *   * the taxonomic instability index by Maddinson and Maddison
- *   * a maximum agreement subtree implementation (MAST) for unrooted trees 
- *   * a tool for pruning taxa from a tree collection. 
- * 
+ *   * a maximum agreement subtree implementation (MAST) for unrooted trees
+ *   * a tool for pruning taxa from a tree collection.
+ *
  *  Copyright October 2011 by Andre J. Aberer
- * 
+ *
  *  Tree I/O and parallel framework are derived from RAxML by Alexandros Stamatakis.
  *
  *  This program is free software; you may redistribute it and/or
@@ -22,10 +22,10 @@
  *
  *  For any other inquiries send an Email to Andre J. Aberer
  *  andre.aberer at googlemail.com
- * 
+ *
  *  When publishing work that is based on the results from RogueNaRok, please cite:
- *  Andre J. Aberer, Denis Krompaß, Alexandros Stamatakis. RogueNaRok: an Efficient and Exact Algorithm for Rogue Taxon Identification. (unpublished) 2011. 
- * 
+ *  Andre J. Aberer, Denis Krompaß, Alexandros Stamatakis. RogueNaRok: an Efficient and Exact Algorithm for Rogue Taxon Identification. (unpublished) 2011.
+ *
  */
 
 #include "ProfileElem.h"
@@ -44,26 +44,26 @@ void addElemToArray(ProfileElem *elem, Array *array)
 void freeProfileElem(ProfileElem *elem)
 {
   free(elem->treeVector);
-  free(elem->bitVector);  
+  free(elem->bitVector);
   free(elem);
 }
 
 Array* profileToArray(HashTable *profile, boolean updateFrequencyCount, boolean assignIds)
 {
-  HashTableIterator* 
+  HashTableIterator*
     hashTableIterator = createHashTableIterator(profile);
-  
-  Array 
+
+  Array
     *result = CALLOC(1, sizeof(Array));
-  
-  uint32_t 
+
+  uint32_t
     count = 0;
 
   /* remember to always copy s.t. free() runs w/o problems */
-  
-  ProfileElemAttr 
+
+  ProfileElemAttr
     *profileElemAttr;
-  
+
   result->commonAttributes = CALLOC(1, sizeof(ProfileElemAttr));
   result->commonAttributes = memcpy(result->commonAttributes, profile->commonAttributes, sizeof(ProfileElemAttr));
   profileElemAttr = result->commonAttributes;
@@ -73,7 +73,7 @@ Array* profileToArray(HashTable *profile, boolean updateFrequencyCount, boolean 
 
   if( NOT hashTableIterator)
     return result;
-  
+
   do
     {
       ProfileElem *profileElem = getCurrentValueFromHashTableIterator(hashTableIterator);
@@ -85,60 +85,61 @@ Array* profileToArray(HashTable *profile, boolean updateFrequencyCount, boolean 
 
       if(assignIds)
 	profileElem->id = count;
-      
+
       ((ProfileElem**)result->arrayTable)[count] = profileElem;
       assert(profileElem->bitVector && profileElem->treeVector);
       count++;
     }
   while(hashTableIteratorNext(hashTableIterator));
-  
+
   assert(count == profile->entryCount);
-  
+
   free(hashTableIterator);
-  
+
   return result;
 }
 
 int sortBipProfile(const void *a, const void *b)
 {
   if(*((ProfileElem**)a) == NULL)
-    return 1; 
+    return 1;
   if(*((ProfileElem**)b) == NULL)
     return -1;
-  
-  int
+
+  const int
     as = (*(ProfileElem**)a)->numberOfBitsSet,
     bs = (*(ProfileElem**)b)->numberOfBitsSet;
 
   if(as == bs)
-    return 0; 
+    return 0;
 
-  return as < bs ? -1 : 1; 
+  return as < bs ? -1 : 1;
 }
 
 
 int sortById(const void *a, const void *b)
 {
-  int
+  const int
     as = (*(ProfileElem**)a)->id,
     bs = (*(ProfileElem**)b)->id;
 
   if(as == bs)
-    return 0; 
+    return 0;
 
-  return as < bs ? -1 : 1; 
+  return as < bs ? -1 : 1;
 }
 
 
 int sortBySupport(const void *a, const void *b)
 {
-  uint32_t
+  const uint32_t
     as = (*(ProfileElem**)a)->treeVectorSupport,
     bs = (*(ProfileElem**)b)->treeVectorSupport;
 
   if(as == bs)
-    return 0; 
-  return as > bs ? -1 : 1; 
+    return 0;
+
+  return as > bs ? -1 : 1;
 }
 
 
@@ -146,15 +147,15 @@ int sortBySupport(const void *a, const void *b)
    have at least i bits set?  */
 int *createNumBitIndex(Array *bipartitionProfile, int mxtips)
 {
-  int *result  = CALLOC(mxtips, sizeof(int));   
+  int *result  = CALLOC(mxtips, sizeof(int));
   memset(result, -1, mxtips * sizeof(int));
-  qsort(bipartitionProfile->arrayTable, bipartitionProfile->length, sizeof(ProfileElem**), sortBipProfile); 
-  
+  qsort(bipartitionProfile->arrayTable, bipartitionProfile->length, sizeof(ProfileElem**), sortBipProfile);
+
   int
-    i,    
+    i,
     max = 0,
-    current = 0; 
-  
+    current = 0;
+
   FOR_0_LIMIT(i,bipartitionProfile->length)
     {
       ProfileElem
@@ -167,10 +168,10 @@ int *createNumBitIndex(Array *bipartitionProfile, int mxtips)
 	{
 	  current = elem->numberOfBitsSet;
 	  result[current] = i;
-	  max = i; 
+	  max = i;
 	}
     }
-  
+
   current = max;
   for(i = mxtips-1; i >= 0; --i)
     {
@@ -179,6 +180,6 @@ int *createNumBitIndex(Array *bipartitionProfile, int mxtips)
       else
   	current = result[i];
     }
-  
+
   return result;
 }
