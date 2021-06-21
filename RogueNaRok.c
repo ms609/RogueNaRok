@@ -52,7 +52,7 @@
 
 #define PROG_NAME "RogueNaRokR"
 #define PROG_VERSION "1.0.0.9000"
-#define PROG_RELEASE_DATE "2011-10-25"
+#define PROG_RELEASE_DATE "2021-06-21"
 
 // #define PRINT_VERY_VERBOSE
 // #define MYDEBUG
@@ -476,9 +476,9 @@ void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
         isInMLTree |= elem->isInMLTree;
       }
 
-      if( rogueMode == VANILLA_CONSENSUS_OPT && bestPossible < thresh)
+      if(rogueMode == VANILLA_CONSENSUS_OPT && bestPossible < thresh)
         return ;
-      if( rogueMode == ML_TREE_OPT && NOT isInMLTree)
+      if(rogueMode == ML_TREE_OPT && NOT isInMLTree)
         return ;
 
       tmp = CALLOC(treeVectorLength, sizeof(BitVector));
@@ -1243,13 +1243,14 @@ void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
         case VANILLA_CONSENSUS_OPT:
           {
             if(elemA->treeVectorSupport > thresh)
+
               me->supportLost += computeSupport ? elemA->treeVectorSupport : 1;
-            break ;
+            break;
           }
         case ML_TREE_OPT:
           {
             if(elemA->isInMLTree)
-              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1  ;
+              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1;
             break;
           }
         default :
@@ -1268,7 +1269,7 @@ void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
         case VANILLA_CONSENSUS_OPT:
           {
             if(elemA->treeVectorSupport > thresh)
-              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1 ;
+              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1;
             if(elemB->treeVectorSupport > thresh)
               me->supportLost += computeSupport ? elemB->treeVectorSupport : 1;
             break;
@@ -1276,9 +1277,9 @@ void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
         case ML_TREE_OPT:
           {
             if(elemA->isInMLTree)
-              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1 ;
+              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1;
             if(elemB->isInMLTree)
-              me->supportLost += computeSupport ? elemB->treeVectorSupport : 1 ;
+              me->supportLost += computeSupport ? elemB->treeVectorSupport : 1;
           }
         }
     }
@@ -1524,10 +1525,10 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
 
           case LABEL_PENALTY:
             oldQuality = (double)(result->improvement /
-              (computeSupport ? (double)numberOfTrees : 1.0)) -
+              (double)(computeSupport ? numberOfTrees : 1.0)) -
               labelPenalty * resSize;
             newQuality = (double)(dropset->improvement /
-              (computeSupport ? (double)numberOfTrees : 1.0)) -
+              (double)(computeSupport ? numberOfTrees : 1.0)) -
               labelPenalty * drSize;
             break;
 
@@ -1815,7 +1816,8 @@ typedef enum {ERR_NONE = 0,
               ERR_NO_BEST_TREE,
               ERR_TREE_INIT,
               ERR_BIG_DROPSET,
-              ERR_ROGUE_MODE} errcode;
+              ERR_ROGUE_MODE,
+              ERR_BITS_EQUAL} errcode;
 
 errcode doomRogues(All *tr, const char *bootStrapFileName,
                    const char *dontDropFile,
@@ -1846,16 +1848,17 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
       rogueMode = ML_TREE_OPT;
       if(mreOptimisation)
         {
-          PR("ERROR: Please choose either support in the MRE consensus tree OR the bipartitions in the ML tree for optimization.\n");
+          PR("ERROR: Please choose either support in the MRE consensus tree OR "
+               "the bipartitions in the ML tree for optimization.\n");
           return ERR_ROGUE_MODE;
         }
-      PR("mode: optimization of support of ML tree bipartitions in the\
-           bootstrap tree set.\n");
+      PR("mode: optimization of support of ML tree bipartitions in the "
+           "bootstrap tree set.\n");
     }
   else if(mreOptimisation)
     {
       rogueMode = MRE_CONSENSUS_OPT;
-      thresh = tr->numberOfTrees  * 0.5;
+      thresh = tr->numberOfTrees * 0.5;
       PR("mode: optimization on MRE consensus tree. \n");
     }
   else
@@ -1864,8 +1867,8 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
       thresh = (int) tr->numberOfTrees * rawThresh / 100;
       if(thresh == tr->numberOfTrees)
         thresh--;
-      PR("mode: optimization on consensus tree. Bipartition is part of consensus,\
-         if it occurs in more than %d trees\n", thresh);
+      PR("mode: optimization on consensus tree. Bipartition is part of "
+           "consensus, if it occurs in more than %d trees\n", thresh);
     }
 
   FILE
@@ -2051,7 +2054,7 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
                   PR("\n");
                   printBitVector(elemB->bitVector, bitVectorLength);
                   PR("\n");
-                  exit(-1);
+                  return ERR_BITS_EQUAL;
                 }
             }
         }
@@ -2137,19 +2140,22 @@ SEXP RogueNaRok (SEXP R_bootTrees, // Character
 
 
   /* INTEGER etc. gives pointer to first element of an R vector */
-  computeSupport = *LOGICAL(R_computeSupport);
   strcpy(run_id, CHAR(STRING_ELT(R_run_id, 0)));
   maxDropsetSize = *INTEGER(R_maxDropsetSize);
   strcpy(workdir, CHAR(STRING_ELT(R_workdir, 0)));
   labelPenalty = *REAL(R_labelPenalty);
   if (labelPenalty == R_PosInf) {
     optimType = PHYLO_INFO_CONTENT;
+    computeSupport = TRUE;
   } else if (labelPenalty == R_NaN) {
     optimType = CLUST_INFO_CONTENT;
+    computeSupport = TRUE;
   } else if (labelPenalty == 0.0) {
     optimType = NO_LABEL_PENALTY;
+    computeSupport = *LOGICAL(R_computeSupport);
   } else {
     optimType = LABEL_PENALTY;
+    computeSupport = *LOGICAL(R_computeSupport);
   }
   mreOptimisation = *LOGICAL(R_mreOptimization);
 
