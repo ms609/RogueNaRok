@@ -1180,10 +1180,9 @@ int treeReadLen (FILE *fp, All *tr,
 	{
 	  if(completeTree)
 	    {
-	      printBothOpen("Hello this is your friendly RogueNaRok tree parsing routine\n");
-	      printBothOpen("The RogueNaRok option you are uisng requires to read in only complete trees\n");
+	      printBothOpen("The RogueNaRok option you are using requires to read in only complete trees\n");
 	      printBothOpen("with %d taxa, there is at least one tree with %d taxa though ... exiting\n", tr->mxtips, tr->ntips);
-	      exit(-1);
+	      assert(0);
 	    }
 	}
     }
