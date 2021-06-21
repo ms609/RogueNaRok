@@ -149,7 +149,8 @@ int *createNumBitIndex(Array *bipartitionProfile, int mxtips)
 {
   int *result  = CALLOC(mxtips, sizeof(int));
   memset(result, -1, mxtips * sizeof(int));
-  qsort(bipartitionProfile->arrayTable, bipartitionProfile->length, sizeof(ProfileElem**), sortBipProfile);
+  qsort(bipartitionProfile->arrayTable, bipartitionProfile->length,
+        sizeof(ProfileElem**), sortBipProfile);
 
   int
     i,
