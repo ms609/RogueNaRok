@@ -1,13 +1,13 @@
-/*  RogueNaRok is an algorithm for the identification of rogue taxa in a set of phylogenetic trees. 
+/*  RogueNaRok is an algorithm for the identification of rogue taxa in a set of phylogenetic trees.
  *
- *  Moreover, the program collection comes with efficient implementations of 
+ *  Moreover, the program collection comes with efficient implementations of
  *   * the unrooted leaf stability by Thorley and Wilkinson
  *   * the taxonomic instability index by Maddinson and Maddison
- *   * a maximum agreement subtree implementation (MAST) for unrooted trees 
- *   * a tool for pruning taxa from a tree collection. 
- * 
+ *   * a maximum agreement subtree implementation (MAST) for unrooted trees
+ *   * a tool for pruning taxa from a tree collection.
+ *
  *  Copyright October 2011 by Andre J. Aberer
- * 
+ *
  *  Tree I/O and parallel framework are derived from RAxML by Alexandros Stamatakis.
  *
  *  This program is free software; you may redistribute it and/or
@@ -22,10 +22,10 @@
  *
  *  For any other inquiries send an Email to Andre J. Aberer
  *  andre.aberer at googlemail.com
- * 
+ *
  *  When publishing work that is based on the results from RogueNaRok, please cite:
- *  Andre J. Aberer, Denis Krompaß, Alexandros Stamatakis. RogueNaRok: an Efficient and Exact Algorithm for Rogue Taxon Identification. (unpublished) 2011. 
- * 
+ *  Andre J. Aberer, Denis Krompaß, Alexandros Stamatakis. RogueNaRok: an Efficient and Exact Algorithm for Rogue Taxon Identification. (unpublished) 2011.
+ *
  */
 
 #include "common.h"
@@ -37,7 +37,7 @@ extern void printHelpFile();
 /* GLOBAL VARIABLES =(  */
 char *infoFileName = "",
   *programName = "",
-  *programVersion = "", 
+  *programVersion = "",
   *programReleaseDate ="",
   run_id[128] = "",
   workdir[1024] = "";
@@ -48,33 +48,6 @@ double updateTime(double* time)
   double tmp = *time;
   return (*time = gettime()) - tmp;
 }
-
-
-int wrapStrToL(char *string)
-{
-  char *p; 
-  int result = strtol(string, &p, 10);
-  if (*p != 0 || p == string)
-    {
-      REprintf("Something went wrong parsing a number.");
-      exit(-1);
-    }
-  return result; 
-}
-
-
-double wrapStrToDouble(char *string)
-{
-  char *p; 
-  double result = strtod(string, &p);
-  if (*p != 0 || p == string)
-    {
-      REprintf("Something went wrong parsing a number.");
-      exit(-1);
-    }
-  return result; 
-}
-
 
 int filexists(char *filename)
 {
@@ -142,9 +115,9 @@ void setupInfoFile()
   char *result = CALLOC(1024, sizeof(char));
   strcpy(result,         workdir);
 
-  if(strcmp(workdir, "")) 
+  if(strcmp(workdir, ""))
     {
-      /* TODO not windows compatible */      
+      /* TODO not windows compatible */
       strcat(result,         "/");
     }
 
@@ -152,7 +125,7 @@ void setupInfoFile()
   strcat(result,         "_info");
   strcat(result,         ".");
   strcat(result,         run_id);
-  
+
   if( NOT ALLOW_OVERWRITE_INFO_FILE && filexists(result))
     {
       REprintf("The run-id >%s< you specified already exists in folder >%s<. Aborting in order to protect the output of this previous run.\n", run_id, workdir);
@@ -178,11 +151,11 @@ char *lowerTheString(char *string)
     stringLength = strlen(string);
   char
     *result = CALLOC(stringLength, sizeof(char));
-  
+
   FOR_0_LIMIT(i,stringLength)
      result[i] = tolower(string[i]);
-  
-  
+
+
   return result;
 }
 
@@ -195,8 +168,8 @@ FILE *getOutputFileFromString(char *fileName)
 
   if(strcmp(workdir, ""))
     {
-      strcat(result, "/") ; 
-    } 
+      strcat(result, "/") ;
+    }
 
   strcat(result,         programName);
   strcat(result,         "_");
