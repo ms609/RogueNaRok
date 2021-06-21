@@ -55,7 +55,7 @@
 #define PROG_RELEASE_DATE "2011-10-25"
 
 // #define PRINT_VERY_VERBOSE
-#define MYDEBUG
+// #define MYDEBUG
 
 #define PRINT_DROPSETS
 #define PRINT_TIME
