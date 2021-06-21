@@ -45,7 +45,7 @@ void initializeRandForTaxa(int mxtips)
   int i;
   randForTaxa = CALLOC(mxtips,sizeof(uint32_t));
   FOR_0_LIMIT(i,mxtips)
-    randForTaxa[i] = rand(); //unif_rand();
+    randForTaxa[i] = UINT32_MAX * unif_rand();
 }
 
 
