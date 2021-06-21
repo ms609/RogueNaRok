@@ -30,8 +30,6 @@
 
 #include "common.h"
 
-#define ALLOW_OVERWRITE_INFO_FILE FALSE
-
 extern void printHelpFile();
 
 /* GLOBAL VARIABLES =(  */
@@ -90,7 +88,6 @@ FILE *myfopen(const char *path, const char *mode)
 	  if(processID == 0)
 	    REprintf("The file %s you want to open for reading does not exist, exiting ...\n", path);
 	  assert(0);
-	  exit(-1);
 	  return (FILE *)NULL;
 	}
     }
@@ -103,7 +100,6 @@ FILE *myfopen(const char *path, const char *mode)
 	  if(processID == 0)
 	    REprintf("The file %s RogueNaRok wants to open for writing or appending can not be opened [mode: %s], exiting ...\n",
 		   path, mode);
-	  exit(-1);
 	  return (FILE *)NULL;
 	}
     }
@@ -125,12 +121,6 @@ void setupInfoFile()
   strcat(result,         "_info");
   strcat(result,         ".");
   strcat(result,         run_id);
-
-  if( NOT ALLOW_OVERWRITE_INFO_FILE && filexists(result))
-    {
-      REprintf("The run-id >%s< you specified already exists in folder >%s<. Aborting in order to protect the output of this previous run.\n", run_id, workdir);
-      exit(-1);
-    }
 
   FILE *tmp = myfopen(result, "w");
 
