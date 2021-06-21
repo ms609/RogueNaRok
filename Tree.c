@@ -175,7 +175,7 @@ int getNumberOfTaxa(All *tr, const char *bootStrapFile)
 		  if(strcmp(buffer, nameList[i]) == 0)
 		    {
 		      REprintf("A taxon labelled by %s appears twice in the first tree of tree collection %s, exiting ...\n", buffer, bootStrapFile);
-		      exit(-1);
+		      assert(0);
 		    }
 		}	     
 	     

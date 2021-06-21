@@ -241,8 +241,9 @@ void startThreads()
       rc = pthread_create(&threads[t], &attr, workerThreadWait, (void *)(&tData[t]));
       if(rc)
 	{
-	  printf("ERROR; return code from pthread_create() is %d\n", rc);
-	  exit(-1);
+	  REprintf("ERROR; return code from pthread_create() is %d\n", rc);
+          assert(0);
+          return;
 	}
     }  
 }
