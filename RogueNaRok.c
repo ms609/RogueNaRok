@@ -452,6 +452,19 @@ int getSupportOfMRETreeHelper(Array *bipartitionProfile, Dropset *dropset)
   return result;
 }
 
+#define GAIN_SUPPORT(support) switch (optimType) {                             \
+  case PHYLO_INFO_CONTENT:                                                     \
+                                                                               \
+    break;                                                                     \
+                                                                               \
+  case CLUST_INFO_CONTENT:                                                     \
+                                                                               \
+    break;                                                                     \
+  case NO_LABEL_PENALTY:                                                       \
+  case LABEL_PENALTY:                                                          \
+    me->supportGained = computeSupport ? (support) : 1;                        \
+    break;                                                                     \
+}
 
 void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
 {
@@ -516,23 +529,18 @@ void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
   switch (rogueMode)
     {
     case MRE_CONSENSUS_OPT:
-      {
-        me->supportGained = computeSupport ? newSup : 1;
-        break;
-      }
+      GAIN_SUPPORT(newSup);
+      break;
+
     case VANILLA_CONSENSUS_OPT:
-      {
-        if(rogueMode == VANILLA_CONSENSUS_OPT  && newSup > thresh)
-          me->supportGained = computeSupport ? newSup : 1 ;
-        break;
-      }
+      if(rogueMode == VANILLA_CONSENSUS_OPT  && newSup > thresh)
+        GAIN_SUPPORT(newSup);
+      break;
     case ML_TREE_OPT:
-      {
-        if(isInMLTree )
-          me->supportGained = computeSupport ? newSup : 1 ;
+      if(isInMLTree)
+        GAIN_SUPPORT(newSup);
         break;
-      }
-    default :
+    default:
       assert(0);
     }
 
@@ -1225,6 +1233,20 @@ HashTable *combineMergerEvents(HashTable *mergingHash, Array *bipartitionsById)
   return mergingHash;
 }
 
+#define LOSE_SUPPORT(elem) switch (optimType) {\
+  case PHYLO_INFO_CONTENT:\
+    \
+  break;\
+  \
+  case CLUST_INFO_CONTENT:\
+    \
+    break;\
+  case NO_LABEL_PENALTY:\
+  case LABEL_PENALTY:\
+    me->supportLost += computeSupport ? (elem)->treeVectorSupport : 1;\
+    break;\
+  }
+
 
 void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
 {
@@ -1243,14 +1265,13 @@ void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
         case VANILLA_CONSENSUS_OPT:
           {
             if(elemA->treeVectorSupport > thresh)
-
-              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1;
+              LOSE_SUPPORT(elemA);
             break;
           }
         case ML_TREE_OPT:
           {
             if(elemA->isInMLTree)
-              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1;
+              LOSE_SUPPORT(elemA);
             break;
           }
         default :
@@ -1269,17 +1290,17 @@ void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
         case VANILLA_CONSENSUS_OPT:
           {
             if(elemA->treeVectorSupport > thresh)
-              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1;
+              LOSE_SUPPORT(elemA);
             if(elemB->treeVectorSupport > thresh)
-              me->supportLost += computeSupport ? elemB->treeVectorSupport : 1;
+              LOSE_SUPPORT(elemB);
             break;
           }
         case ML_TREE_OPT:
           {
             if(elemA->isInMLTree)
-              me->supportLost += computeSupport ? elemA->treeVectorSupport : 1;
+              LOSE_SUPPORT(elemA);
             if(elemB->isInMLTree)
-              me->supportLost += computeSupport ? elemB->treeVectorSupport : 1;
+              LOSE_SUPPORT(elemB);
           }
         }
     }
