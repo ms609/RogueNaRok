@@ -1,13 +1,13 @@
-/*  RogueNaRok is an algorithm for the identification of rogue taxa in a set of phylogenetic trees. 
+/*  RogueNaRok is an algorithm for the identification of rogue taxa in a set of phylogenetic trees.
  *
- *  Moreover, the program collection comes with efficient implementations of 
+ *  Moreover, the program collection comes with efficient implementations of
  *   * the unrooted leaf stability by Thorley and Wilkinson
  *   * the taxonomic instability index by Maddinson and Maddison
- *   * a maximum agreement subtree implementation (MAST) for unrooted trees 
- *   * a tool for pruning taxa from a tree collection. 
- * 
+ *   * a maximum agreement subtree implementation (MAST) for unrooted trees
+ *   * a tool for pruning taxa from a tree collection.
+ *
  *  Copyright October 2011 by Andre J. Aberer
- * 
+ *
  *  Tree I/O and parallel framework are derived from RAxML by Alexandros Stamatakis.
  *
  *  This program is free software; you may redistribute it and/or
@@ -22,10 +22,10 @@
  *
  *  For any other inquiries send an Email to Andre J. Aberer
  *  andre.aberer at googlemail.com
- * 
+ *
  *  When publishing work that is based on the results from RogueNaRok, please cite:
- *  Andre J. Aberer, Denis Krompaß, Alexandros Stamatakis. RogueNaRok: an Efficient and Exact Algorithm for Rogue Taxon Identification. (unpublished) 2011. 
- * 
+ *  Andre J. Aberer, Denis Krompaß, Alexandros Stamatakis. RogueNaRok: an Efficient and Exact Algorithm for Rogue Taxon Identification. (unpublished) 2011.
+ *
  */
 
 #include "BitVector.h"
@@ -36,10 +36,10 @@ void initializeMask()
 {
   int i;
   mask32 = CALLOC(MASK_LENGTH, sizeof(BitVector));
-  mask32[0] = 1; 
-  
+  mask32[0] = 1;
+
   for(i = 1; i < MASK_LENGTH; ++i)
-    mask32[i] = mask32[i-1] << 1; 
+    mask32[i] = mask32[i-1] << 1;
 }
 
 void destroyMask()
@@ -50,7 +50,7 @@ void destroyMask()
 
 void printBitVector(BitVector *bv, int length)
 {
-  int i ;  
+  int i ;
   for(i = 0; i < length * 32; ++i)
     Rprintf("%d", NTH_BIT_IS_SET(bv, i) ? 1 : 0);
 }
@@ -67,8 +67,8 @@ void freeBitVectors(uint32_t **v, int n)
 
 boolean areSameBitVectors(BitVector *a, BitVector *b, int bitVectorLength)
 {
-  int 
-    i; 
+  int
+    i;
 
   FOR_0_LIMIT(i,bitVectorLength)
     if(a[i] != b[i])
@@ -80,38 +80,38 @@ boolean areSameBitVectors(BitVector *a, BitVector *b, int bitVectorLength)
 
 BitVector genericBitCount(BitVector* bitVector, int bitVectorLength)
 {
-  BitVector 
-    i, 
+  BitVector
+    i,
     result = 0;
 
   for(i = 0; i < bitVectorLength; i++)
     result += BIT_COUNT(bitVector[i]);
-  
-  return result; 
+
+  return result;
 }
 
 
 static int iterated_bitcount(BitVector n)
 {
-    int 
-      count=0;    
-    
+    int
+      count=0;
+
     while(n)
       {
-        count += n & 0x1u ;    
+        count += n & 0x1u ;
         n >>= 1 ;
       }
-    
+
     return count;
 }
 
 void compute_bits_in_16bits(void)
 {
-    BitVector i;    
-    
+    BitVector i;
+
     for (i = 0; i < (0x1u<<16); i++)
         bits_in_16bits[i] = iterated_bitcount(i);
-    
+
     return ;
 }
 
@@ -127,7 +127,7 @@ BitVector precomputed16_bitcount (BitVector n)
 BitVector *copyBitVector(BitVector *bitVector, int bitVectorLength)
 {
   BitVector *result = CALLOC(bitVectorLength, sizeof(BitVector));
-  memcpy(result, bitVector,bitVectorLength * sizeof(BitVector)); 
+  memcpy(result, bitVector,bitVectorLength * sizeof(BitVector));
   return result;
 }
 
