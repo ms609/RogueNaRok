@@ -1222,7 +1222,7 @@ HashTable *combineMergerEvents(HashTable *mergingHash, Array *bipartitionsById)
 
 void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
 {
-  ProfileElem *elemA, *elemB ; 
+  ProfileElem *elemA, *elemB ;
   me->supportLost = 0; 
   
   if(me->isComplex)
@@ -1234,7 +1234,7 @@ void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
         elemA = GET_PROFILE_ELEM(bipartitionsById, iI->index);
         switch (rogueMode)
         {
-        case VANILLA_CONSENSUS_OPT : 
+        case VANILLA_CONSENSUS_OPT:
           {
             if(elemA->treeVectorSupport > thresh)
               me->supportLost += computeSupport ? elemA->treeVectorSupport : 1; 
@@ -1287,7 +1287,9 @@ void evaluateDropset(HashTable *mergingHash, Dropset *dropset,Array *bipartition
     *elemsToCheck = NULL;
   
   if(maxDropsetSize == 1)
-    elemsToCheck = dropset->ownPrimeE ;
+    {
+      elemsToCheck = dropset->ownPrimeE ;
+    }
   else
     {
       List *otherIter = dropset->acquiredPrimeE; 
@@ -1310,7 +1312,7 @@ void evaluateDropset(HashTable *mergingHash, Dropset *dropset,Array *bipartition
       {
         getLostSupportThreshold(me, bipartitionsById);
         getSupportGainedThreshold(me, bipartitionsById);
-        me->computed = TRUE; 
+        me->computed = TRUE;
       }
     
     result -= me->supportLost;
@@ -1327,13 +1329,14 @@ void evaluateDropset(HashTable *mergingHash, Dropset *dropset,Array *bipartition
           if(NTH_BIT_IS_SET(bipsSeen, iI->index))
             {
               // MS: This is a fatal error.  We can't exit, so return.
-              return;
-              // PR("problem:");
-              // printIndexList(me->mergingBipartitions.many);
-              // PR("at ");
-              // printIndexList(dropset->taxaToDrop);                
-              // PR("\n");
+              REprintf("Fatal error whilst merging bipartitions.\n");
+              PR("problem:");
+              printIndexList(me->mergingBipartitions.many);
+              PR("at ");
+              printIndexList(dropset->taxaToDrop);
+              PR("\n");
               // exit(0);
+              return;
             }
           FLIP_NTH_BIT(bipsSeen, iI->index);        
         }
@@ -1494,7 +1497,7 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
 #endif
     }
   
-  FOR_0_LIMIT(i,allDropsets->length)
+  FOR_0_LIMIT(i, allDropsets->length)
     {      
       Dropset
         *dropset =  GET_DROPSET_ELEM(allDropsets, i);
@@ -1506,7 +1509,7 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
           int drSize = lengthIndexList(dropset->taxaToDrop),
             resSize = lengthIndexList(result->taxaToDrop);
           
-          double oldQuality =  labelPenalty == 0.0  
+          double oldQuality = labelPenalty == 0.0  
             ? result->improvement * drSize 
             :  (double)(result->improvement / (double)(computeSupport ?  numberOfTrees : 1.0)) - labelPenalty * (double)resSize;
           double newQuality = labelPenalty == 0.0 
@@ -1522,16 +1525,19 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
   free(allDropsets->arrayTable);
   free(allDropsets);
 
-  if((result->improvement / (computeSupport ? numberOfTrees : 1.0) - labelPenalty * lengthIndexList(result->taxaToDrop))  > 0.0 )
+  if((result->improvement / (computeSupport ? numberOfTrees : 1.0) -
+     labelPenalty * lengthIndexList(result->taxaToDrop))  > 0.0 ) {
     return result;
+  }
 
   /* if(labelPenalty == 0.0 && result->improvement > 0) */
   /*   return result; */
   /* else if(labelPenalty != 0.0 && (result->improvement / (computeSupport ? numberOfTrees : 1.0) - labelPenalty * lengthIndexList(result->taxaToDrop))  > 0.0 ) */
   /*   return result; */
 
-  else
+  else {
     return NULL;
+  }
 }
 
 
