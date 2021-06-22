@@ -50,9 +50,9 @@
 #include <pthread.h>
 #endif
 
-#define PROG_NAME "RogueNaRokR"
-#define PROG_VERSION "1.0.0.9000"
-#define PROG_RELEASE_DATE "2021-06-21"
+#define PROG_NAME "RogueNaRok"
+#define PROG_VERSION "1.0.0-R"
+#define PROG_RELEASE_DATE "2021-06-22"
 
 // #define PRINT_VERY_VERBOSE
 // #define MYDEBUG
@@ -99,9 +99,7 @@ double labelPenalty = 0.,
   timeInc;
 enum {
   NO_LABEL_PENALTY,
-  LABEL_PENALTY,
-  PHYLO_INFO_CONTENT,
-  CLUST_INFO_CONTENT
+  LABEL_PENALTY
   } optimType = NO_LABEL_PENALTY;
 
 #ifdef MYDEBUG
@@ -452,19 +450,8 @@ int getSupportOfMRETreeHelper(Array *bipartitionProfile, Dropset *dropset)
   return result;
 }
 
-#define GAIN_SUPPORT(support) switch (optimType) {                             \
-  case PHYLO_INFO_CONTENT:                                                     \
-                                                                               \
-    break;                                                                     \
-                                                                               \
-  case CLUST_INFO_CONTENT:                                                     \
-                                                                               \
-    break;                                                                     \
-  case NO_LABEL_PENALTY:                                                       \
-  case LABEL_PENALTY:                                                          \
-    me->supportGained = computeSupport ? (support) : 1;                        \
-    break;                                                                     \
-}
+#define GAIN_SUPPORT(support)
+    me->supportGained = computeSupport ? (support) : 1
 
 void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
 {
@@ -1233,51 +1220,8 @@ HashTable *combineMergerEvents(HashTable *mergingHash, Array *bipartitionsById)
   return mergingHash;
 }
 
-
-
-    // const int n = (elem)->treeVectorSupport,                         \
-    //   in_split = (elem)->numberOfBitsSet                       \
-    // ;                                                          \
-    // const bool p1 = n == n_trees;                                    \
-    // const double                                                     \
-    //   p = n / n_trees,                                         \
-    //   l2trees = log2(n_trees),// global defn                               \
-    //   q = p1 ? 0. : 1. - p                                     \
-    // ;                                                          \
-    // me->supportLost += l2unrooted(n_tips);                     \
-    // if (p1) {                                                  \
-    //   me->supportLost -= l2unrooted(n) + l2unrooted(n_tips - n);\
-    // } else {                                                   \
-    //   const double                                             \
-    //     l2n_consistent = l2rooted(n) + l2rooted(n_tips - n),   \
-    //     l2p_consistent = l2n_consistent - l2trees,             \
-    //     l2p_inconsistent = log2(-expm1(l2p_consistent * log(2))),\
-    //     l2n_inconsistent = l2p_inconsistent + l2trees;         \
-    //                                                            \
-    //   Rprintf("  ");                                           \
-    //   Rprintf(n);                                              \
-    //   Rprintf(" leaves in split; ");                           \
-    //   Rprintf(n_trees -  p * (log2(p) - l2n_consistent) +      \
-    //     q * (log2(q) - l2n_inconsistent));                     \
-    //   Rprintf(" bits of info.");                               \
-    //                                                            \
-    //   me->supportLost -= p * (log2(p) - l2n_consistent) +      \
-    //     q * (log2(q) - l2n_inconsistent);                      \
-    // }
-
-#define LOSE_SUPPORT(elem) switch (optimType) {                \
-  case PHYLO_INFO_CONTENT:                                     \
-    break;                                                     \
-                                                               \
-  case CLUST_INFO_CONTENT:                                     \
-                                                               \
-    break;                                                     \
-  case NO_LABEL_PENALTY:                                       \
-  case LABEL_PENALTY:                                          \
-    me->supportLost += computeSupport ? (elem)->treeVectorSupport : 1;\
-    break;                                                     \
-  }
-
+#define LOSE_SUPPORT(elem)                                       \
+    me->supportLost += computeSupport ? (elem)->treeVectorSupport : 1
 
 void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
 {
@@ -1584,16 +1528,6 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
               labelPenalty * drSize;
             break;
 
-          case PHYLO_INFO_CONTENT:
-            oldQuality = 9999; // MS TODO
-            newQuality = 9999; // TODO
-            break;
-
-          case CLUST_INFO_CONTENT:
-            oldQuality = 9999; // MS TODO
-            newQuality = 9999; // MS TODO
-            break;
-
           default:
             REprintf("Unrecognized optimization type.");
             assert(0);
@@ -1625,12 +1559,6 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
               (computeSupport ? (double)numberOfTrees : 1.0) -
               labelPenalty * lengthIndexList(result->taxaToDrop)) > 0.0 ?
       result : NULL;
-
-    case PHYLO_INFO_CONTENT:
-      return NULL; // MS TODO
-
-    case CLUST_INFO_CONTENT:
-      return NULL; // MS TODO
 
     default:
       REprintf("Unrecognized optimization type.");
@@ -2196,19 +2124,7 @@ SEXP RogueNaRok (SEXP R_bootTrees, // Character
   maxDropsetSize = *INTEGER(R_maxDropsetSize);
   strcpy(workdir, CHAR(STRING_ELT(R_workdir, 0)));
   labelPenalty = *REAL(R_labelPenalty);
-  if (labelPenalty == R_PosInf) {
-    optimType = PHYLO_INFO_CONTENT;
-    computeSupport = TRUE;
-    /* initialize double factorial lookup */
-    compute_double_factorials();
-
-  } else if (labelPenalty == R_NaN) {
-    optimType = CLUST_INFO_CONTENT;
-    computeSupport = TRUE;
-    /* initialize double factorial lookup */
-    compute_double_factorials();
-
-  } else if (labelPenalty == 0.0) {
+  if (labelPenalty == 0.0) {
     optimType = NO_LABEL_PENALTY;
     computeSupport = *LOGICAL(R_computeSupport);
   } else {
