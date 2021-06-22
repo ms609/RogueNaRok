@@ -450,8 +450,7 @@ int getSupportOfMRETreeHelper(Array *bipartitionProfile, Dropset *dropset)
   return result;
 }
 
-#define GAIN_SUPPORT(support)
-    me->supportGained = computeSupport ? (support) : 1
+#define GAIN_SUPPORT me->supportGained = computeSupport ? newSup : 1
 
 void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
 {
@@ -516,16 +515,16 @@ void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
   switch (rogueMode)
     {
     case MRE_CONSENSUS_OPT:
-      GAIN_SUPPORT(newSup);
+      GAIN_SUPPORT;
       break;
 
     case VANILLA_CONSENSUS_OPT:
       if(rogueMode == VANILLA_CONSENSUS_OPT  && newSup > thresh)
-        GAIN_SUPPORT(newSup);
+        GAIN_SUPPORT;
       break;
     case ML_TREE_OPT:
       if(isInMLTree)
-        GAIN_SUPPORT(newSup);
+        GAIN_SUPPORT;
         break;
     default:
       assert(0);
