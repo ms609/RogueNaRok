@@ -1824,8 +1824,8 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
       thresh = (int) tr->numberOfTrees * rawThresh / 100;
       if(thresh == tr->numberOfTrees)
         thresh--;
-      PR("mode: optimization on consensus tree. Bipartition is part of "
-           "consensus, if it occurs in more than %d trees\n", thresh);
+      PR("mode: optimization on consensus tree: Bipartition is part of "
+           "consensus if it occurs in more than %d trees\n", thresh);
     }
 
   FILE
