@@ -1000,7 +1000,7 @@ void printRogueInformationToFile( All *tr, FILE *rogueOutput, int bestCumEver,
                                   int *cumScores, Dropset **dropsetInRound)
 {
   int
-    i=1,j;
+    i = 1, j;
 
   boolean reached = bestCumEver == cumScores[0];
   while ( NOT reached)
@@ -1878,7 +1878,6 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
 
   numBips = bipartitionProfile->length;
 
-  Rprintf("MS: 1877: %i\n", numBips);
   cumScore = getInitScore(bipartitionProfile);
   cumScores = CALLOC(mxtips-3, sizeof(int));
   cumScores[0] = cumScore;
@@ -2134,10 +2133,7 @@ SEXP RogueNaRok (SEXP R_bootTrees, // Character
 
   if( NOT strcmp(treeFile, ""))
     {
-      Rprintf("..MS: Rogue mode = ML_TREE_OPT\n");
       rogueMode = ML_TREE_OPT;
-    } else {
-      Rprintf("..MS: Rogue mode != ML_TREE_OPT\n");
     }
 
   if( NOT strcmp(bootTrees, ""))
