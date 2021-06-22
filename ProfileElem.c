@@ -174,7 +174,7 @@ int *createNumBitIndex(Array *bipartitionProfile, int mxtips)
     }
 
   current = max;
-  for(i = mxtips-1; i >= 0; --i)
+  for(i = mxtips - 1; i >= 0; --i)
     {
       if(result[i] == -1)
 	result[i] = current;
