@@ -195,8 +195,8 @@ int getNumberOfTaxa(All *tr, const char *bootStrapFile)
 	}
     }
 
-  Rprintf("Found a total of %d taxa in first tree of tree collection %s\n", taxaCount, bootStrapFile);
-  Rprintf("Expecting all remaining trees in collection to have the same taxon set\n\n");
+  Rprintf("Found a total of %d taxa in first tree of tree collection %s\n",
+          taxaCount, bootStrapFile);
 
   tr->nameList = (char **)malloc(sizeof(char *) * (taxaCount + 1));
   for(i = 1; i <= taxaCount; i++)
