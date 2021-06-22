@@ -94,12 +94,12 @@ BitVector genericBitCount(BitVector* bitVector, int bitVectorLength)
 static int iterated_bitcount(BitVector n)
 {
     int
-      count=0;
+      count = 0;
 
     while(n)
       {
-        count += n & 0x1u ;
-        n >>= 1 ;
+        count += n & 0x1u;
+        n >>= 1;
       }
 
     return count;

@@ -933,7 +933,7 @@ int getNumberOfBipsPresent(Array *bipartitionArray)
 int getInitScore(Array *bipartitionProfile)
 {
   int
-    score = 0 , i;
+    score = 0, i;
 
   if(rogueMode == MRE_CONSENSUS_OPT)
     return getSupportOfMRETree(bipartitionProfile, NULL);
@@ -1233,18 +1233,49 @@ HashTable *combineMergerEvents(HashTable *mergingHash, Array *bipartitionsById)
   return mergingHash;
 }
 
-#define LOSE_SUPPORT(elem) switch (optimType) {\
-  case PHYLO_INFO_CONTENT:\
-    \
-  break;\
-  \
-  case CLUST_INFO_CONTENT:\
-    \
-    break;\
-  case NO_LABEL_PENALTY:\
-  case LABEL_PENALTY:\
+
+
+    // const int n = (elem)->treeVectorSupport,                         \
+    //   in_split = (elem)->numberOfBitsSet                       \
+    // ;                                                          \
+    // const bool p1 = n == n_trees;                                    \
+    // const double                                                     \
+    //   p = n / n_trees,                                         \
+    //   l2trees = log2(n_trees),// global defn                               \
+    //   q = p1 ? 0. : 1. - p                                     \
+    // ;                                                          \
+    // me->supportLost += l2unrooted(n_tips);                     \
+    // if (p1) {                                                  \
+    //   me->supportLost -= l2unrooted(n) + l2unrooted(n_tips - n);\
+    // } else {                                                   \
+    //   const double                                             \
+    //     l2n_consistent = l2rooted(n) + l2rooted(n_tips - n),   \
+    //     l2p_consistent = l2n_consistent - l2trees,             \
+    //     l2p_inconsistent = log2(-expm1(l2p_consistent * log(2))),\
+    //     l2n_inconsistent = l2p_inconsistent + l2trees;         \
+    //                                                            \
+    //   Rprintf("  ");                                           \
+    //   Rprintf(n);                                              \
+    //   Rprintf(" leaves in split; ");                           \
+    //   Rprintf(n_trees -  p * (log2(p) - l2n_consistent) +      \
+    //     q * (log2(q) - l2n_inconsistent));                     \
+    //   Rprintf(" bits of info.");                               \
+    //                                                            \
+    //   me->supportLost -= p * (log2(p) - l2n_consistent) +      \
+    //     q * (log2(q) - l2n_inconsistent);                      \
+    // }
+
+#define LOSE_SUPPORT(elem) switch (optimType) {                \
+  case PHYLO_INFO_CONTENT:                                     \
+    break;                                                     \
+                                                               \
+  case CLUST_INFO_CONTENT:                                     \
+                                                               \
+    break;                                                     \
+  case NO_LABEL_PENALTY:                                       \
+  case LABEL_PENALTY:                                          \
     me->supportLost += computeSupport ? (elem)->treeVectorSupport : 1;\
-    break;\
+    break;                                                     \
   }
 
 
@@ -2168,9 +2199,15 @@ SEXP RogueNaRok (SEXP R_bootTrees, // Character
   if (labelPenalty == R_PosInf) {
     optimType = PHYLO_INFO_CONTENT;
     computeSupport = TRUE;
+    /* initialize double factorial lookup */
+    compute_double_factorials();
+
   } else if (labelPenalty == R_NaN) {
     optimType = CLUST_INFO_CONTENT;
     computeSupport = TRUE;
+    /* initialize double factorial lookup */
+    compute_double_factorials();
+
   } else if (labelPenalty == 0.0) {
     optimType = NO_LABEL_PENALTY;
     computeSupport = *LOGICAL(R_computeSupport);
