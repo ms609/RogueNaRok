@@ -127,7 +127,7 @@ Array *getOriginalBipArray(All *tr, FILE *bestTree, FILE *treeFile)
   uint32_t
     *randForTaxa = CALLOC(tr->mxtips, sizeof(uint32_t));
 
-  for(i = tr->mxtips; --i; )
+  for(i = tr->mxtips; i--; )
     randForTaxa[i] = UINT32_MAX * unif_rand();
 
   rewind(treeFile);
