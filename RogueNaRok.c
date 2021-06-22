@@ -97,10 +97,6 @@ BitVector *droppedTaxa,
 
 double labelPenalty = 0.,
   timeInc;
-enum {
-  NO_LABEL_PENALTY,
-  LABEL_PENALTY
-  } optimType = NO_LABEL_PENALTY;
 
 #ifdef MYDEBUG
 void debug_dropsetConsistencyCheck(HashTable *mergingHash)
@@ -1512,27 +1508,17 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
                        resSize = lengthIndexList(result->taxaToDrop);
 
           double oldQuality, newQuality;
-          switch(optimType) {
-          case NO_LABEL_PENALTY:
+          if (labelPenalty == 0.0) {
             oldQuality = result->improvement * drSize;
             newQuality = dropset->improvement * resSize;
-            break;
-
-          case LABEL_PENALTY:
+          } else {
             oldQuality = (double)(result->improvement /
               (double)(computeSupport ? numberOfTrees : 1.0)) -
               labelPenalty * resSize;
             newQuality = (double)(dropset->improvement /
               (double)(computeSupport ? numberOfTrees : 1.0)) -
               labelPenalty * drSize;
-            break;
-
-          default:
-            REprintf("Unrecognized optimization type.");
-            assert(0);
-            oldQuality = 0;
-            newQuality = 0;
-          };
+          }
 
           if( (newQuality  >  oldQuality) )
             result = dropset;
@@ -1548,23 +1534,15 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
   //   return result;
   // }
 
-  switch (optimType) {
-
-    case NO_LABEL_PENALTY:
+  if (labelPenalty == 0.0)
+    {
       return (result->improvement > 0) ? result : NULL;
-
-    case LABEL_PENALTY:
+    } else {
       return (double)(result->improvement /
               (computeSupport ? (double)numberOfTrees : 1.0) -
               labelPenalty * lengthIndexList(result->taxaToDrop)) > 0.0 ?
       result : NULL;
-
-    default:
-      REprintf("Unrecognized optimization type.");
-      assert(0);
-      return NULL;
-
-  };
+    }
 
 }
 
@@ -2123,13 +2101,7 @@ SEXP RogueNaRok (SEXP R_bootTrees, // Character
   maxDropsetSize = *INTEGER(R_maxDropsetSize);
   strcpy(workdir, CHAR(STRING_ELT(R_workdir, 0)));
   labelPenalty = *REAL(R_labelPenalty);
-  if (labelPenalty == 0.0) {
-    optimType = NO_LABEL_PENALTY;
-    computeSupport = *LOGICAL(R_computeSupport);
-  } else {
-    optimType = LABEL_PENALTY;
-    computeSupport = *LOGICAL(R_computeSupport);
-  }
+  computeSupport = *LOGICAL(R_computeSupport);
   mreOptimisation = *LOGICAL(R_mreOptimization);
 
   if (mreOptimisation)
