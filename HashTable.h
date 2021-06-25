@@ -1,13 +1,13 @@
-/*  RogueNaRok is an algorithm for the identification of rogue taxa in a set of phylogenetic trees. 
+/*  RogueNaRok is an algorithm for the identification of rogue taxa in a set of phylogenetic trees.
  *
- *  Moreover, the program collection comes with efficient implementations of 
+ *  Moreover, the program collection comes with efficient implementations of
  *   * the unrooted leaf stability by Thorley and Wilkinson
  *   * the taxonomic instability index by Maddinson and Maddison
- *   * a maximum agreement subtree implementation (MAST) for unrooted trees 
- *   * a tool for pruning taxa from a tree collection. 
- * 
+ *   * a maximum agreement subtree implementation (MAST) for unrooted trees
+ *   * a tool for pruning taxa from a tree collection.
+ *
  *  Copyright October 2011 by Andre J. Aberer
- * 
+ *
  *  Tree I/O and parallel framework are derived from RAxML by Alexandros Stamatakis.
  *
  *  This program is free software; you may redistribute it and/or
@@ -22,10 +22,10 @@
  *
  *  For any other inquiries send an Email to Andre J. Aberer
  *  andre.aberer at googlemail.com
- * 
+ *
  *  When publishing work that is based on the results from RogueNaRok, please cite:
- *  Andre J. Aberer, Denis Krompaß, Alexandros Stamatakis. RogueNaRok: an Efficient and Exact Algorithm for Rogue Taxon Identification. (unpublished) 2011. 
- * 
+ *  Andre J. Aberer, Denis Krompaß, Alexandros Stamatakis. RogueNaRok: an Efficient and Exact Algorithm for Rogue Taxon Identification. (unpublished) 2011.
+ *
  */
 
 #ifndef HASHTABLE_H
@@ -55,11 +55,11 @@ typedef struct hash_table
   HashElem **table;
 #ifdef PARALLEL
   pthread_mutex_t **lockPerSlot;
-  pthread_mutex_t *cntLock; 
+  pthread_mutex_t *cntLock;
 #endif
 } HashTable;
 
-typedef struct 
+typedef struct
 {
   HashTable *hashTable;
   HashElem *hashElem;
@@ -70,7 +70,7 @@ typedef struct
 #define FOR_HASH_2(htIter, hashtable)  hasNext = TRUE; for(htIter = createHashTableIterator(hashtable); hasNext ; hasNext = hashTableIteratorNext(htIter))
 
 HashTable *createHashTable(uint32_t size, void *commonAttr, uint32_t (*hashFunction)(HashTable *hash_table, void *value), boolean (*equalFunction)(HashTable *hash_table, void *entryA, void *entryB));
-HashTableIterator *createHashTableIterator(HashTable *hashTable); 
+HashTableIterator *createHashTableIterator(HashTable *hashTable);
 void *getCurrentValueFromHashTableIterator(HashTableIterator *hashTableIterator);
 boolean hashTableIteratorNext(HashTableIterator *hashTableIterator);
 void *searchHashTableWithInt(HashTable *hashtable, uint32_t hashValue);

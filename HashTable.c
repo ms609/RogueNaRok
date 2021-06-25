@@ -1,13 +1,13 @@
-/*  RogueNaRok is an algorithm for the identification of rogue taxa in a set of phylogenetic trees. 
+/*  RogueNaRok is an algorithm for the identification of rogue taxa in a set of phylogenetic trees.
  *
- *  Moreover, the program collection comes with efficient implementations of 
+ *  Moreover, the program collection comes with efficient implementations of
  *   * the unrooted leaf stability by Thorley and Wilkinson
  *   * the taxonomic instability index by Maddinson and Maddison
- *   * a maximum agreement subtree implementation (MAST) for unrooted trees 
- *   * a tool for pruning taxa from a tree collection. 
- * 
+ *   * a maximum agreement subtree implementation (MAST) for unrooted trees
+ *   * a tool for pruning taxa from a tree collection.
+ *
  *  Copyright October 2011 by Andre J. Aberer
- * 
+ *
  *  Tree I/O and parallel framework are derived from RAxML by Alexandros Stamatakis.
  *
  *  This program is free software; you may redistribute it and/or
@@ -22,10 +22,10 @@
  *
  *  For any other inquiries send an Email to Andre J. Aberer
  *  andre.aberer at googlemail.com
- * 
+ *
  *  When publishing work that is based on the results from RogueNaRok, please cite:
- *  Andre J. Aberer, Denis Krompaß, Alexandros Stamatakis. RogueNaRok: an Efficient and Exact Algorithm for Rogue Taxon Identification. (unpublished) 2011. 
- * 
+ *  Andre J. Aberer, Denis Krompaß, Alexandros Stamatakis. RogueNaRok: an Efficient and Exact Algorithm for Rogue Taxon Identification. (unpublished) 2011.
+ *
  */
 
 #include "HashTable.h"
@@ -33,27 +33,27 @@
 #include <pthread.h>
 #endif
 
-HashTable *createHashTable(uint32_t size, 
-			   void *commonAttr, 
+HashTable *createHashTable(uint32_t size,
+			   void *commonAttr,
 			   uint32_t (*hashFunction)(HashTable *hash_table, void *value),
 			   boolean (*equalFunction)(HashTable *hash_table, void *entryA, void *entryB))
-{  
-  static const uint32_t 
-    initTable[] = {64, 128, 256, 512, 1024, 2048, 4096, 
-		   8192, 16384, 32768, 65536, 131072, 
+{
+  static const uint32_t
+    initTable[] = {64, 128, 256, 512, 1024, 2048, 4096,
+		   8192, 16384, 32768, 65536, 131072,
 		   262144, 524288, 1048576, 2097152,
-		   4194304, 8388608, 16777216, 33554432, 
-		   67108864, 134217728, 268435456, 
+		   4194304, 8388608, 16777216, 33554432,
+		   67108864, 134217728, 268435456,
 		   536870912, 1073741824, 2147483648U};
-  
-  HashTable 
+
+  HashTable
     *hashTable = CALLOC(1, sizeof(HashTable));
-  
+
   uint32_t
     tableSize,
     i,
 #ifdef DEBUG
-    maxSize = (uint32_t)-1,    
+    maxSize = (uint32_t)-1,
 #endif
     primeTableLength = sizeof(initTable)/sizeof(initTable[0]);
 
@@ -61,8 +61,8 @@ HashTable *createHashTable(uint32_t size,
   hashTable->equalFunction = equalFunction;
   hashTable->commonAttributes = commonAttr;
 
-#ifdef DEBUG 
-  assert(size <= maxSize);  
+#ifdef DEBUG
+  assert(size <= maxSize);
 #endif
   for(i = 0; initTable[i] < size && i < primeTableLength; ++i);
   assert(i < primeTableLength);
@@ -72,8 +72,8 @@ HashTable *createHashTable(uint32_t size,
 #ifdef PARALLEL
   hashTable->cntLock = CALLOC(1,sizeof(pthread_mutex_t));
   pthread_mutex_init(hashTable->cntLock, (pthread_mutexattr_t *)NULL);
-  
-  hashTable->lockPerSlot = (pthread_mutex_t**)CALLOC(tableSize,sizeof(pthread_mutex_t*));  
+
+  hashTable->lockPerSlot = (pthread_mutex_t**)CALLOC(tableSize,sizeof(pthread_mutex_t*));
   FOR_0_LIMIT(i, tableSize)
     {
       hashTable->lockPerSlot[i] = (pthread_mutex_t*) CALLOC(1,sizeof(pthread_mutex_t));
@@ -82,8 +82,8 @@ HashTable *createHashTable(uint32_t size,
 #endif
 
   hashTable->table = CALLOC(tableSize, sizeof(HashElem*));
-  hashTable->tableSize = tableSize;  
-  hashTable->entryCount = 0;  
+  hashTable->tableSize = tableSize;
+  hashTable->entryCount = 0;
 
   return hashTable;
 }
@@ -95,8 +95,8 @@ boolean removeElementFromHash(HashTable *hashtable, void *value)
   uint32_t
     hashValue = hashtable->hashFunction(hashtable, value),
     position = hashValue % hashtable->tableSize;
-  
-  HashElem *elem = hashtable->table[position];  
+
+  HashElem *elem = hashtable->table[position];
 
   if( NOT elem )
     {
@@ -110,20 +110,20 @@ boolean removeElementFromHash(HashTable *hashtable, void *value)
     {
       hashtable->table[position] = elem->next ;
       free(elem);
-      hashtable->entryCount-- ; 
+      hashtable->entryCount-- ;
 
-      return TRUE; 
+      return TRUE;
     }
-  
+
   while(elem->next)
     {
       if(elem->next->fullKey == hashValue && hashtable->equalFunction(hashtable, elem->next->value, value))
 	{
-	  void *nextOne = elem->next->next; 
+	  void *nextOne = elem->next->next;
 	  free(elem->next);
 	  elem->next = nextOne;
-	  hashtable->entryCount-- ; 
-	  return TRUE; 
+	  hashtable->entryCount-- ;
+	  return TRUE;
 	}
       elem = elem->next;
     }
@@ -134,17 +134,17 @@ boolean removeElementFromHash(HashTable *hashtable, void *value)
 
 void *searchHashTableWithInt(HashTable *hashtable, uint32_t hashValue)
 {
-  uint32_t 
+  uint32_t
     position = hashValue % hashtable->tableSize;
-  
-  HashElem 
+
+  HashElem
     *elem;
-  
-  for(elem = hashtable->table[position]; 
-      elem; 
+
+  for(elem = hashtable->table[position];
+      elem;
       elem = elem->next)
     if(elem->fullKey  == hashValue)
-      return  elem->value; 
+      return  elem->value;
 
   return NULL;
 }
@@ -152,35 +152,35 @@ void *searchHashTableWithInt(HashTable *hashtable, uint32_t hashValue)
 
 void *searchHashTable(HashTable *hashtable, void *value, uint32_t hashValue)
 {
-  uint32_t 
+  uint32_t
     position = hashValue % hashtable->tableSize;
-  
-  HashElem 
+
+  HashElem
     *elem;
-  
-  for(elem = hashtable->table[position]; 
-      elem; 
+
+  for(elem = hashtable->table[position];
+      elem;
       elem = elem->next)
-    if(elem->fullKey  == hashValue && 
+    if(elem->fullKey  == hashValue &&
        hashtable->equalFunction(hashtable, elem->value, value))
-      return  elem->value; 
+      return  elem->value;
 
   return NULL;
 }
 
 
 void insertIntoHashTable(HashTable *hashTable, void *value, uint32_t index)
-{  
+{
   /* just copied this */
-  HashElem 
+  HashElem
     *hashElem = CALLOC(1, sizeof(HashElem));
-  
+
   hashElem->fullKey = index;
-  
+
   index =  hashElem->fullKey % hashTable->tableSize;
-  
+
   hashElem->value = value;
-  hashElem->next = hashTable->table[index];  
+  hashElem->next = hashTable->table[index];
   hashTable->table[index] = hashElem;
 #ifdef PARALLEL
   pthread_mutex_lock(hashTable->cntLock);
@@ -194,21 +194,21 @@ void insertIntoHashTable(HashTable *hashTable, void *value, uint32_t index)
 
 void destroyHashTable(HashTable *hashTable, void (*freeValue)(void *value))
 {
-  unsigned 
-    int i; 
-  
-  HashElem 
-    *elemA, 
+  unsigned
+    int i;
+
+  HashElem
+    *elemA,
     *elemB,
     **table = hashTable->table;
-  
+
   for(i = 0; i < hashTable->tableSize; ++i)
     {
       elemA = table[i];
       while(elemA != NULL)
 	{
-	  elemB = elemA; 
-	  elemA = elemA->next; 
+	  elemB = elemA;
+	  elemA = elemA->next;
 	  if(freeValue)
 	    freeValue(elemB->value);
 	  free(elemB);
@@ -218,7 +218,7 @@ void destroyHashTable(HashTable *hashTable, void (*freeValue)(void *value))
 #ifdef PARALLEL
   pthread_mutex_destroy(hashTable->cntLock);
   free(hashTable->cntLock);
-  
+
   FOR_0_LIMIT(i,hashTable->tableSize)
     {
       pthread_mutex_destroy(hashTable->lockPerSlot[i]);
@@ -227,7 +227,7 @@ void destroyHashTable(HashTable *hashTable, void (*freeValue)(void *value))
   free(hashTable->lockPerSlot);
 #endif
 
-  free(hashTable->commonAttributes);  
+  free(hashTable->commonAttributes);
   free(hashTable->table);
   free(hashTable);
 }
@@ -235,15 +235,15 @@ void destroyHashTable(HashTable *hashTable, void (*freeValue)(void *value))
 
 void updateEntryCount(HashTable *hashTable)
 {
-  uint32_t 
-    i, 
+  uint32_t
+    i,
     result = 0;
 
   for(i = 0; i < hashTable->tableSize; ++i)
     {
-      HashElem 
+      HashElem
 	*elem = ((HashElem**)hashTable->table)[i];
-      
+
       while(elem)
 	{
 	  result++;
@@ -255,18 +255,18 @@ void updateEntryCount(HashTable *hashTable)
 }
 
 
-HashTableIterator *createHashTableIterator(HashTable *hashTable) 
+HashTableIterator *createHashTableIterator(HashTable *hashTable)
 {
-  unsigned 
-    int i; 
-  
-  HashTableIterator 
+  unsigned
+    int i;
+
+  HashTableIterator
     *hashTableIterator = CALLOC(1, sizeof(HashTableIterator));
-  
+
   hashTableIterator->hashTable = hashTable;
   hashTableIterator->hashElem = NULL;
   hashTableIterator->index = hashTable->tableSize;
-  
+
   if( NOT hashTable->entryCount)
     return hashTableIterator;
 
@@ -279,19 +279,19 @@ HashTableIterator *createHashTableIterator(HashTable *hashTable)
 	  break;
 	}
     }
-  
+
   return hashTableIterator;
 }
 
 boolean hashTableIteratorNext(HashTableIterator *hashTableIterator)
 {
-  uint32_t 
-    i, 
+  uint32_t
+    i,
     tableSize = hashTableIterator->hashTable->tableSize;
-  
-  HashElem 
+
+  HashElem
     *next = hashTableIterator->hashElem->next;
-  
+
   if(next)
     {
       hashTableIterator->hashElem = next;
@@ -299,22 +299,22 @@ boolean hashTableIteratorNext(HashTableIterator *hashTableIterator)
     }
 
   i = hashTableIterator->index + 1;
-  
+
   if(i >= tableSize)
     {
       hashTableIterator->index = i;
       return FALSE;
     }
-  
+
   while( NOT (next = hashTableIterator->hashTable->table[i]))
     {
-      if( ++i >= tableSize) 
+      if( ++i >= tableSize)
 	{
-	  hashTableIterator->index = i; 
+	  hashTableIterator->index = i;
 	  return FALSE;
 	}
     }
-  
+
   hashTableIterator->index = i;
   hashTableIterator->hashElem = next;
 
@@ -323,8 +323,8 @@ boolean hashTableIteratorNext(HashTableIterator *hashTableIterator)
 
 
 void *getCurrentValueFromHashTableIterator(HashTableIterator *hashTableIterator)
-{  
-  return ((hashTableIterator->hashElem) 
+{
+  return ((hashTableIterator->hashElem)
 	  ?  hashTableIterator->hashElem->value
 	  : NULL);
 }
