@@ -31,6 +31,7 @@
 #include "common.h"
 
 extern void printHelpFile();
+int processID;
 
 /* GLOBAL VARIABLES =(  */
 char *infoFileName = "",

@@ -31,6 +31,7 @@
 #include "BitVector.h"
 
 BitVector *mask32;
+char bits_in_16bits [0x1u << 16];
 
 void initializeMask()
 {

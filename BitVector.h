@@ -51,7 +51,7 @@ typedef uint32_t BitVector;
 #define NTH_BIT_IS_SET_IN_INT(integer,n) (integer & mask32[n])
 #define MASK_LENGTH 32
 
-char bits_in_16bits [0x1u << 16];
+extern char bits_in_16bits[];
 extern BitVector *mask32;
 
 void initializeMask();

@@ -74,7 +74,8 @@ typedef char boolean;
 
 #define GET_FROM_UPPER_TRIANGLE(matrix,a,b,c) ((b<c) ? matrix[a][b][(c)-(b)] : matrix[a][c][(b)-(c)])
 
-int processID;
+extern int processID;
+
 void  printVersionInfo(boolean toInfoFile);
 void printBothOpen(const char* format, ... );
 char *lowerTheString(char *string);
