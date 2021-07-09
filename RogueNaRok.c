@@ -552,10 +552,11 @@ int getSupportOfMRETree(Array *bipartitionsById,  Dropset *dropset)
     i;
 
   /* initial case  */
-  if( NOT dropset)
+  if(NOT dropset)
     {
       Array *array = cloneProfileArrayFlat(bipartitionsById);
-      int tmp = getSupportOfMRETreeHelper( array, dropset);
+      int tmp = getSupportOfMRETreeHelper(array, dropset);
+      freeArray(array);
       return tmp;
     }
 
@@ -929,7 +930,7 @@ int getInitScore(Array *bipartitionProfile)
         {
         case VANILLA_CONSENSUS_OPT:
           if(elem->treeVectorSupport > thresh)
-            score += computeSupport ? elem->treeVectorSupport : 1 ;
+            score += computeSupport ? elem->treeVectorSupport : 1;
           break;
 
         case ML_TREE_OPT:
@@ -1873,8 +1874,9 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
   bipartitionsById->arrayTable = CALLOC(bipartitionProfile->length, sizeof(ProfileElem*));
   bipartitionsById->length = bipartitionProfile->length;
   FOR_0_LIMIT(i,bipartitionsById->length)
-    GET_PROFILE_ELEM(bipartitionsById,i) = GET_PROFILE_ELEM(bipartitionProfile, i);
-  qsort(bipartitionsById->arrayTable, bipartitionsById->length, sizeof(ProfileElem**), sortById);
+    GET_PROFILE_ELEM(bipartitionsById, i) = GET_PROFILE_ELEM(bipartitionProfile, i);
+  qsort(bipartitionsById->arrayTable, bipartitionsById->length,
+        sizeof(ProfileElem**), sortById);
 
   numBips = bipartitionProfile->length;
 
