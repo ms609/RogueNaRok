@@ -85,7 +85,7 @@ BitVector genericBitCount(BitVector* bitVector, int bitVectorLength)
     i,
     result = 0;
 
-  for(i = 0; i < bitVectorLength; i++)
+  for(i = 0; i != bitVectorLength; i++)
     result += BIT_COUNT(bitVector[i]);
 
   return result;

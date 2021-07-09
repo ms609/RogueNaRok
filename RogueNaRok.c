@@ -1274,7 +1274,8 @@ void getLostSupportThreshold(MergingEvent *me, Array *bipartitionsById)
 }
 
 
-void evaluateDropset(HashTable *mergingHash, Dropset *dropset,Array *bipartitionsById, List *consensusBipsCanVanish )
+void evaluateDropset(HashTable *mergingHash, Dropset *dropset,
+                     Array *bipartitionsById, List *consensusBipsCanVanish )
 {
   int result = 0;
   List
@@ -1487,7 +1488,8 @@ Dropset *evaluateEvents(HashTable *mergingHash, Array *bipartitionsById, Array *
       FOR_0_LIMIT(i, allDropsets->length)
         {
           Dropset *dropset =  GET_DROPSET_ELEM(allDropsets, i);
-          evaluateDropset(mergingHash, dropset, bipartitionsById, consensusBipsCanVanish);
+          evaluateDropset(mergingHash, dropset, bipartitionsById,
+                          consensusBipsCanVanish);
         }
 #endif
     }
@@ -1941,7 +1943,9 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
       masterBarrier(THREAD_GET_EVENTS, globalPArgs);
       free(candidateBips);
 #else
-      createOrUpdateMergingHash(tr, mergingHash, bipartitionProfile, bipartitionsById, candidateBips, firstMerge, indexByNumberBits );
+      createOrUpdateMergingHash(tr, mergingHash, bipartitionProfile,
+                                bipartitionsById, candidateBips, firstMerge,
+                                indexByNumberBits);
 #endif
       firstMerge = FALSE;
 
@@ -1969,7 +1973,8 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
       /**********************/
       /* evaluate dropsets  */
       /**********************/
-      bestDropset = evaluateEvents(mergingHash, bipartitionsById, bipartitionProfile);
+      bestDropset = evaluateEvents(mergingHash, bipartitionsById,
+                                   bipartitionProfile);
       free(indexByNumberBits);
 
 #ifdef PRINT_TIME
