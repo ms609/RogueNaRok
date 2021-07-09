@@ -32,6 +32,9 @@
 
 void freeArray(Array *array)
 {
+  if(array->hasCommonAttributes) {
+    free(array->commonAttributes);
+  }
   free(array->arrayTable);
   free(array);
 }

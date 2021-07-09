@@ -33,11 +33,13 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct
 {
   void *arrayTable;
   void *commonAttributes;
+  bool hasCommonAttributes;
   uint32_t length;
 } Array;
 
@@ -53,7 +55,10 @@ Array *FUNCNAME (const Array *array)                                            
     if( array->commonAttributes )                                                       \
     {                                                                                   \
         result->commonAttributes = CALLOC(1, sizeof(TYPEATTR));                         \
+        result->hasCommonAttributes = 1;                                                \
         memcpy(result->commonAttributes, array->commonAttributes, sizeof(TYPEATTR));    \
+    } else {                                                                            \
+        result->hasCommonAttributes = 0;                                                \
     }                                                                                   \
   return result;                                                                        \
 }
