@@ -434,6 +434,8 @@ int getSupportOfMRETreeHelper(Array *bipartitionProfile, Dropset *dropset)
         addElemToArray(GET_PROFILE_ELEM(bipartitionProfile,i), mreBips);
     }
 
+  free(taxaDroppedHere); // MS ADDITION: plug memory leak.
+
   if(computeSupport)
     FOR_0_LIMIT(i,mreBips->length)
       result +=  GET_PROFILE_ELEM(mreBips,i)->treeVectorSupport;
@@ -556,7 +558,7 @@ int getSupportOfMRETree(Array *bipartitionsById,  Dropset *dropset)
     {
       Array *array = cloneProfileArrayFlat(bipartitionsById);
       int tmp = getSupportOfMRETreeHelper(array, dropset);
-      freeArray(array);
+      // freeArray(array);
       return tmp;
     }
 
