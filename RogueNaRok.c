@@ -442,8 +442,8 @@ int getSupportOfMRETreeHelper(Array *bipartitionProfile, Dropset *dropset)
   else
     result = mreBips->length;
 
-  free(mreBips->arrayTable);  free(mreBips);
-  free(bipartitionProfile->arrayTable);  free(bipartitionProfile);
+  freeArray(mreBips);
+  freeArray(bipartitionProfile);
 
   return result;
 }
@@ -558,7 +558,6 @@ int getSupportOfMRETree(Array *bipartitionsById,  Dropset *dropset)
     {
       Array *array = cloneProfileArrayFlat(bipartitionsById);
       int tmp = getSupportOfMRETreeHelper(array, dropset);
-      // freeArray(array);
       return tmp;
     }
 
