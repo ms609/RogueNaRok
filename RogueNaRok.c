@@ -1841,8 +1841,8 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
     {
       PR("\nMaximum dropset size (%d) too large. If we prune %d taxa, then there \n\
  will be no bipartitions left and thus such a pruned tree set can never \n\
- have a higher information content (in terms of RBIC) than the original \n\
- tree.\n", maxDropsetSize, mxtips-3);
+ have a higher information content than the original tree.\n",
+         maxDropsetSize, mxtips - 3);
       return ERR_BIG_DROPSET;
     }
 
@@ -1869,7 +1869,7 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
     }
 
   Array
-    *bipartitionsById = CALLOC(1,sizeof(Array));
+    *bipartitionsById = CALLOC(1, sizeof(Array));
   bipartitionsById->arrayTable = CALLOC(bipartitionProfile->length, sizeof(ProfileElem*));
   bipartitionsById->length = bipartitionProfile->length;
   FOR_0_LIMIT(i,bipartitionsById->length)
