@@ -31,6 +31,7 @@
 #include "ProfileElem.h"
 
 
+// Defines function Array *cloneProfileArrayFlat (const Array *array)
 CLONE_ARRAY_FLAT(cloneProfileArrayFlat, ProfileElem*, ProfileElemAttr*)
 
 
