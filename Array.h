@@ -47,23 +47,21 @@ typedef struct
 #define CLONE_ARRAY_FLAT(FUNCNAME, TYPE, TYPEATTR)                                      \
 Array *FUNCNAME (const Array *array)                                                    \
 {                                                                                       \
-    Array *result = CALLOC(1, sizeof(Array));                                           \
+    Array *result = newArray(array->length, sizeof(TYPE));                              \
     result->length = array->length;                                                     \
-    result->arrayTable = CALLOC(result->length, sizeof(TYPE));                          \
     memcpy(result->arrayTable, array->arrayTable, array->length * sizeof(TYPE));        \
                                                                                         \
     if( array->commonAttributes )                                                       \
     {                                                                                   \
-        result->commonAttributes = CALLOC(1, sizeof(TYPEATTR));                         \
         result->hasCommonAttributes = 1;                                                \
+        result->commonAttributes = CALLOC(1, sizeof(TYPEATTR));                         \
         memcpy(result->commonAttributes, array->commonAttributes, sizeof(TYPEATTR));    \
-    } else {                                                                            \
-        result->hasCommonAttributes = 0;                                                \
     }                                                                                   \
   return result;                                                                        \
 }
 
-void freeArray(Array *array);
+Array* newArray(int num, size_t size);
 
+void freeArray(Array *array);
 
 #endif

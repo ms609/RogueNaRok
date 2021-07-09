@@ -155,7 +155,8 @@ Array *getOriginalBipArray(All *tr, FILE *bestTree, FILE *treeFile)
       assert(bCount == tr->mxtips - 3);
     }
 
-  result->commonAttributes = CALLOC(1,sizeof(ProfileElemAttr));
+  result->commonAttributes = CALLOC(1, sizeof(ProfileElemAttr));
+  result->hasCommonAttributes = 1;
   ((ProfileElemAttr*)result->commonAttributes)->bitVectorLength = vectorLength;
   ((ProfileElemAttr*)result->commonAttributes)->treeVectorLength = treeVectorLength;
   ((ProfileElemAttr*)result->commonAttributes)->lastByte = lastByte;

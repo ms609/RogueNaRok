@@ -396,15 +396,16 @@ int getSupportOfMRETreeHelper(Array *bipartitionProfile, Dropset *dropset)
         FLIP_NTH_BIT(taxaDroppedHere, iter->index);
     }
 
-  qsort(bipartitionProfile->arrayTable, bipartitionProfile->length, sizeof(ProfileElem**), sortBySupport);
+  qsort(bipartitionProfile->arrayTable, bipartitionProfile->length,
+        sizeof(ProfileElem**), sortBySupport);
 
-  Array *mreBips = CALLOC(1,sizeof(Array));
-  mreBips->arrayTable = CALLOC((mxtips-3), sizeof(ProfileElem*));
-  mreBips->length = 0;
+  Array *mreBips = newArray(mxtips - 3, sizeof(ProfileElem*));
+
 
 #ifdef MYDEBUG
   for(i = 1; i < bipartitionProfile->length; i ++)
-    assert(GET_PROFILE_ELEM(bipartitionProfile,i-1)->treeVectorSupport >= GET_PROFILE_ELEM(bipartitionProfile,i)->treeVectorSupport);
+    assert(GET_PROFILE_ELEM(bipartitionProfile, i - 1)->treeVectorSupport >=
+      GET_PROFILE_ELEM(bipartitionProfile, i)->treeVectorSupport);
 #endif
 
   FOR_0_LIMIT(i, bipartitionProfile->length)
@@ -562,14 +563,9 @@ int getSupportOfMRETree(Array *bipartitionsById,  Dropset *dropset)
     }
 
   Array
-    *emergedBips = CALLOC(1,sizeof(Array)),
-    *finalArray  = CALLOC(1,sizeof(Array)),
-    *tmpArray = cloneProfileArrayFlat(bipartitionsById);
-  emergedBips->arrayTable = CALLOC(lengthOfList(mergingEvents), sizeof(ProfileElem*));
-  emergedBips->length = 0;
-
-  finalArray->arrayTable = CALLOC(tmpArray->length, sizeof(ProfileElem*));
-  finalArray->length = 0;
+    *tmpArray = cloneProfileArrayFlat(bipartitionsById),
+    *emergedBips = newArray(lengthOfList(mergingEvents), sizeof(ProfileElem*)),
+    *finalArray  = newArray(tmpArray->length, sizeof(ProfileElem*));
 
   /* kill merging bips from array */
   List *meIter = mergingEvents ;
@@ -1186,8 +1182,7 @@ void combineEventsForOneDropset(Array *allDropsets, Dropset *refDropset, Array *
 HashTable *combineMergerEvents(HashTable *mergingHash, Array *bipartitionsById)
 {
   /* hash to array  */
-  Array *allDropsets =  CALLOC(1,sizeof(Array));
-  allDropsets->arrayTable = CALLOC(mergingHash->entryCount, sizeof(Dropset**));
+  Array *allDropsets = newArray(mergingHash->entryCount, sizeof(Dropset**));
 
   HashTableIterator *htIter;
   int cnt = 0;
@@ -1870,9 +1865,7 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
       elem->numberOfBitsSet = genericBitCount(elem->bitVector, bitVectorLength);
     }
 
-  Array
-    *bipartitionsById = CALLOC(1, sizeof(Array));
-  bipartitionsById->arrayTable = CALLOC(bipartitionProfile->length, sizeof(ProfileElem*));
+  Array *bipartitionsById = newArray(bipartitionProfile->length, sizeof(ProfileElem*));
   bipartitionsById->length = bipartitionProfile->length;
   FOR_0_LIMIT(i,bipartitionsById->length)
     GET_PROFILE_ELEM(bipartitionsById, i) = GET_PROFILE_ELEM(bipartitionProfile, i);
@@ -2042,13 +2035,12 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
       if(elem)
           freeProfileElem(elem);
     }
-  free(((ProfileElemAttr*)bipartitionProfile->commonAttributes));
   freeArray(bipartitionProfile);
   freeArray(bipartitionsById);
   destroyHashTable(mergingHash, freeDropsetDeepInHash);
 
   fclose(rogueOutput);
-  for(i = 0; i < dropRound + 1; ++i)
+  for(i = 0; i != dropRound + 1; ++i)
     {
       Dropset *theDropset = dropsetPerRound[i];
       if(theDropset)

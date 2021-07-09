@@ -38,3 +38,11 @@ void freeArray(Array *array)
   free(array->arrayTable);
   free(array);
 }
+
+Array *newArray(int num, size_t size) {
+  Array* result = calloc(1, sizeof(Array));
+  result->arrayTable = calloc(num, size);
+  result->hasCommonAttributes = 0;
+  result->length = 0;
+  return result;
+}
