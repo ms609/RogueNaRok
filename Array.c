@@ -39,7 +39,7 @@ void freeArray(Array *array)
   free(array);
 }
 
-Array *newArray(int num, size_t size) {
+Array *createArray(int num, size_t size) {
   Array* result = calloc(1, sizeof(Array));
   result->arrayTable = calloc(num, size);
   result->hasCommonAttributes = 0;

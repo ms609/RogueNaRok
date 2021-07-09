@@ -399,7 +399,7 @@ int getSupportOfMRETreeHelper(Array *bipartitionProfile, Dropset *dropset)
   qsort(bipartitionProfile->arrayTable, bipartitionProfile->length,
         sizeof(ProfileElem**), sortBySupport);
 
-  Array *mreBips = newArray(mxtips - 3, sizeof(ProfileElem*));
+  Array *mreBips = createArray(mxtips - 3, sizeof(ProfileElem*));
 
 
 #ifdef MYDEBUG
@@ -564,8 +564,8 @@ int getSupportOfMRETree(Array *bipartitionsById,  Dropset *dropset)
 
   Array
     *tmpArray = cloneProfileArrayFlat(bipartitionsById),
-    *emergedBips = newArray(lengthOfList(mergingEvents), sizeof(ProfileElem*)),
-    *finalArray  = newArray(tmpArray->length, sizeof(ProfileElem*));
+    *emergedBips = createArray(lengthOfList(mergingEvents), sizeof(ProfileElem*)),
+    *finalArray  = createArray(tmpArray->length, sizeof(ProfileElem*));
 
   /* kill merging bips from array */
   List *meIter = mergingEvents ;
@@ -921,7 +921,7 @@ int getInitScore(Array *bipartitionProfile)
   FOR_0_LIMIT(i,bipartitionProfile->length)
     {
       ProfileElem
-        *elem = GET_PROFILE_ELEM(bipartitionProfile,i);
+        *elem = GET_PROFILE_ELEM(bipartitionProfile, i);
 
       switch(rogueMode)
         {
@@ -1182,7 +1182,7 @@ void combineEventsForOneDropset(Array *allDropsets, Dropset *refDropset, Array *
 HashTable *combineMergerEvents(HashTable *mergingHash, Array *bipartitionsById)
 {
   /* hash to array  */
-  Array *allDropsets = newArray(mergingHash->entryCount, sizeof(Dropset**));
+  Array *allDropsets = createArray(mergingHash->entryCount, sizeof(Dropset**));
 
   HashTableIterator *htIter;
   int cnt = 0;
@@ -1865,7 +1865,7 @@ errcode doomRogues(All *tr, const char *bootStrapFileName,
       elem->numberOfBitsSet = genericBitCount(elem->bitVector, bitVectorLength);
     }
 
-  Array *bipartitionsById = newArray(bipartitionProfile->length, sizeof(ProfileElem*));
+  Array *bipartitionsById = createArray(bipartitionProfile->length, sizeof(ProfileElem*));
   bipartitionsById->length = bipartitionProfile->length;
   FOR_0_LIMIT(i,bipartitionsById->length)
     GET_PROFILE_ELEM(bipartitionsById, i) = GET_PROFILE_ELEM(bipartitionProfile, i);

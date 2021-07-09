@@ -47,7 +47,7 @@ typedef struct
 #define CLONE_ARRAY_FLAT(FUNCNAME, TYPE, TYPEATTR)                                      \
 Array *FUNCNAME (const Array *array)                                                    \
 {                                                                                       \
-    Array *result = newArray(array->length, sizeof(TYPE));                              \
+    Array *result = createArray(array->length, sizeof(TYPE));                              \
     result->length = array->length;                                                     \
     memcpy(result->arrayTable, array->arrayTable, array->length * sizeof(TYPE));        \
                                                                                         \
@@ -60,7 +60,7 @@ Array *FUNCNAME (const Array *array)                                            
   return result;                                                                        \
 }
 
-Array* newArray(int num, size_t size);
+Array* createArray(int num, size_t size);
 
 void freeArray(Array *array);
 
