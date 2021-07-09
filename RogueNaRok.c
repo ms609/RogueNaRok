@@ -498,7 +498,8 @@ void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
         *elemA = GET_PROFILE_ELEM(bipartitionsById, me->mergingBipartitions.pair[0]),
         *elemB = GET_PROFILE_ELEM(bipartitionsById, me->mergingBipartitions.pair[1]);
 
-      if(rogueMode == VANILLA_CONSENSUS_OPT && elemA->treeVectorSupport + elemB->treeVectorSupport < thresh)
+      if(rogueMode == VANILLA_CONSENSUS_OPT &&
+         elemA->treeVectorSupport + elemB->treeVectorSupport < thresh)
               return;
 
       isInMLTree = elemA->isInMLTree || elemB->isInMLTree;
