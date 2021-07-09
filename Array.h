@@ -52,7 +52,7 @@ Array *FUNCNAME (const Array *array)                                            
                                                                                         \
     if( array->commonAttributes )                                                       \
     {                                                                                   \
-        result->commonAttributes = CALLOC(1 , sizeof(TYPEATTR));                        \
+        result->commonAttributes = CALLOC(1, sizeof(TYPEATTR));                         \
         memcpy(result->commonAttributes, array->commonAttributes, sizeof(TYPEATTR));    \
     }                                                                                   \
   return result;                                                                        \
