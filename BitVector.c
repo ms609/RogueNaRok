@@ -119,8 +119,8 @@ void compute_bits_in_16bits(void)
 BitVector precomputed16_bitcount (BitVector n)
 {
   /* works only for 32-bit int*/
-    return bits_in_16bits [n         & 0xffffu]
-        +  bits_in_16bits [(n >> 16) & 0xffffu] ;
+    return bits_in_16bits[n         & 0xffffu]
+        +  bits_in_16bits[(n >> 16) & 0xffffu];
 }
 
 
@@ -128,7 +128,7 @@ BitVector precomputed16_bitcount (BitVector n)
 BitVector *copyBitVector(BitVector *bitVector, int bitVectorLength)
 {
   BitVector *result = CALLOC(bitVectorLength, sizeof(BitVector));
-  memcpy(result, bitVector,bitVectorLength * sizeof(BitVector));
+  memcpy(result, bitVector, bitVectorLength * sizeof(BitVector));
   return result;
 }
 
