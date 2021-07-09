@@ -45,15 +45,15 @@ typedef struct
 #define CLONE_ARRAY_FLAT(FUNCNAME, TYPE, TYPEATTR)                                      \
 Array *FUNCNAME (const Array *array)                                                    \
 {                                                                                       \
-    Array *result = CALLOC(1,sizeof(Array));                                            \
+    Array *result = CALLOC(1, sizeof(Array));                                           \
     result->length = array->length;                                                     \
     result->arrayTable = CALLOC(result->length, sizeof(TYPE));                          \
-    memcpy(result->arrayTable, array->arrayTable, array->length * sizeof(TYPE) );       \
-												                                                                \
+    memcpy(result->arrayTable, array->arrayTable, array->length * sizeof(TYPE));        \
+                                                                                        \
     if( array->commonAttributes )                                                       \
     {                                                                                   \
-	result->commonAttributes = CALLOC(1 , sizeof(TYPEATTR));                              \
-        memcpy(result->commonAttributes, array->commonAttributes, sizeof(TYPEATTR) ) ;  \
+        result->commonAttributes = CALLOC(1 , sizeof(TYPEATTR));                        \
+        memcpy(result->commonAttributes, array->commonAttributes, sizeof(TYPEATTR));    \
     }                                                                                   \
   return result;                                                                        \
 }
