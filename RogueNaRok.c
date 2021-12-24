@@ -519,13 +519,15 @@ void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
       break;
 
     case VANILLA_CONSENSUS_OPT:
-      if(rogueMode == VANILLA_CONSENSUS_OPT  && newSup > thresh)
+      if(rogueMode == VANILLA_CONSENSUS_OPT  && newSup > thresh) {
         GAIN_SUPPORT;
+      }
       break;
     case ML_TREE_OPT:
-      if(isInMLTree)
+      if(isInMLTree) {
         GAIN_SUPPORT;
-        break;
+      }
+      break;
     default:
       assert(0);
     }
