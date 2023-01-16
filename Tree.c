@@ -685,17 +685,16 @@ static char *Tree2StringREC(char *treestr, All *tr, nodeptr p, boolean printBran
   char  *nameptr;
 
   if(isTip(p->number, tr->mxtips))
+  {
+    if(printNames)
     {
-      if(printNames)
-	{
-	  nameptr = tr->nameList[p->number];
-	  sprintf(treestr, "%s", nameptr);
-	}
-      else
-	sprintf(treestr, "%d", p->number);
-
+   	  nameptr = tr->nameList[p->number];
+	    snprintf(treestr, sizeof(treestr), "%s", nameptr);
+	  }
+    else
+      snprintf(treestr, sizeof(treestr), "%d", p->number);
       while (*treestr) treestr++;
-    }
+  }
   else
     {
       *treestr++ = '(';
@@ -716,9 +715,9 @@ static char *Tree2StringREC(char *treestr, All *tr, nodeptr p, boolean printBran
   if(p == tr->start->back)
     {
       if(printBranchLengths && NOT rellTree)
-	sprintf(treestr, ":0.0;\n");
+	      snprintf(treestr, sizeof(treestr), ":0.0;\n");
       else
-	sprintf(treestr, ";\n");
+	      snprintf(treestr, sizeof(treestr), ";\n");
     }
   else
     {
@@ -730,28 +729,28 @@ static char *Tree2StringREC(char *treestr, All *tr, nodeptr p, boolean printBran
 	      assert(p->bInf != (branchInfo *)NULL);
 
 	      if(rellTree)
-		sprintf(treestr, "%d:%8.20f", p->bInf->support, p->z[0]);
+		      snprintf(treestr, sizeof(treestr), "%d:%8.20f", p->bInf->support, p->z[0]);
 	      if(branchLabelSupport)
-		sprintf(treestr, ":%8.20f[%d]", p->z[0], p->bInf->support);
+		      snprintf(treestr, sizeof(treestr), ":%8.20f[%d]", p->z[0], p->bInf->support);
 	      if(printSHSupport)
-		sprintf(treestr, ":%8.20f[%d]", getBranchLength(tr, perGene, p), p->bInf->support);
+		      snprintf(treestr, sizeof(treestr), ":%8.20f[%d]", getBranchLength(tr, perGene, p), p->bInf->support);
 
 	    }
 	  else
 	    {
 	      if(rellTree || branchLabelSupport)
-		sprintf(treestr, ":%8.20f", p->z[0]);
+		snprintf(treestr, sizeof(treestr), ":%8.20f", p->z[0]);
 	      if(printSHSupport)
-		sprintf(treestr, ":%8.20f", getBranchLength(tr, perGene, p));
+		snprintf(treestr, sizeof(treestr), ":%8.20f", getBranchLength(tr, perGene, p));
 	    }
 	}
       else
 	{
 	  if(printBranchLengths)
-	    /* sprintf(treestr, ":%8.20f", getBranchLength(tr, perGene, p));	      	    */
-	    sprintf(treestr, ":%8.20f", p->z[0]);
+	    /* snprintf(treestr, sizeof(treestr), ":%8.20f", getBranchLength(tr, perGene, p));	      	    */
+	    snprintf(treestr, sizeof(treestr), ":%8.20f", p->z[0]);
 	  else
-	    sprintf(treestr, "%s", "\0");
+	    snprintf(treestr, sizeof(treestr), "%s", "\0");
 	}
     }
 
