@@ -32,7 +32,6 @@
 #ifndef TREES_H
 #define TREES_H
 
-#include <stdio.h> /* for snprintf */
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
