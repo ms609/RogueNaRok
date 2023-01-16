@@ -30,7 +30,7 @@
 
 #include "common.h"
 
-extern void printHelpFile();
+extern void printHelpFile(void);
 int processID;
 
 /* GLOBAL VARIABLES =(  */
@@ -107,7 +107,7 @@ FILE *myfopen(const char *path, const char *mode)
 }
 
 
-void setupInfoFile()
+void setupInfoFile(void)
 {
   char *result = CALLOC(1024, sizeof(char));
   strcpy(result,         workdir);
@@ -130,7 +130,7 @@ void setupInfoFile()
   printVersionInfo(TRUE);
 }
 
-void destroyInfoFile()
+void destroyInfoFile(void)
 {
   free(infoFileName);
 }

@@ -33,7 +33,7 @@
 BitVector *mask32;
 char bits_in_16bits [0x1u << 16];
 
-void initializeMask()
+void initializeMask(void)
 {
   int i;
   mask32 = CALLOC(MASK_LENGTH, sizeof(BitVector));
@@ -43,7 +43,7 @@ void initializeMask()
     mask32[i] = mask32[i-1] << 1;
 }
 
-void destroyMask()
+void destroyMask(void)
 {
   free(mask32);
 }
