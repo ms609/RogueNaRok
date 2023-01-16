@@ -680,103 +680,6 @@ boolean isTip(int number, int maxTips)
 }
 
 
-static char *Tree2StringREC(char *treestr, All *tr, nodeptr p, boolean printBranchLengths, boolean printNames, boolean printLikelihood, boolean rellTree, boolean finalPrint, int perGene, boolean branchLabelSupport, boolean printSHSupport)
-{
-  char  *nameptr;
-
-  if(isTip(p->number, tr->mxtips))
-  {
-    if(printNames)
-    {
-         nameptr = tr->nameList[p->number];
-        snprintf(treestr, sizeof(treestr), "%s", nameptr);
-      }
-    else
-      snprintf(treestr, sizeof(treestr), "%d", p->number);
-      while (*treestr) treestr++;
-  }
-  else
-    {
-      *treestr++ = '(';
-      treestr = Tree2StringREC(treestr, tr, p->next->back, printBranchLengths, printNames, printLikelihood, rellTree,
-                   finalPrint, perGene, branchLabelSupport, printSHSupport);
-      *treestr++ = ',';
-      treestr = Tree2StringREC(treestr, tr, p->next->next->back, printBranchLengths, printNames, printLikelihood, rellTree,
-                   finalPrint, perGene, branchLabelSupport, printSHSupport);
-      if(p == tr->start->back)
-    {
-      *treestr++ = ',';
-      treestr = Tree2StringREC(treestr, tr, p->back, printBranchLengths, printNames, printLikelihood, rellTree,
-                   finalPrint, perGene, branchLabelSupport, printSHSupport);
-    }
-      *treestr++ = ')';
-    }
-
-  if(p == tr->start->back)
-    {
-      if(printBranchLengths && NOT rellTree)
-          snprintf(treestr, sizeof(treestr), ":0.0;\n");
-      else
-          snprintf(treestr, sizeof(treestr), ";\n");
-    }
-  else
-    {
-      if(rellTree || branchLabelSupport || printSHSupport)
-    {
-      if(( NOT isTip(p->number, tr->mxtips)) &&
-         ( NOT isTip(p->back->number, tr->mxtips)))
-        {
-          assert(p->bInf != (branchInfo *)NULL);
-
-          if(rellTree)
-              snprintf(treestr, sizeof(treestr), "%d:%8.20f", p->bInf->support, p->z[0]);
-          if(branchLabelSupport)
-              snprintf(treestr, sizeof(treestr), ":%8.20f[%d]", p->z[0], p->bInf->support);
-          if(printSHSupport)
-              snprintf(treestr, sizeof(treestr), ":%8.20f[%d]", getBranchLength(tr, perGene, p), p->bInf->support);
-
-        }
-      else
-        {
-          if(rellTree || branchLabelSupport)
-        snprintf(treestr, sizeof(treestr), ":%8.20f", p->z[0]);
-          if(printSHSupport)
-        snprintf(treestr, sizeof(treestr), ":%8.20f", getBranchLength(tr, perGene, p));
-        }
-    }
-      else
-    {
-      if(printBranchLengths)
-        /* snprintf(treestr, sizeof(treestr), ":%8.20f", getBranchLength(tr, perGene, p));                  */
-        snprintf(treestr, sizeof(treestr), ":%8.20f", p->z[0]);
-      else
-        snprintf(treestr, sizeof(treestr), "%s", "\0");
-    }
-    }
-
-  while (*treestr) treestr++;
-  return  treestr;
-}
-
-
-static double getBranchLength(All *tr, int perGene, nodeptr p)
-{
-  double
-    z = 0.0,
-    x = 0.0;
-
-  assert(perGene != NO_BRANCHES);
-  assert(tr->fracchange != -1.0);
-  z = p->z[0];
-  if (z < zmin)
-    z = zmin;
-
-  x = -log(z) * tr->fracchange;
-
-  return x;            /* here! */
-}
-
-
 static nodeptr uprootTree (All *tr, nodeptr p, boolean readBranchLengths, boolean readConstraint)
 {
   nodeptr  q, r, s, start;
@@ -864,22 +767,6 @@ static nodeptr uprootTree (All *tr, nodeptr p, boolean readBranchLengths, boolea
   tr->rooted = FALSE;
   return  start;
 }
-
-
-char *Tree2String(char *treestr, All *tr, nodeptr p,
-          boolean printBranchLengths, boolean printNames,
-          boolean printLikelihood, boolean rellTree,
-          boolean finalPrint, int perGene,
-          boolean branchLabelSupport, boolean printSHSupport)
-{
-  Tree2StringREC(treestr, tr, p, printBranchLengths, printNames, printLikelihood, rellTree,
-         finalPrint, perGene, branchLabelSupport, printSHSupport);
-
-  while (*treestr) treestr++;
-
-  return treestr;
-}
-
 
 boolean whitechar (int ch)
 {
@@ -1433,17 +1320,6 @@ void readBestTree(All *tr, FILE *file)
 void readBootstrapTree(All *tr, FILE *file)
 {
   treeReadLen(file, tr, FALSE, FALSE, TRUE, TRUE);
-}
-
-
-char *writeTreeToString(All *tr, boolean printBranchLengths)
-{
-  Tree2String(tr->tree_string, tr, tr->start->back, /*  */
-          printBranchLengths, TRUE,
-          FALSE, FALSE,
-          TRUE, 0,
-          FALSE, FALSE);
-  return tr->tree_string;
 }
 
 void freeTree(All *tr)
