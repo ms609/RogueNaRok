@@ -525,7 +525,7 @@ void getSupportGainedThreshold(MergingEvent *me, Array *bipartitionsById)
     case ML_TREE_OPT:
       if(isInMLTree)
         GAIN_SUPPORT;
-        break;
+      break;
     default:
       assert(0);
     }
