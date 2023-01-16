@@ -1474,5 +1474,3 @@ void freeTree(All *tr)
   free(tr);
 }
 /* END OF INTERFACE */
-
-
