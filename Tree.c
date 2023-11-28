@@ -790,7 +790,10 @@ static void  treeEchoContext (FILE *fp1, int n)
       waswhite = FALSE;
     }
 
-    if (ch > '\0') {REprintf((const char*) &ch); n--;} // TODO improve R compatability
+    if (ch > '\0') {
+      // TODO improve R compatability
+      REprintf("%s", (const char*) &ch); n--;
+    }
   }
 }
 
