@@ -2190,8 +2190,8 @@ SEXP RogueNaRok (SEXP R_bootTrees, // Character
   int *ret;
   ret = INTEGER(Rres);
   *ret = error;
-  UNPROTECT(1);
   PutRNGstate();
+  UNPROTECT(1);
 
   return Rres;
 }
